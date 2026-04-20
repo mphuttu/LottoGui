@@ -51,6 +51,7 @@ public:
 	afx_msg void OnLottooptions();
 	afx_msg void OnSuomenlotto();
 	afx_msg void OnMilli();
+	afx_msg void OnKtem();
 	afx_msg void OnEurojackpot();
 	afx_msg void OnVikinglotto();
 	afx_msg void OnJokeri();

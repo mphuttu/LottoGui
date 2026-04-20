@@ -48,6 +48,9 @@
     <ClInclude Include="MilliDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="KtemDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="EurojackpotDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -81,6 +84,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MilliDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KtemDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EurojackpotDlg.cpp">
