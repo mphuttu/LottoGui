@@ -138,13 +138,25 @@ The Jokeri file contains a header line followed by semicolon-separated data rows
 - Microsoft Visual Studio with Desktop development with C++
 - MFC support installed
 - Win32 or x64 build tools available
+- Inno Setup Compiler for creating a Release installer
 
 ### Build steps
 
-1. Open the solution file `LottoGui.sln` in Visual Studio.
+1. Open the solution file LottoGui.sln in Visual Studio.
 2. Select either a Win32 or x64 configuration in Debug or Release mode.
 3. Build the solution.
 4. Run the application.
+
+## Creating a Release installer
+
+An Inno Setup installer script is included at [installer/LottoGuiSetup.iss](installer/LottoGuiSetup.iss).
+
+1. Build the x64 Release version of the application.
+2. Open [installer/LottoGuiSetup.iss](installer/LottoGuiSetup.iss) in Inno Setup Compiler.
+3. Compile the script.
+4. The installer output is created in [installer/Output](installer/Output).
+
+The installer packages the application executable together with all CSV files from the [data](data) folder.
 
 ## Using the application
 

@@ -219,7 +219,10 @@ protected:
 			L"   - Harmonic mean is shown as N/A for columns containing zero values.\r\n\r\n"
 			L"9. Viewing results\r\n"
 			L"   - Predictions and statistics are shown in the main client area.\r\n"
-			L"   - Results can be saved and printed with the standard File menu commands.";
+			L"   - Results can be saved and printed with the standard File menu commands.\r\n\r\n"
+			L"10. Release installer\r\n"
+			L"   - A Release installer can be built with Inno Setup using installer\\LottoGuiSetup.iss.\r\n"
+			L"   - The installer includes the CSV files from the data folder.";
 
 		SetDlgItemText(IDC_HELP_TEXT, helpText);
 		return TRUE;
