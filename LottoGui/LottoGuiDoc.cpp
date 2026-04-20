@@ -12,6 +12,7 @@
 #include "LottoGuiDoc.h"
 #include "LottoDialog.h"
 #include "SuomenLottoDlg.h"
+#include "MilliDlg.h"
 #include "EurojackpotDlg.h"
 #include "VikingLottoDlg.h"
 #include "JokeriDlg.h"
@@ -148,6 +149,11 @@ namespace
 	bool LoadSuomenLottoRows(vector<vector<int> >& rows, CString& usedPath)
 	{
 		return LoadCsvRows(L"SuomenLottoData.csv", rows, usedPath);
+	}
+
+	bool LoadMilliRows(vector<vector<int> >& rows, CString& usedPath)
+	{
+		return LoadCsvRows(L"MilliData.csv", rows, usedPath);
 	}
 
 	bool LoadEurojackpotRows(vector<vector<int> >& rows, CString& usedPath)
@@ -432,6 +438,7 @@ IMPLEMENT_DYNCREATE(CLottoGuiDoc, CDocument)
 BEGIN_MESSAGE_MAP(CLottoGuiDoc, CDocument)
 	ON_COMMAND(ID_LOTTOOPTIONS, &CLottoGuiDoc::OnLottooptions)
 	ON_COMMAND(ID_LOTTOOPTIONS_SUOMENLOTTO, &CLottoGuiDoc::OnSuomenlotto)
+	ON_COMMAND(ID_LOTTOOPTIONS_MILLICSV, &CLottoGuiDoc::OnMilli)
 	ON_COMMAND(ID_LOTTOOPTIONS_EUROJACKPOTCSV, &CLottoGuiDoc::OnEurojackpot)
 	ON_COMMAND(ID_LOTTOOPTIONS_VIKINGLOTTOCSV, &CLottoGuiDoc::OnVikinglotto)
 	ON_COMMAND(ID_LOTTOOPTIONS_JOKERICSV, &CLottoGuiDoc::OnJokeri)
@@ -741,6 +748,106 @@ void CLottoGuiDoc::OnSuomenlotto()
 		}
 
 		allStats.push_back(ComputeColumnStats(columnValues, GetColumnLabel(columnIndex, mainCount, dominantColumnCount)));
+	}
+
+	m_vstrNums.Add(L" ");
+	m_vstrNums.Add(L"Statistical analysis:");
+	m_vstrNums.Add(BuildTableHeaderRow(mainCount));
+
+	vector<CString> values;
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].mean)); } m_vstrNums.Add(BuildTableRow(L"Mean", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { CString s; s.Format(L"%d", allStats[i].minValue); values.push_back(s); } m_vstrNums.Add(BuildTableRow(L"Min", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { CString s; s.Format(L"%d", allStats[i].maxValue); values.push_back(s); } m_vstrNums.Add(BuildTableRow(L"Max", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].median)); } m_vstrNums.Add(BuildTableRow(L"Median", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { CString s; s.Format(L"%d", allStats[i].modeValue); values.push_back(s); } m_vstrNums.Add(BuildTableRow(L"Mode", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].harmonicMean)); } m_vstrNums.Add(BuildTableRow(L"Harmonic", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].geometricMean)); } m_vstrNums.Add(BuildTableRow(L"Geometric", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].rootMeanSquare)); } m_vstrNums.Add(BuildTableRow(L"RMS", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].standardDeviation)); } m_vstrNums.Add(BuildTableRow(L"StdDev", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].lowerQuartile)); } m_vstrNums.Add(BuildTableRow(L"LowerQ", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].upperQuartile)); } m_vstrNums.Add(BuildTableRow(L"UpperQ", values));
+
+	m_nLines = static_cast<int>(m_vstrNums.GetSize()) + 6;
+	UpdateAllViews(NULL);
+	SetModifiedFlag();
+}
+
+void CLottoGuiDoc::OnMilli()
+{
+	CMilliDlg dialog;
+	dialog.m_nPredictionRows = (m_nRounds > 0) ? m_nRounds : 5;
+
+	if (dialog.DoModal() != IDOK)
+	{
+		return;
+	}
+
+	vector<vector<int> > rows;
+	CString usedPath;
+	if (!LoadMilliRows(rows, usedPath))
+	{
+		AfxMessageBox(L"Could not open data\\MilliData.csv.");
+		return;
+	}
+
+	const int dominantColumnCount = DetectDominantColumnCount(rows);
+	const int mainCount = (dominantColumnCount >= 6) ? 6 : dominantColumnCount;
+
+	map<int, int> mainFrequencies;
+	for (size_t rowIndex = 0; rowIndex < rows.size(); ++rowIndex)
+	{
+		const vector<int>& row = rows[rowIndex];
+		for (int columnIndex = 0; columnIndex < mainCount && columnIndex < static_cast<int>(row.size()); ++columnIndex)
+		{
+			++mainFrequencies[row[columnIndex]];
+		}
+	}
+
+	mt19937 generator(static_cast<unsigned int>(time(NULL)));
+	m_vstrNums.RemoveAll();
+	m_nRounds = dialog.m_nPredictionRows;
+	m_nAmount = mainCount;
+
+	m_strSampleNums.Format(L"Milli CSV: %s | Prediction rows: %d | Data rows: %d | Number columns detected: %d",
+		usedPath.GetString(),
+		dialog.m_nPredictionRows,
+		static_cast<int>(rows.size()),
+		mainCount);
+
+	m_vstrNums.Add(L"Predictions based on historical frequency:");
+	for (int predictionIndex = 0; predictionIndex < dialog.m_nPredictionRows; ++predictionIndex)
+	{
+		vector<int> prediction = BuildPredictionLine(mainFrequencies, mainCount, generator);
+		wostringstream output;
+		output << L"Prediction " << (predictionIndex + 1) << L": ";
+
+		for (size_t numberIndex = 0; numberIndex < prediction.size(); ++numberIndex)
+		{
+			if (numberIndex > 0)
+			{
+				output << L", ";
+			}
+			output << prediction[numberIndex];
+		}
+
+		m_vstrNums.Add(output.str().c_str());
+	}
+
+	vector<ColumnStats> allStats;
+	for (int columnIndex = 0; columnIndex < mainCount; ++columnIndex)
+	{
+		vector<int> columnValues;
+		for (size_t rowIndex = 0; rowIndex < rows.size(); ++rowIndex)
+		{
+			if (columnIndex < static_cast<int>(rows[rowIndex].size()))
+			{
+				columnValues.push_back(rows[rowIndex][columnIndex]);
+			}
+		}
+
+		CString label;
+		label.Format(L"Nr%d", columnIndex + 1);
+		allStats.push_back(ComputeColumnStats(columnValues, label));
 	}
 
 	m_vstrNums.Add(L" ");
