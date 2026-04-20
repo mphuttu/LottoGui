@@ -2,7 +2,7 @@
 
 LottoGui is a small Windows desktop application for generating lottery lines and viewing simple lottery analysis results.
 
-The program is written in C++ with Microsoft Foundation Classes (MFC) and is intended to be opened and built in Microsoft Visual Studio on Windows.
+The program is written in C++ with Microsoft Foundation Classes (MFC) and is intended to be opened and built in Microsoft Visual Studio on Windows. The project now supports both Win32 and x64 build targets.
 
 ## Features
 
@@ -46,11 +46,12 @@ The CSV file should be placed in the `data` folder and should contain rows of se
 - Windows
 - Microsoft Visual Studio with Desktop development with C++
 - MFC support installed
+- Win32 or x64 build tools available
 
 ### Build steps
 
 1. Open the solution file `LottoGui.sln` in Visual Studio.
-2. Select a Win32 configuration such as Debug or Release.
+2. Select either a Win32 or x64 configuration in Debug or Release mode.
 3. Build the solution.
 4. Run the application.
 
