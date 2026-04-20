@@ -51,6 +51,9 @@
     <ClInclude Include="VikingLottoDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="JokeriDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LottoGui.cpp">
@@ -78,6 +81,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VikingLottoDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JokeriDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

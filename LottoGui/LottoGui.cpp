@@ -204,7 +204,11 @@ protected:
 			L"4. Viking Lotto CSV\r\n"
 			L"   - Reads historical main numbers from data\\VikingData.csv.\r\n"
 			L"   - The Viking number is added randomly from 1 to 5 because no historical Viking-number data is stored.\r\n\r\n"
-			L"5. Viewing results\r\n"
+			L"5. Jokeri CSV\r\n"
+			L"   - Reads historical Jokeri digits from data\\JokeriData.csv.\r\n"
+			L"   - Repeated digits are allowed in a prediction row, just like in the real draw.\r\n"
+			L"   - Harmonic mean is shown as N/A for columns containing zero values.\r\n\r\n"
+			L"6. Viewing results\r\n"
 			L"   - Predictions and statistics are shown in the main client area.\r\n"
 			L"   - Results can be saved and printed with the standard File menu commands.";
 

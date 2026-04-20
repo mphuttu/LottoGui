@@ -14,6 +14,7 @@
 #include "SuomenLottoDlg.h"
 #include "EurojackpotDlg.h"
 #include "VikingLottoDlg.h"
+#include "JokeriDlg.h"
 
 #include <propkey.h>
 
@@ -23,6 +24,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <iterator>
+#include <limits>
 #include <map>
 #include <random>
 #include <sstream>
@@ -55,6 +57,11 @@ namespace
 
 	CString FormatDouble(double value)
 	{
+		if (!std::isfinite(value))
+		{
+			return L"N/A";
+		}
+
 		CString text;
 		text.Format(L"%.2f", value);
 
@@ -151,6 +158,11 @@ namespace
 	bool LoadVikingRows(vector<vector<int> >& rows, CString& usedPath)
 	{
 		return LoadCsvRows(L"VikingData.csv", rows, usedPath);
+	}
+
+	bool LoadJokeriRows(vector<vector<int> >& rows, CString& usedPath)
+	{
+		return LoadCsvRows(L"JokeriData.csv", rows, usedPath);
 	}
 
 	int DetectDominantColumnCount(const vector<vector<int> >& rows)
@@ -295,20 +307,28 @@ namespace
 		double logSum = 0.0;
 		double squareSum = 0.0;
 		double total = 0.0;
+		bool hasZero = false;
 
 		for (size_t index = 0; index < ordered.size(); ++index)
 		{
 			const double value = static_cast<double>(ordered[index]);
 			total += value;
-			reciprocalSum += (1.0 / value);
-			logSum += log(value);
+			if (value == 0.0)
+			{
+				hasZero = true;
+			}
+			else
+			{
+				reciprocalSum += (1.0 / value);
+				logSum += log(value);
+			}
 			squareSum += value * value;
 			++counts[ordered[index]];
 		}
 
 		stats.mean = total / static_cast<double>(ordered.size());
-		stats.harmonicMean = static_cast<double>(ordered.size()) / reciprocalSum;
-		stats.geometricMean = exp(logSum / static_cast<double>(ordered.size()));
+		stats.harmonicMean = hasZero ? numeric_limits<double>::quiet_NaN() : (static_cast<double>(ordered.size()) / reciprocalSum);
+		stats.geometricMean = hasZero ? 0.0 : exp(logSum / static_cast<double>(ordered.size()));
 		stats.rootMeanSquare = sqrt(squareSum / static_cast<double>(ordered.size()));
 
 		int bestModeCount = -1;
@@ -414,6 +434,7 @@ BEGIN_MESSAGE_MAP(CLottoGuiDoc, CDocument)
 	ON_COMMAND(ID_LOTTOOPTIONS_SUOMENLOTTO, &CLottoGuiDoc::OnSuomenlotto)
 	ON_COMMAND(ID_LOTTOOPTIONS_EUROJACKPOTCSV, &CLottoGuiDoc::OnEurojackpot)
 	ON_COMMAND(ID_LOTTOOPTIONS_VIKINGLOTTOCSV, &CLottoGuiDoc::OnVikinglotto)
+	ON_COMMAND(ID_LOTTOOPTIONS_JOKERICSV, &CLottoGuiDoc::OnJokeri)
 END_MESSAGE_MAP()
 
 
@@ -952,6 +973,101 @@ void CLottoGuiDoc::OnVikinglotto()
 		}
 
 		output << L" | Viking number: " << vikingNumber << L" (randomly selected for the prediction)";
+		m_vstrNums.Add(output.str().c_str());
+	}
+
+	vector<ColumnStats> allStats;
+	for (int columnIndex = 0; columnIndex < mainCount; ++columnIndex)
+	{
+		vector<int> columnValues;
+		for (size_t rowIndex = 0; rowIndex < rows.size(); ++rowIndex)
+		{
+			if (columnIndex < static_cast<int>(rows[rowIndex].size()))
+			{
+				columnValues.push_back(rows[rowIndex][columnIndex]);
+			}
+		}
+
+		allStats.push_back(ComputeColumnStats(columnValues, GetColumnLabel(columnIndex, mainCount, mainCount)));
+	}
+
+	m_vstrNums.Add(L" ");
+	m_vstrNums.Add(L"Statistical analysis:");
+	m_vstrNums.Add(BuildTableHeaderRow(mainCount));
+
+	vector<CString> values;
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].mean)); } m_vstrNums.Add(BuildTableRow(L"Mean", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { CString s; s.Format(L"%d", allStats[i].minValue); values.push_back(s); } m_vstrNums.Add(BuildTableRow(L"Min", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { CString s; s.Format(L"%d", allStats[i].maxValue); values.push_back(s); } m_vstrNums.Add(BuildTableRow(L"Max", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].median)); } m_vstrNums.Add(BuildTableRow(L"Median", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { CString s; s.Format(L"%d", allStats[i].modeValue); values.push_back(s); } m_vstrNums.Add(BuildTableRow(L"Mode", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].harmonicMean)); } m_vstrNums.Add(BuildTableRow(L"Harmonic", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].geometricMean)); } m_vstrNums.Add(BuildTableRow(L"Geometric", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].rootMeanSquare)); } m_vstrNums.Add(BuildTableRow(L"RMS", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].standardDeviation)); } m_vstrNums.Add(BuildTableRow(L"StdDev", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].lowerQuartile)); } m_vstrNums.Add(BuildTableRow(L"LowerQ", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].upperQuartile)); } m_vstrNums.Add(BuildTableRow(L"UpperQ", values));
+
+	m_nLines = static_cast<int>(m_vstrNums.GetSize()) + 6;
+	UpdateAllViews(NULL);
+	SetModifiedFlag();
+}
+
+void CLottoGuiDoc::OnJokeri()
+{
+	CJokeriDlg dialog;
+	dialog.m_nPredictionRows = (m_nRounds > 0) ? m_nRounds : 5;
+
+	if (dialog.DoModal() != IDOK)
+	{
+		return;
+	}
+
+	vector<vector<int> > rows;
+	CString usedPath;
+	if (!LoadJokeriRows(rows, usedPath))
+	{
+		AfxMessageBox(L"Could not open data\\JokeriData.csv.");
+		return;
+	}
+
+	const int dominantColumnCount = DetectDominantColumnCount(rows);
+	const int mainCount = (dominantColumnCount >= 7) ? 7 : dominantColumnCount;
+	vector< map<int, int> > digitFrequencies(mainCount);
+
+	for (size_t rowIndex = 0; rowIndex < rows.size(); ++rowIndex)
+	{
+		const vector<int>& row = rows[rowIndex];
+		for (int columnIndex = 0; columnIndex < mainCount && columnIndex < static_cast<int>(row.size()); ++columnIndex)
+		{
+			++digitFrequencies[columnIndex][row[columnIndex]];
+		}
+	}
+
+	mt19937 generator(static_cast<unsigned int>(time(NULL)));
+	m_vstrNums.RemoveAll();
+	m_nRounds = dialog.m_nPredictionRows;
+	m_nAmount = mainCount;
+
+	m_strSampleNums.Format(L"Jokeri CSV: %s | Prediction rows: %d | Data rows: %d | Digit columns: %d | Repeated digits are allowed and harmonic mean is shown as N/A when a column contains zero values",
+		usedPath.GetString(),
+		dialog.m_nPredictionRows,
+		static_cast<int>(rows.size()),
+		mainCount);
+
+	m_vstrNums.Add(L"Predictions based on historical frequency:");
+	for (int predictionIndex = 0; predictionIndex < dialog.m_nPredictionRows; ++predictionIndex)
+	{
+		wostringstream output;
+		output << L"Prediction " << (predictionIndex + 1) << L": ";
+		for (int columnIndex = 0; columnIndex < mainCount; ++columnIndex)
+		{
+			if (columnIndex > 0)
+			{
+				output << L" ";
+			}
+			output << ChooseWeightedNumber(digitFrequencies[columnIndex], generator);
+		}
 		m_vstrNums.Add(output.str().c_str());
 	}
 

@@ -12,8 +12,9 @@ The program is written in C++ with Microsoft Foundation Classes (MFC) and is int
 - Analyze Finnish Lotto CSV data from `data/SuomenLottoData.csv`
 - Analyze Eurojackpot CSV data from `data/EurojackpotData.csv`
 - Analyze Viking Lotto CSV data from `data/VikingData.csv`
+- Analyze Jokeri CSV data from `data/JokeriData.csv`
 - Create frequency-based prediction rows from historical data
-- Display statistical analysis for Lotto, Eurojackpot, and Viking Lotto number columns
+- Display statistical analysis for Lotto, Eurojackpot, Viking Lotto, and Jokeri number columns
 
 ## Finnish Lotto CSV analysis
 
@@ -50,6 +51,16 @@ The application also includes a separate Viking Lotto CSV dialog in the Lotto Op
 - a Viking number added randomly from 1 to 5 when generating the prediction
 - the same statistical analysis used for the other lottery modes
 
+## Jokeri CSV analysis
+
+The application also includes a separate Jokeri CSV dialog in the Lotto Options menu. It reads historical Jokeri rows and shows:
+
+- frequency-based prediction rows
+- seven Jokeri digit predictions
+- support for repeated digits in the same row
+- zero-aware statistical analysis
+- harmonic mean displayed as N/A when a column contains zero values
+
 ## Data format
 
 The CSV files should be placed in the `data` folder.
@@ -70,6 +81,10 @@ The Eurojackpot file contains a header line followed by semicolon-separated data
 ### Viking Lotto example
 
 The Viking Lotto file contains a header line followed by semicolon-separated data rows in the format Nr1;Nr2;Nr3;Nr4;Nr5;Nr6.
+
+### Jokeri example
+
+The Jokeri file contains a header line followed by semicolon-separated data rows in the format Nr1;Nr2;Nr3;Nr4;Nr5;Nr6;Nr7. Digits may repeat within the same row, and the value 0 is valid.
 
 ## Building the project
 
@@ -96,6 +111,7 @@ The Viking Lotto file contains a header line followed by semicolon-separated dat
    - Suomen Lotto CSV
    - Eurojackpot CSV
    - Viking Lotto CSV
+   - Jokeri CSV
 4. Generate results and review them in the client area.
 
 ## Project status

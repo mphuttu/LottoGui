@@ -92,6 +92,7 @@ BEGIN
         MENUITEM "Suomen Lotto CSV...",         ID_LOTTOOPTIONS_SUOMENLOTTO
         MENUITEM "Eurojackpot CSV...",          ID_LOTTOOPTIONS_EUROJACKPOTCSV
         MENUITEM "Viking Lotto CSV...",         ID_LOTTOOPTIONS_VIKINGLOTTOCSV
+        MENUITEM "Jokeri CSV...",               ID_LOTTOOPTIONS_JOKERICSV
     END
     POPUP "&Edit"
     BEGIN
@@ -108,7 +109,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&Usage Help...",             ID_HELP_USAGE
+        MENUITEM "&Usage Help...",              ID_HELP_USAGE
         MENUITEM SEPARATOR
         MENUITEM "&About LottoGui...",          ID_APP_ABOUT
     END
@@ -150,8 +151,8 @@ CAPTION "About LottoGui"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
-    LTEXT           "LottoGui, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) Mika Huttunen, 2019",IDC_STATIC,42,26,114,8
+    LTEXT           "LottoGui, Beta Version 1.1",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) Mika Huttunen, 2026",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
 END
 
@@ -162,6 +163,18 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     EDITTEXT        IDC_HELP_TEXT,7,7,264,166,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
     DEFPUSHBUTTON   "OK",IDOK,221,177,50,14
+END
+
+IDD_JOKERI_DIALOG DIALOGEX 0, 0, 258, 94
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Jokeri CSV"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Generate predictions from data\\JokeriData.csv",IDC_JOKERI_INFO,14,13,222,18
+    LTEXT           "Prediction rows:",IDC_STATIC,15,44,60,8
+    EDITTEXT        IDC_JOKERI_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,201,71,50,14
 END
 
 
@@ -227,6 +240,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 189
     END
+
+    IDD_JOKERI_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 251
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 87
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -291,6 +312,17 @@ STRINGTABLE
 BEGIN
     ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE
+BEGIN
+    ID_LOTTOOPTIONS         "Open the Lotto Options Dialog"
+    ID_LOTTOOPTIONS_SUOMENLOTTO "Open the Suomen Lotto CSV prediction dialog"
+    ID_LOTTOOPTIONS_EUROJACKPOTCSV 
+                            "Open the Eurojackpot CSV prediction dialog"
+    ID_LOTTOOPTIONS_VIKINGLOTTOCSV 
+                            "Open the Viking Lotto CSV prediction dialog"
+    ID_LOTTOOPTIONS_JOKERICSV "Open the Jokeri CSV prediction dialog"
     ID_HELP_USAGE           "Show usage instructions\nUsage Help"
 END
 
@@ -366,14 +398,6 @@ END
 STRINGTABLE
 BEGIN
     AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
-END
-
-STRINGTABLE
-BEGIN
-    ID_LOTTOOPTIONS         "Open the Lotto Options Dialog"
-    ID_LOTTOOPTIONS_SUOMENLOTTO "Open the Suomen Lotto CSV prediction dialog"
-    ID_LOTTOOPTIONS_EUROJACKPOTCSV "Open the Eurojackpot CSV prediction dialog"
-    ID_LOTTOOPTIONS_VIKINGLOTTOCSV "Open the Viking Lotto CSV prediction dialog"
 END
 
 #endif    // English (United States) resources
