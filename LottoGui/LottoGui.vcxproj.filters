@@ -45,6 +45,9 @@
     <ClInclude Include="SuomenLottoDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EurojackpotDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LottoGui.cpp">
@@ -66,6 +69,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SuomenLottoDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EurojackpotDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

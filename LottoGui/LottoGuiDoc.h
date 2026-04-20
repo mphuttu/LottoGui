@@ -50,6 +50,7 @@ protected:
 public:
 	afx_msg void OnLottooptions();
 	afx_msg void OnSuomenlotto();
+	afx_msg void OnEurojackpot();
 	int m_nAmount;
 	int m_nRounds;
 	CString m_strNums;

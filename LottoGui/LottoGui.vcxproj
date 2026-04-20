@@ -189,6 +189,7 @@
   <ItemGroup>
     <ClInclude Include="LottoDialog.h" />
     <ClInclude Include="SuomenLottoDlg.h" />
+    <ClInclude Include="EurojackpotDlg.h" />
     <ClInclude Include="LottoGui.h" />
     <ClInclude Include="LottoGuiDoc.h" />
     <ClInclude Include="LottoGuiView.h" />
@@ -200,6 +201,7 @@
   <ItemGroup>
     <ClCompile Include="LottoDialog.cpp" />
     <ClCompile Include="SuomenLottoDlg.cpp" />
+    <ClCompile Include="EurojackpotDlg.cpp" />
     <ClCompile Include="LottoGui.cpp" />
     <ClCompile Include="LottoGuiDoc.cpp" />
     <ClCompile Include="LottoGuiView.cpp" />

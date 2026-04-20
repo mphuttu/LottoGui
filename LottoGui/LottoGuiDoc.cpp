@@ -12,6 +12,7 @@
 #include "LottoGuiDoc.h"
 #include "LottoDialog.h"
 #include "SuomenLottoDlg.h"
+#include "EurojackpotDlg.h"
 
 #include <propkey.h>
 
@@ -87,7 +88,7 @@ namespace
 		return values;
 	}
 
-	bool LoadSuomenLottoRows(vector<vector<int> >& rows, CString& usedPath)
+	bool LoadCsvRows(const CString& csvFileName, vector<vector<int> >& rows, CString& usedPath)
 	{
 		rows.clear();
 		usedPath.Empty();
@@ -102,10 +103,10 @@ namespace
 		}
 
 		CStringArray candidates;
-		candidates.Add(exeFolder + L"\\data\\SuomenLottoData.csv");
-		candidates.Add(exeFolder + L"\\..\\data\\SuomenLottoData.csv");
-		candidates.Add(exeFolder + L"\\..\\..\\data\\SuomenLottoData.csv");
-		candidates.Add(L"data\\SuomenLottoData.csv");
+		candidates.Add(exeFolder + L"\\data\\" + csvFileName);
+		candidates.Add(exeFolder + L"\\..\\data\\" + csvFileName);
+		candidates.Add(exeFolder + L"\\..\\..\\data\\" + csvFileName);
+		candidates.Add(L"data\\" + csvFileName);
 
 		for (INT_PTR index = 0; index < candidates.GetSize(); ++index)
 		{
@@ -134,6 +135,16 @@ namespace
 		}
 
 		return false;
+	}
+
+	bool LoadSuomenLottoRows(vector<vector<int> >& rows, CString& usedPath)
+	{
+		return LoadCsvRows(L"SuomenLottoData.csv", rows, usedPath);
+	}
+
+	bool LoadEurojackpotRows(vector<vector<int> >& rows, CString& usedPath)
+	{
+		return LoadCsvRows(L"EurojackpotData.csv", rows, usedPath);
 	}
 
 	int DetectDominantColumnCount(const vector<vector<int> >& rows)
@@ -225,6 +236,17 @@ namespace
 			CString label;
 			label.Format(L"Nr%d", index + 1);
 			output << right << setw(10) << static_cast<LPCWSTR>(label);
+		}
+		return output.str().c_str();
+	}
+
+	CString BuildTableHeaderRow(const vector<CString>& headers)
+	{
+		wostringstream output;
+		output << left << setw(16) << L"";
+		for (size_t index = 0; index < headers.size(); ++index)
+		{
+			output << right << setw(10) << static_cast<LPCWSTR>(headers[index]);
 		}
 		return output.str().c_str();
 	}
@@ -384,6 +406,7 @@ IMPLEMENT_DYNCREATE(CLottoGuiDoc, CDocument)
 BEGIN_MESSAGE_MAP(CLottoGuiDoc, CDocument)
 	ON_COMMAND(ID_LOTTOOPTIONS, &CLottoGuiDoc::OnLottooptions)
 	ON_COMMAND(ID_LOTTOOPTIONS_SUOMENLOTTO, &CLottoGuiDoc::OnSuomenlotto)
+	ON_COMMAND(ID_LOTTOOPTIONS_EUROJACKPOTCSV, &CLottoGuiDoc::OnEurojackpot)
 END_MESSAGE_MAP()
 
 
@@ -695,6 +718,152 @@ void CLottoGuiDoc::OnSuomenlotto()
 	m_vstrNums.Add(L" ");
 	m_vstrNums.Add(L"Statistical analysis:");
 	m_vstrNums.Add(BuildTableHeaderRow(mainCount));
+
+	vector<CString> values;
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].mean)); } m_vstrNums.Add(BuildTableRow(L"Mean", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { CString s; s.Format(L"%d", allStats[i].minValue); values.push_back(s); } m_vstrNums.Add(BuildTableRow(L"Min", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { CString s; s.Format(L"%d", allStats[i].maxValue); values.push_back(s); } m_vstrNums.Add(BuildTableRow(L"Max", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].median)); } m_vstrNums.Add(BuildTableRow(L"Median", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { CString s; s.Format(L"%d", allStats[i].modeValue); values.push_back(s); } m_vstrNums.Add(BuildTableRow(L"Mode", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].harmonicMean)); } m_vstrNums.Add(BuildTableRow(L"Harmonic", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].geometricMean)); } m_vstrNums.Add(BuildTableRow(L"Geometric", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].rootMeanSquare)); } m_vstrNums.Add(BuildTableRow(L"RMS", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].standardDeviation)); } m_vstrNums.Add(BuildTableRow(L"StdDev", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].lowerQuartile)); } m_vstrNums.Add(BuildTableRow(L"LowerQ", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].upperQuartile)); } m_vstrNums.Add(BuildTableRow(L"UpperQ", values));
+
+	m_nLines = static_cast<int>(m_vstrNums.GetSize()) + 6;
+	UpdateAllViews(NULL);
+	SetModifiedFlag();
+}
+
+void CLottoGuiDoc::OnEurojackpot()
+{
+	CEurojackpotDlg dialog;
+	dialog.m_nPredictionRows = (m_nRounds > 0) ? m_nRounds : 5;
+
+	if (dialog.DoModal() != IDOK)
+	{
+		return;
+	}
+
+	vector<vector<int> > rows;
+	CString usedPath;
+	if (!LoadEurojackpotRows(rows, usedPath))
+	{
+		AfxMessageBox(L"Could not open data\\EurojackpotData.csv.");
+		return;
+	}
+
+	const int dominantColumnCount = DetectDominantColumnCount(rows);
+	const int mainCount = (dominantColumnCount >= 5) ? 5 : dominantColumnCount;
+	const int starCount = (dominantColumnCount > mainCount) ? min(2, dominantColumnCount - mainCount) : 0;
+
+	map<int, int> mainFrequencies;
+	map<int, int> starFrequencies;
+	for (size_t rowIndex = 0; rowIndex < rows.size(); ++rowIndex)
+	{
+		const vector<int>& row = rows[rowIndex];
+		for (int columnIndex = 0; columnIndex < mainCount && columnIndex < static_cast<int>(row.size()); ++columnIndex)
+		{
+			++mainFrequencies[row[columnIndex]];
+		}
+
+		for (int starIndex = 0; starIndex < starCount; ++starIndex)
+		{
+			const int column = mainCount + starIndex;
+			if (column < static_cast<int>(row.size()))
+			{
+				++starFrequencies[row[column]];
+			}
+		}
+	}
+
+	mt19937 generator(static_cast<unsigned int>(time(NULL)));
+	m_vstrNums.RemoveAll();
+	m_nRounds = dialog.m_nPredictionRows;
+	m_nAmount = mainCount;
+
+	m_strSampleNums.Format(L"Eurojackpot CSV: %s | Prediction rows: %d | Data rows: %d | Main numbers: %d | Stars: %d",
+		usedPath.GetString(),
+		dialog.m_nPredictionRows,
+		static_cast<int>(rows.size()),
+		mainCount,
+		starCount);
+
+	m_vstrNums.Add(L"Predictions based on historical frequency:");
+	for (int predictionIndex = 0; predictionIndex < dialog.m_nPredictionRows; ++predictionIndex)
+	{
+		vector<int> mainPrediction = BuildPredictionLine(mainFrequencies, mainCount, generator);
+		vector<int> starPrediction = BuildPredictionLine(starFrequencies, starCount, generator);
+		wostringstream output;
+		output << L"Prediction " << (predictionIndex + 1) << L": ";
+
+		for (size_t numberIndex = 0; numberIndex < mainPrediction.size(); ++numberIndex)
+		{
+			if (numberIndex > 0)
+			{
+				output << L", ";
+			}
+			output << mainPrediction[numberIndex];
+		}
+
+		if (!starPrediction.empty())
+		{
+			output << L" | Stars: ";
+			for (size_t starIndex = 0; starIndex < starPrediction.size(); ++starIndex)
+			{
+				if (starIndex > 0)
+				{
+					output << L", ";
+				}
+				output << starPrediction[starIndex];
+			}
+		}
+
+		m_vstrNums.Add(output.str().c_str());
+	}
+
+	vector<ColumnStats> allStats;
+	vector<CString> headers;
+	for (int columnIndex = 0; columnIndex < mainCount; ++columnIndex)
+	{
+		vector<int> columnValues;
+		for (size_t rowIndex = 0; rowIndex < rows.size(); ++rowIndex)
+		{
+			if (columnIndex < static_cast<int>(rows[rowIndex].size()))
+			{
+				columnValues.push_back(rows[rowIndex][columnIndex]);
+			}
+		}
+
+		CString label;
+		label.Format(L"Nr%d", columnIndex + 1);
+		headers.push_back(label);
+		allStats.push_back(ComputeColumnStats(columnValues, label));
+	}
+
+	for (int starIndex = 0; starIndex < starCount; ++starIndex)
+	{
+		vector<int> columnValues;
+		const int column = mainCount + starIndex;
+		for (size_t rowIndex = 0; rowIndex < rows.size(); ++rowIndex)
+		{
+			if (column < static_cast<int>(rows[rowIndex].size()))
+			{
+				columnValues.push_back(rows[rowIndex][column]);
+			}
+		}
+
+		CString label;
+		label.Format(L"Star%d", starIndex + 1);
+		headers.push_back(label);
+		allStats.push_back(ComputeColumnStats(columnValues, label));
+	}
+
+	m_vstrNums.Add(L" ");
+	m_vstrNums.Add(L"Statistical analysis:");
+	m_vstrNums.Add(BuildTableHeaderRow(headers));
 
 	vector<CString> values;
 	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].mean)); } m_vstrNums.Add(BuildTableRow(L"Mean", values));

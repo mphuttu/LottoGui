@@ -10,8 +10,9 @@ The program is written in C++ with Microsoft Foundation Classes (MFC) and is int
 - Use either a numeric range or your own input number set
 - Save and print generated results
 - Analyze Finnish Lotto CSV data from `data/SuomenLottoData.csv`
+- Analyze Eurojackpot CSV data from `data/EurojackpotData.csv`
 - Create frequency-based prediction rows from historical data
-- Display statistical analysis for columns Nr1-Nr7
+- Display statistical analysis for Lotto and Eurojackpot number columns
 
 ## Finnish Lotto CSV analysis
 
@@ -30,14 +31,31 @@ The application includes a separate Suomen Lotto dialog available from the Lotto
 
 > Note: the predictions are statistical estimates based on past data and are not guarantees of future results.
 
+## Eurojackpot CSV analysis
+
+The application also includes a separate Eurojackpot CSV dialog in the Lotto Options menu. It reads historical Eurojackpot rows and shows:
+
+- frequency-based prediction rows
+- five main-number predictions
+- two star-number predictions
+- the same statistical analysis used for Suomen Lotto
+
 ## Data format
 
-The CSV file should be placed in the `data` folder and should contain rows of semicolon-separated Finnish Lotto main numbers without a header line, for example:
+The CSV files should be placed in the `data` folder.
+
+### Suomen Lotto example
+
+The Suomen Lotto file contains semicolon-separated rows without a header line, for example:
 
 ```text
 1;9;18;19;36;37;5
 3;14;15;17;20;25;16
 ```
+
+### Eurojackpot example
+
+The Eurojackpot file contains a header line followed by semicolon-separated data rows in the format Nr1;Nr2;Nr3;Nr4;Nr5;Star1;Star2.
 
 ## Building the project
 
@@ -59,9 +77,10 @@ The CSV file should be placed in the `data` folder and should contain rows of se
 
 1. Start the program.
 2. Open the Lotto Options menu.
-3. Choose either:
+3. Choose one of the available options:
    - Classic Lotto Options
    - Suomen Lotto CSV
+   - Eurojackpot CSV
 4. Generate results and review them in the client area.
 
 ## Project status
