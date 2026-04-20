@@ -21,6 +21,7 @@
 
 BEGIN_MESSAGE_MAP(CLottoGuiApp, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, &CLottoGuiApp::OnAppAbout)
+	ON_COMMAND(ID_HELP_USAGE, &CLottoGuiApp::OnHelpUsage)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinApp::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinApp::OnFileOpen)
@@ -176,11 +177,58 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
+class CUsageHelpDlg : public CDialogEx
+{
+public:
+	CUsageHelpDlg() : CDialogEx(IDD_HELPDIALOG)
+	{
+	}
+
+protected:
+	virtual BOOL OnInitDialog()
+	{
+		CDialogEx::OnInitDialog();
+
+		CString helpText =
+			L"LottoGui - Usage Instructions\r\n\r\n"
+			L"1. Classic Lotto Options\r\n"
+			L"   - Open Lotto Options from the menu.\r\n"
+			L"   - Choose either a number range or your own input numbers.\r\n"
+			L"   - Set how many numbers and rows you want to generate.\r\n\r\n"
+			L"2. Suomen Lotto CSV\r\n"
+			L"   - Reads historical data from data\\SuomenLottoData.csv.\r\n"
+			L"   - Shows frequency-based predictions and column statistics.\r\n\r\n"
+			L"3. Eurojackpot CSV\r\n"
+			L"   - Reads main numbers and stars from data\\EurojackpotData.csv.\r\n"
+			L"   - Shows predictions and statistical analysis for both sets.\r\n\r\n"
+			L"4. Viking Lotto CSV\r\n"
+			L"   - Reads historical main numbers from data\\VikingData.csv.\r\n"
+			L"   - The Viking number is added randomly from 1 to 5 because no historical Viking-number data is stored.\r\n\r\n"
+			L"5. Viewing results\r\n"
+			L"   - Predictions and statistics are shown in the main client area.\r\n"
+			L"   - Results can be saved and printed with the standard File menu commands.";
+
+		SetDlgItemText(IDC_HELP_TEXT, helpText);
+		return TRUE;
+	}
+
+	DECLARE_MESSAGE_MAP()
+};
+
+BEGIN_MESSAGE_MAP(CUsageHelpDlg, CDialogEx)
+END_MESSAGE_MAP()
+
 // App command to run the dialog
 void CLottoGuiApp::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
+}
+
+void CLottoGuiApp::OnHelpUsage()
+{
+	CUsageHelpDlg helpDlg;
+	helpDlg.DoModal();
 }
 
 // CLottoGuiApp message handlers

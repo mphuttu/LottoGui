@@ -108,6 +108,8 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
+        MENUITEM "&Usage Help...",             ID_HELP_USAGE
+        MENUITEM SEPARATOR
         MENUITEM "&About LottoGui...",          ID_APP_ABOUT
     END
 END
@@ -151,6 +153,15 @@ BEGIN
     LTEXT           "LottoGui, Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) Mika Huttunen, 2019",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
+END
+
+IDD_HELPDIALOG DIALOGEX 0, 0, 278, 196
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "LottoGui Help"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_HELP_TEXT,7,7,264,166,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,221,177,50,14
 END
 
 
@@ -207,6 +218,14 @@ BEGIN
         RIGHTMARGIN, 163
         TOPMARGIN, 7
         BOTTOMMARGIN, 55
+    END
+
+    IDD_HELPDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 271
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 189
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -272,6 +291,7 @@ STRINGTABLE
 BEGIN
     ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+    ID_HELP_USAGE           "Show usage instructions\nUsage Help"
 END
 
 STRINGTABLE
