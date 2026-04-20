@@ -11,15 +11,21 @@
 
 #include "LottoGuiDoc.h"
 #include "LottoDialog.h"
+#include "SuomenLottoDlg.h"
 
 #include <propkey.h>
 
-#include <vector>
-#include <sstream>
+#include <algorithm>
+#include <cmath>
 #include <ctime>
 #include <cstdlib>
-#include <unordered_set>
-#include <algorithm>
+#include <iomanip>
+#include <iterator>
+#include <map>
+#include <random>
+#include <sstream>
+#include <string>
+#include <vector>
 
 using namespace std;
 
@@ -27,12 +33,357 @@ using namespace std;
 #define new DEBUG_NEW
 #endif
 
+namespace
+{
+	struct ColumnStats
+	{
+		CString label;
+		int minValue;
+		int maxValue;
+		int modeValue;
+		double mean;
+		double median;
+		double harmonicMean;
+		double geometricMean;
+		double rootMeanSquare;
+		double standardDeviation;
+		double lowerQuartile;
+		double upperQuartile;
+	};
+
+	CString FormatDouble(double value)
+	{
+		CString text;
+		text.Format(L"%.2f", value);
+
+		while (text.GetLength() > 0 && text.Right(1) == L"0")
+		{
+			text = text.Left(text.GetLength() - 1);
+		}
+
+		while (text.GetLength() > 0 && text.Right(1) == L".")
+		{
+			text = text.Left(text.GetLength() - 1);
+		}
+
+		return text;
+	}
+
+	vector<int> ParseNumbersFromLine(CString line)
+	{
+		vector<int> values;
+		line.Trim();
+		line.Replace(L';', L' ');
+		line.Replace(L',', L' ');
+		line.Replace(L'\t', L' ');
+
+		wstringstream stream(wstring(line.GetString()));
+		int value = 0;
+		while (stream >> value)
+		{
+			values.push_back(value);
+		}
+
+		return values;
+	}
+
+	bool LoadSuomenLottoRows(vector<vector<int> >& rows, CString& usedPath)
+	{
+		rows.clear();
+		usedPath.Empty();
+
+		TCHAR modulePath[MAX_PATH] = { 0 };
+		::GetModuleFileName(NULL, modulePath, MAX_PATH);
+		CString exeFolder(modulePath);
+		const int slashPos = exeFolder.ReverseFind(L'\\');
+		if (slashPos >= 0)
+		{
+			exeFolder = exeFolder.Left(slashPos);
+		}
+
+		CStringArray candidates;
+		candidates.Add(exeFolder + L"\\data\\SuomenLottoData.csv");
+		candidates.Add(exeFolder + L"\\..\\data\\SuomenLottoData.csv");
+		candidates.Add(exeFolder + L"\\..\\..\\data\\SuomenLottoData.csv");
+		candidates.Add(L"data\\SuomenLottoData.csv");
+
+		for (INT_PTR index = 0; index < candidates.GetSize(); ++index)
+		{
+			CStdioFile file;
+			if (!file.Open(candidates.GetAt(index), CFile::modeRead | CFile::typeText))
+			{
+				continue;
+			}
+
+			CString line;
+			while (file.ReadString(line))
+			{
+				vector<int> row = ParseNumbersFromLine(line);
+				if (!row.empty())
+				{
+					rows.push_back(row);
+				}
+			}
+			file.Close();
+
+			if (!rows.empty())
+			{
+				usedPath = candidates.GetAt(index);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	int DetectDominantColumnCount(const vector<vector<int> >& rows)
+	{
+		map<int, int> frequencies;
+		for (size_t index = 0; index < rows.size(); ++index)
+		{
+			++frequencies[static_cast<int>(rows[index].size())];
+		}
+
+		int dominantCount = 0;
+		int bestFrequency = -1;
+		for (map<int, int>::const_iterator it = frequencies.begin(); it != frequencies.end(); ++it)
+		{
+			if (it->second > bestFrequency || (it->second == bestFrequency && it->first > dominantCount))
+			{
+				dominantCount = it->first;
+				bestFrequency = it->second;
+			}
+		}
+
+		return dominantCount;
+	}
+
+	int DetectMainNumberCount(int dominantColumnCount)
+	{
+		if (dominantColumnCount >= 7)
+		{
+			return 7;
+		}
+
+		return dominantColumnCount;
+	}
+
+	double CalculateMedian(const vector<int>& orderedValues)
+	{
+		if (orderedValues.empty())
+		{
+			return 0.0;
+		}
+
+		const size_t count = orderedValues.size();
+		if ((count % 2U) == 1U)
+		{
+			return static_cast<double>(orderedValues[count / 2U]);
+		}
+
+		return (static_cast<double>(orderedValues[(count / 2U) - 1U]) + static_cast<double>(orderedValues[count / 2U])) / 2.0;
+	}
+
+	CString GetColumnLabel(int columnIndex, int mainCount, int dominantColumnCount)
+	{
+		if (columnIndex < mainCount)
+		{
+			CString label;
+			label.Format(L"Nr%d", columnIndex + 1);
+			return label;
+		}
+
+		const int extraIndex = columnIndex - mainCount;
+		const int extraCount = dominantColumnCount - mainCount;
+
+		if (extraCount <= 1)
+		{
+			return L"Extra";
+		}
+
+		if (extraIndex == extraCount - 1)
+		{
+			return L"Plus";
+		}
+
+		if (extraIndex == 0)
+		{
+			return L"Extra";
+		}
+
+		CString label;
+		label.Format(L"Extra %d", extraIndex + 1);
+		return label;
+	}
+
+	CString BuildTableHeaderRow(int columnCount)
+	{
+		wostringstream output;
+		output << left << setw(16) << L"";
+		for (int index = 0; index < columnCount; ++index)
+		{
+			CString label;
+			label.Format(L"Nr%d", index + 1);
+			output << right << setw(10) << static_cast<LPCWSTR>(label);
+		}
+		return output.str().c_str();
+	}
+
+	CString BuildTableRow(const CString& metricName, const vector<CString>& values)
+	{
+		wostringstream output;
+		output << left << setw(16) << static_cast<LPCWSTR>(metricName);
+		for (size_t index = 0; index < values.size(); ++index)
+		{
+			output << right << setw(10) << static_cast<LPCWSTR>(values[index]);
+		}
+		return output.str().c_str();
+	}
+
+	ColumnStats ComputeColumnStats(const vector<int>& values, const CString& label)
+	{
+		ColumnStats stats = {};
+		stats.label = label;
+
+		if (values.empty())
+		{
+			return stats;
+		}
+
+		vector<int> ordered(values);
+		sort(ordered.begin(), ordered.end());
+
+		stats.minValue = ordered.front();
+		stats.maxValue = ordered.back();
+		stats.median = CalculateMedian(ordered);
+
+		vector<int> lowerHalf(ordered.begin(), ordered.begin() + (ordered.size() / 2U));
+		vector<int> upperHalf(ordered.begin() + ((ordered.size() + 1U) / 2U), ordered.end());
+		stats.lowerQuartile = lowerHalf.empty() ? stats.median : CalculateMedian(lowerHalf);
+		stats.upperQuartile = upperHalf.empty() ? stats.median : CalculateMedian(upperHalf);
+
+		map<int, int> counts;
+		double reciprocalSum = 0.0;
+		double logSum = 0.0;
+		double squareSum = 0.0;
+		double total = 0.0;
+
+		for (size_t index = 0; index < ordered.size(); ++index)
+		{
+			const double value = static_cast<double>(ordered[index]);
+			total += value;
+			reciprocalSum += (1.0 / value);
+			logSum += log(value);
+			squareSum += value * value;
+			++counts[ordered[index]];
+		}
+
+		stats.mean = total / static_cast<double>(ordered.size());
+		stats.harmonicMean = static_cast<double>(ordered.size()) / reciprocalSum;
+		stats.geometricMean = exp(logSum / static_cast<double>(ordered.size()));
+		stats.rootMeanSquare = sqrt(squareSum / static_cast<double>(ordered.size()));
+
+		int bestModeCount = -1;
+		stats.modeValue = ordered.front();
+		for (map<int, int>::const_iterator it = counts.begin(); it != counts.end(); ++it)
+		{
+			if (it->second > bestModeCount)
+			{
+				bestModeCount = it->second;
+				stats.modeValue = it->first;
+			}
+		}
+
+		double varianceSum = 0.0;
+		for (size_t index = 0; index < ordered.size(); ++index)
+		{
+			const double diff = static_cast<double>(ordered[index]) - stats.mean;
+			varianceSum += diff * diff;
+		}
+		stats.standardDeviation = sqrt(varianceSum / static_cast<double>(ordered.size()));
+
+		return stats;
+	}
+
+	int ChooseWeightedNumber(const map<int, int>& frequencies, mt19937& generator)
+	{
+		if (frequencies.empty())
+		{
+			return 0;
+		}
+
+		int totalWeight = 0;
+		for (map<int, int>::const_iterator it = frequencies.begin(); it != frequencies.end(); ++it)
+		{
+			totalWeight += (it->second > 0) ? it->second : 1;
+		}
+
+		uniform_int_distribution<int> distribution(1, totalWeight);
+		int target = distribution(generator);
+		for (map<int, int>::const_iterator it = frequencies.begin(); it != frequencies.end(); ++it)
+		{
+			target -= (it->second > 0) ? it->second : 1;
+			if (target <= 0)
+			{
+				return it->first;
+			}
+		}
+
+		return frequencies.begin()->first;
+	}
+
+	vector<int> BuildPredictionLine(const map<int, int>& mainFrequencies, int mainCount, mt19937& generator)
+	{
+		vector<int> result;
+		map<int, int> pool(mainFrequencies);
+
+		while (!pool.empty() && static_cast<int>(result.size()) < mainCount)
+		{
+			const int selected = ChooseWeightedNumber(pool, generator);
+			result.push_back(selected);
+			pool.erase(selected);
+		}
+
+		sort(result.begin(), result.end());
+		return result;
+	}
+
+	CString FormatStatsLine(const ColumnStats& stats)
+	{
+		CString mean = FormatDouble(stats.mean);
+		CString median = FormatDouble(stats.median);
+		CString harmonic = FormatDouble(stats.harmonicMean);
+		CString geometric = FormatDouble(stats.geometricMean);
+		CString rms = FormatDouble(stats.rootMeanSquare);
+		CString stdDev = FormatDouble(stats.standardDeviation);
+		CString q1 = FormatDouble(stats.lowerQuartile);
+		CString q3 = FormatDouble(stats.upperQuartile);
+
+		CString line;
+		line.Format(L"%s | Mean=%s | Min=%d | Max=%d | Median=%s | Mode=%d | Harmonic=%s | Geometric=%s | RMS=%s | StdDev=%s | LowerQ=%s | UpperQ=%s",
+			stats.label.GetString(),
+			mean.GetString(),
+			stats.minValue,
+			stats.maxValue,
+			median.GetString(),
+			stats.modeValue,
+			harmonic.GetString(),
+			geometric.GetString(),
+			rms.GetString(),
+			stdDev.GetString(),
+			q1.GetString(),
+			q3.GetString());
+		return line;
+	}
+}
+
 // CLottoGuiDoc
 
 IMPLEMENT_DYNCREATE(CLottoGuiDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(CLottoGuiDoc, CDocument)
 	ON_COMMAND(ID_LOTTOOPTIONS, &CLottoGuiDoc::OnLottooptions)
+	ON_COMMAND(ID_LOTTOOPTIONS_SUOMENLOTTO, &CLottoGuiDoc::OnSuomenlotto)
 END_MESSAGE_MAP()
 
 
@@ -164,8 +515,7 @@ void CLottoGuiDoc::Dump(CDumpContext& dc) const
 
 void CLottoGuiDoc::OnLottooptions()
 {
-	// TODO: Add your command handler code here
-	CLottoDialog aDlg; 
+	CLottoDialog aDlg;
 
 	aDlg.m_nMinNum = m_nMinNum;
 	aDlg.m_nMaxNum = m_nMaxNum;
@@ -173,132 +523,195 @@ void CLottoGuiDoc::OnLottooptions()
 	aDlg.m_nRounds = m_nRounds;
 	aDlg.m_strNums = m_strNums;
 
-	int i=0, j=0, k=0;
-	int n = 0;
-
-	// Open the dialog
-	if ( aDlg.DoModal() )
+	if (aDlg.DoModal() != IDOK)
 	{
-		m_nMinNum = aDlg.m_nMinNum;
-		m_nMaxNum = aDlg.m_nMaxNum;
-		m_nAmount = aDlg.m_nAmount;
-		m_nRounds = aDlg.m_nRounds;
-		m_strNums = aDlg.m_strNums;
-		m_strSampleNums = aDlg.m_strNums;
-
-		m_nLines = m_nRounds;
-
-		vector<int> input;
-		
-		
-		if (aDlg.m_bGivenNumber == TRUE )
-		{	
-			extractIntegerWords(m_strNums, input);			 
-			
-		}
-		
-		
-		if (aDlg.m_bGivenNumber == FALSE )
-		{
-			m_strSampleNums = L"";
-
-			n = (m_nMaxNum - m_nMinNum) + 1;
-
-			
-			for (j = m_nMinNum; j < m_nMaxNum + 1; j++){
-				input.push_back(j);
-				CString strTmp;
-				strTmp.Format(L"%d ", j);
-				m_strSampleNums += strTmp;
-			}
-			
-		}
-		n = input.size();
-		int* arr = new int[n];
-
-			 for ( i=0; i < n; i++)
-			arr[i] = input[i];
-
-		
-		
-		// Array for lotto numbers
-		vector<int> lottoline;
-
-		srand( time(0) );
-
-		time_t now = time(NULL);
-		CString strTemp;
-
-		m_strAllotedNums =L"";
-		for ( k =0; k < m_nRounds; k++)
-		{
-			m_strAllotedNums = "";
-			strTemp.Format(L"%d", k+1);
-			m_strAllotedNums += _T("Line ") + strTemp + _T(": ");
-			// lottoline.clear();
-
-			for ( i = 0; i < m_nAmount; i++)
-			{
-				// Allot an index
-				int number = rand() % n;
-
-				// The first round
-				if ( i == 0 ) 
-				{
-					lottoline.push_back(arr[number]);
-					// strTemp.Format(L"%d", arr[number] );
-					// m_strAllotedNums += strTemp;
-				}
-
-				// Rounds after the first one
-				if ( i > 0 )
-				{
-					vector <int>::iterator it = find( lottoline.begin(), lottoline.end(), arr[number] );
-					if ( it == lottoline.end() ){
-						lottoline.push_back(arr[number]);
-						// strTemp.Format(L" %d", arr[number] );
-					// m_strAllotedNums += strTemp;
-					}
-					else
-					{
-						do {
-					number = rand() % n;
-					it = find( lottoline.begin(), lottoline.end(), arr[number] );
-						} while( it != lottoline.end() );
-						lottoline.push_back(arr[number]);
-						// strTemp.Format(L" %d", arr[number] );
-					// m_strAllotedNums += strTemp;
-					} // end of else
-				}
-
-				if ( i == m_nAmount - 1 ) {
-					// Sort the numbers in ascending order
-					sort (lottoline.begin(), lottoline.end() );
-				
-				ostringstream vts;
-
-				if ( !lottoline.empty() )
-					copy (lottoline.begin(), lottoline.end() -1, 
-					ostream_iterator<int>(vts, ", " ) );
-
-				// Now add the last element with no delimimter
-				vts << lottoline.back();
-
-				 m_strAllotedNums +=  vts.str().c_str();
-				 // m_vstrNums.push_back(m_strAllotedNums);
-				 m_vstrNums.Add(m_strAllotedNums);
-				// m_strAllotedNums = L"";
-				lottoline.clear();
-				} // end of if ( i == m_nAmount -1 ) ...
-			} // end of i = 0...
-
-		} // end of k = 0...
-
-
-		delete[] arr;
-		UpdateAllViews(NULL);
-		SetModifiedFlag();
+		return;
 	}
+
+	m_nMinNum = aDlg.m_nMinNum;
+	m_nMaxNum = aDlg.m_nMaxNum;
+	m_nAmount = aDlg.m_nAmount;
+	m_nRounds = aDlg.m_nRounds;
+	m_strNums = aDlg.m_strNums;
+	m_vstrNums.RemoveAll();
+
+	vector<int> input;
+	if (aDlg.m_bGivenNumber == TRUE)
+	{
+		extractIntegerWords(m_strNums, input);
+		m_strSampleNums = L"Sample numbers: ";
+		m_strSampleNums += aDlg.m_strNums;
+	}
+	else
+	{
+		m_strSampleNums = L"Range: ";
+		for (int value = m_nMinNum; value <= m_nMaxNum; ++value)
+		{
+			input.push_back(value);
+			CString numberText;
+			numberText.Format(L"%d ", value);
+			m_strSampleNums += numberText;
+		}
+	}
+
+	const int n = static_cast<int>(input.size());
+	if (n <= 0)
+	{
+		AfxMessageBox(L"Please provide at least one valid number.");
+		return;
+	}
+
+	if (m_nAmount > n)
+	{
+		m_nAmount = n;
+	}
+
+	vector<int> lottoline;
+	srand(static_cast<unsigned int>(time(0)));
+
+	for (int roundIndex = 0; roundIndex < m_nRounds; ++roundIndex)
+	{
+		CString lineText;
+		CString roundNumber;
+		roundNumber.Format(L"%d", roundIndex + 1);
+		lineText = _T("Line ") + roundNumber + _T(": ");
+
+		while (static_cast<int>(lottoline.size()) < m_nAmount)
+		{
+			const int numberIndex = rand() % n;
+			if (find(lottoline.begin(), lottoline.end(), input[numberIndex]) == lottoline.end())
+			{
+				lottoline.push_back(input[numberIndex]);
+			}
+		}
+
+		sort(lottoline.begin(), lottoline.end());
+		ostringstream stream;
+		if (!lottoline.empty())
+		{
+			copy(lottoline.begin(), lottoline.end() - 1, ostream_iterator<int>(stream, ", "));
+			stream << lottoline.back();
+		}
+
+		lineText += stream.str().c_str();
+		m_vstrNums.Add(lineText);
+		lottoline.clear();
+	}
+
+	m_nLines = static_cast<int>(m_vstrNums.GetSize()) + 4;
+	UpdateAllViews(NULL);
+	SetModifiedFlag();
+}
+
+void CLottoGuiDoc::OnSuomenlotto()
+{
+	CSuomenLottoDlg dialog;
+	dialog.m_nPredictionRows = (m_nRounds > 0) ? m_nRounds : 5;
+
+	if (dialog.DoModal() != IDOK)
+	{
+		return;
+	}
+
+	vector<vector<int> > rows;
+	CString usedPath;
+	if (!LoadSuomenLottoRows(rows, usedPath))
+	{
+		AfxMessageBox(L"Could not open data\\SuomenLottoData.csv.");
+		return;
+	}
+
+	const int dominantColumnCount = DetectDominantColumnCount(rows);
+	const int mainCount = DetectMainNumberCount(dominantColumnCount);
+	const int extraCount = max(0, dominantColumnCount - mainCount);
+
+	map<int, int> mainFrequencies;
+	vector<map<int, int> > extraFrequencies;
+	extraFrequencies.resize((extraCount > 0) ? extraCount : 0);
+
+	for (size_t rowIndex = 0; rowIndex < rows.size(); ++rowIndex)
+	{
+		const vector<int>& row = rows[rowIndex];
+		for (int columnIndex = 0; columnIndex < mainCount && columnIndex < static_cast<int>(row.size()); ++columnIndex)
+		{
+			++mainFrequencies[row[columnIndex]];
+		}
+
+		for (int extraIndex = 0; extraIndex < extraCount; ++extraIndex)
+		{
+			const int column = mainCount + extraIndex;
+			if (column < static_cast<int>(row.size()))
+			{
+				++extraFrequencies[extraIndex][row[column]];
+			}
+		}
+	}
+
+	mt19937 generator(static_cast<unsigned int>(time(NULL)));
+	m_vstrNums.RemoveAll();
+	m_nRounds = dialog.m_nPredictionRows;
+	m_nAmount = mainCount;
+
+	m_strSampleNums.Format(L"Suomen Lotto CSV: %s | Prediction rows: %d | Data rows: %d | Main-number columns detected: %d",
+		usedPath.GetString(),
+		dialog.m_nPredictionRows,
+		static_cast<int>(rows.size()),
+		mainCount);
+
+	m_vstrNums.Add(L"Predictions based on historical frequency:");
+	for (int predictionIndex = 0; predictionIndex < dialog.m_nPredictionRows; ++predictionIndex)
+	{
+		vector<int> prediction = BuildPredictionLine(mainFrequencies, mainCount, generator);
+		wostringstream output;
+		output << L"Prediction " << (predictionIndex + 1) << L": ";
+
+		for (size_t numberIndex = 0; numberIndex < prediction.size(); ++numberIndex)
+		{
+			if (numberIndex > 0)
+			{
+				output << L", ";
+			}
+			output << prediction[numberIndex];
+		}
+
+		m_vstrNums.Add(output.str().c_str());
+	}
+
+	vector<ColumnStats> allStats;
+	for (int columnIndex = 0; columnIndex < mainCount; ++columnIndex)
+	{
+		vector<int> columnValues;
+		for (size_t rowIndex = 0; rowIndex < rows.size(); ++rowIndex)
+		{
+			if (columnIndex < static_cast<int>(rows[rowIndex].size()))
+			{
+				columnValues.push_back(rows[rowIndex][columnIndex]);
+			}
+		}
+
+		allStats.push_back(ComputeColumnStats(columnValues, GetColumnLabel(columnIndex, mainCount, dominantColumnCount)));
+	}
+
+	m_vstrNums.Add(L" ");
+	m_vstrNums.Add(L"Statistical analysis:");
+	m_vstrNums.Add(BuildTableHeaderRow(mainCount));
+
+	vector<CString> values;
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].mean)); } m_vstrNums.Add(BuildTableRow(L"Mean", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { CString s; s.Format(L"%d", allStats[i].minValue); values.push_back(s); } m_vstrNums.Add(BuildTableRow(L"Min", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { CString s; s.Format(L"%d", allStats[i].maxValue); values.push_back(s); } m_vstrNums.Add(BuildTableRow(L"Max", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].median)); } m_vstrNums.Add(BuildTableRow(L"Median", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { CString s; s.Format(L"%d", allStats[i].modeValue); values.push_back(s); } m_vstrNums.Add(BuildTableRow(L"Mode", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].harmonicMean)); } m_vstrNums.Add(BuildTableRow(L"Harmonic", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].geometricMean)); } m_vstrNums.Add(BuildTableRow(L"Geometric", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].rootMeanSquare)); } m_vstrNums.Add(BuildTableRow(L"RMS", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].standardDeviation)); } m_vstrNums.Add(BuildTableRow(L"StdDev", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].lowerQuartile)); } m_vstrNums.Add(BuildTableRow(L"LowerQ", values));
+	values.clear(); for (size_t i = 0; i < allStats.size(); ++i) { values.push_back(FormatDouble(allStats[i].upperQuartile)); } m_vstrNums.Add(BuildTableRow(L"UpperQ", values));
+
+	m_nLines = static_cast<int>(m_vstrNums.GetSize()) + 6;
+	UpdateAllViews(NULL);
+	SetModifiedFlag();
 }
 
 void extractIntegerWords(CString str, vector <int> &vec)
@@ -325,10 +738,9 @@ void extractIntegerWords(CString str, vector <int> &vec)
 
 void CLottoGuiDoc::DeleteContents()
 {
-	// TODO: Add your specialized code here and/or call the base class
 	m_nLines = 0;
 	m_strSampleNums = L"";
-	// m_vstrNums.clear();
+	m_strAllotedNums = L"";
 	m_vstrNums.RemoveAll();
 
 	CDocument::DeleteContents();

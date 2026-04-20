@@ -57,68 +57,42 @@ void CLottoGuiView::OnDraw(CDC* pDC)
 	if (!pDoc)
 		return;
 
-	// TODO: add draw code for native data here
 	CFont aFont;
-	aFont.CreateFont(22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		FF_ROMAN, _T("Times New Roman"));
+	aFont.CreateFont(20, 0, 0, 0, FW_NORMAL, 0, 0, 0, 0, 0, 0, 0,
+		FF_MODERN, _T("Consolas"));
 
-	CFont * pOldFont = pDC->SelectObject(&aFont);
+	CFont* pOldFont = pDC->SelectObject(&aFont);
+	pDC->SetBkMode(TRANSPARENT);
+	pDC->SetTextColor(RGB(20, 20, 20));
 
-	CSize TextSize = pDC->GetTextExtent(pDoc->m_strAllotedNums);
+	CString headerText = pDoc->m_strSampleNums;
+	if (headerText.IsEmpty())
+	{
+		headerText = _T("Use the Lotto Options menu to generate results.");
+	}
 
-	CSize scrollArea = CSize(TextSize.cx * pDoc->m_nMaxNum, TextSize.cy * pDoc->m_nLines);
+	CSize textSize = pDC->GetTextExtent(_T("Sample"));
+	int lineHeight = textSize.cy;
+	if (lineHeight < 24)
+	{
+		lineHeight = 24;
+	}
 
-	// Allow a margin
-	scrollArea += CSize(20, 20); 
-
+	const int totalLines = static_cast<int>(pDoc->m_vstrNums.GetSize()) + 8;
+	CSize scrollArea(2600, totalLines * (lineHeight + 8));
 	SetScrollSizes(MM_LOENGLISH, scrollArea);
 
-	
-	// GetCharWidth32
-	TEXTMETRIC tm;
-	pDC->GetTextMetricsW(&tm);
-	DWORD dwCharX = tm.tmAveCharWidth; 
-    DWORD dwCharY = tm.tmHeight; 
-	CString strSampleNums = _T("Sample Numbers: ") + pDoc->m_strSampleNums;
-	int nSampleLen = strSampleNums.GetLength() * dwCharX * 1.2;
-	const int nXMaxTextLen = 500;
-	int nLineHeight = -TextSize.cy -5;
-	CRect rcSmall (CPoint(20, -20), CPoint(700,-200));
+	CRect headerRect(10, -20, 2400, -100);
+	pDC->DrawText(headerText, headerRect, DT_LEFT | DT_WORDBREAK);
 
-	if ( nSampleLen < nXMaxTextLen ){
-		rcSmall.SetRect(20, -20, nSampleLen + 5, nLineHeight -20 );
-		
-	}
-	else {
-		rcSmall.SetRect(20, -20, nXMaxTextLen, (nLineHeight -20 )* nSampleLen / nXMaxTextLen);
-	}
-	
-
-	// pDC->TextOutW(10, -3, _T("Sample Numbers: ") + pDoc->m_strSampleNums);
-	
-	pDC->Rectangle(rcSmall);
-	pDC->SetBkMode(TRANSPARENT);
-	pDC->DrawText(strSampleNums, rcSmall, 
-		DT_LEFT + DT_WORDBREAK);
-	pDoc->m_nLines += 2;
-
-	int nLinePos = - 200 - TextSize.cy;
-	pDC->SetTextColor(RGB(0, 125, 250));
-	// for ( int index = 0; index < pDoc->m_nLines; index++)
-	//for ( vector<CString>::const_iterator p = pDoc->m_vstrNums.begin();
-	//	p != pDoc->m_vstrNums.end(); ++p)
-	for ( INT_PTR index = 0; index < pDoc->m_vstrNums.GetSize(); ++index)
+	int linePos = -120;
+	for (INT_PTR index = 0; index < pDoc->m_vstrNums.GetSize(); ++index)
 	{
-
-	// pDC->TextOutW(10, nLinePos, *p);
-		pDC->TextOutW(10, nLinePos, pDoc->m_vstrNums.GetAt(index)); // 
-	nLinePos -= TextSize.cy;
-	pDoc->m_nLines += 1;
+		pDC->TextOutW(10, linePos, pDoc->m_vstrNums.GetAt(index));
+		linePos -= lineHeight;
 	}
 
 	pDC->SelectObject(pOldFont);
-
-
 }
 
 void CLottoGuiView::OnInitialUpdate()

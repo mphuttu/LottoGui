@@ -49,6 +49,7 @@ protected:
 #endif // SHARED_HANDLERS
 public:
 	afx_msg void OnLottooptions();
+	afx_msg void OnSuomenlotto();
 	int m_nAmount;
 	int m_nRounds;
 	CString m_strNums;
