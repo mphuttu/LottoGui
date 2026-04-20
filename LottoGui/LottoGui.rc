@@ -91,6 +91,7 @@ BEGIN
         MENUITEM "Classic Lotto Options...",    ID_LOTTOOPTIONS
         MENUITEM "Suomen Lotto CSV...",         ID_LOTTOOPTIONS_SUOMENLOTTO
         MENUITEM "Eurojackpot CSV...",          ID_LOTTOOPTIONS_EUROJACKPOTCSV
+        MENUITEM "Viking Lotto CSV...",         ID_LOTTOOPTIONS_VIKINGLOTTOCSV
     END
     POPUP "&Edit"
     BEGIN
@@ -352,6 +353,7 @@ BEGIN
     ID_LOTTOOPTIONS         "Open the Lotto Options Dialog"
     ID_LOTTOOPTIONS_SUOMENLOTTO "Open the Suomen Lotto CSV prediction dialog"
     ID_LOTTOOPTIONS_EUROJACKPOTCSV "Open the Eurojackpot CSV prediction dialog"
+    ID_LOTTOOPTIONS_VIKINGLOTTOCSV "Open the Viking Lotto CSV prediction dialog"
 END
 
 #endif    // English (United States) resources
@@ -416,6 +418,18 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,201,71,50,14
 END
 
+IDD_VIKINGLOTTO_DIALOG DIALOGEX 0, 0, 258, 94
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Viking Lotto CSV"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Generate predictions from data\\VikingData.csv",IDC_VIKINGLOTTO_INFO,14,13,222,18
+    LTEXT           "Prediction rows:",IDC_STATIC,15,44,60,8
+    EDITTEXT        IDC_VIKINGLOTTO_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,201,71,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -442,6 +456,14 @@ BEGIN
     END
 
     IDD_EUROJACKPOT_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 251
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 87
+    END
+
+    IDD_VIKINGLOTTO_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 251

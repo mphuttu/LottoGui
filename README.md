@@ -11,8 +11,9 @@ The program is written in C++ with Microsoft Foundation Classes (MFC) and is int
 - Save and print generated results
 - Analyze Finnish Lotto CSV data from `data/SuomenLottoData.csv`
 - Analyze Eurojackpot CSV data from `data/EurojackpotData.csv`
+- Analyze Viking Lotto CSV data from `data/VikingData.csv`
 - Create frequency-based prediction rows from historical data
-- Display statistical analysis for Lotto and Eurojackpot number columns
+- Display statistical analysis for Lotto, Eurojackpot, and Viking Lotto number columns
 
 ## Finnish Lotto CSV analysis
 
@@ -40,6 +41,15 @@ The application also includes a separate Eurojackpot CSV dialog in the Lotto Opt
 - two star-number predictions
 - the same statistical analysis used for Suomen Lotto
 
+## Viking Lotto CSV analysis
+
+The application also includes a separate Viking Lotto CSV dialog in the Lotto Options menu. It reads historical Viking Lotto rows and shows:
+
+- frequency-based prediction rows
+- six main-number predictions
+- a Viking number added randomly from 1 to 5 when generating the prediction
+- the same statistical analysis used for the other lottery modes
+
 ## Data format
 
 The CSV files should be placed in the `data` folder.
@@ -56,6 +66,10 @@ The Suomen Lotto file contains semicolon-separated rows without a header line, f
 ### Eurojackpot example
 
 The Eurojackpot file contains a header line followed by semicolon-separated data rows in the format Nr1;Nr2;Nr3;Nr4;Nr5;Star1;Star2.
+
+### Viking Lotto example
+
+The Viking Lotto file contains a header line followed by semicolon-separated data rows in the format Nr1;Nr2;Nr3;Nr4;Nr5;Nr6.
 
 ## Building the project
 
@@ -81,6 +95,7 @@ The Eurojackpot file contains a header line followed by semicolon-separated data
    - Classic Lotto Options
    - Suomen Lotto CSV
    - Eurojackpot CSV
+   - Viking Lotto CSV
 4. Generate results and review them in the client area.
 
 ## Project status
