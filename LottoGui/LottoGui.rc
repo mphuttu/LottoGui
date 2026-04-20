@@ -92,6 +92,7 @@ BEGIN
         MENUITEM "Suomen Lotto CSV...",         ID_LOTTOOPTIONS_SUOMENLOTTO
         MENUITEM "Milli CSV...",                ID_LOTTOOPTIONS_MILLICSV
         MENUITEM "KTEM CSV...",                 ID_LOTTOOPTIONS_KTEMCSV
+        MENUITEM "Keno CSV...",                 ID_LOTTOOPTIONS_KENOCSV
         MENUITEM "Eurojackpot CSV...",          ID_LOTTOOPTIONS_EUROJACKPOTCSV
         MENUITEM "Viking Lotto CSV...",         ID_LOTTOOPTIONS_VIKINGLOTTOCSV
         MENUITEM "Jokeri CSV...",               ID_LOTTOOPTIONS_JOKERICSV
@@ -203,6 +204,18 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,201,71,50,14
 END
 
+IDD_KENO_DIALOG DIALOGEX 0, 0, 258, 94
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Keno CSV"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Generate predictions from data\\KenoData.csv",IDC_KENO_INFO,14,13,222,18
+    LTEXT           "Prediction rows:",IDC_STATIC,15,44,60,8
+    EDITTEXT        IDC_KENO_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,201,71,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -284,6 +297,14 @@ BEGIN
     END
 
     IDD_KTEM_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 251
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 87
+    END
+
+    IDD_KENO_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 251

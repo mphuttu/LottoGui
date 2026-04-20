@@ -51,6 +51,9 @@
     <ClInclude Include="KtemDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="KenoDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="EurojackpotDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -87,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KtemDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KenoDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EurojackpotDlg.cpp">

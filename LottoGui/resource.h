@@ -14,6 +14,7 @@
 #define IDD_JOKERI_DIALOG               315
 #define IDD_MILLI_DIALOG                316
 #define IDD_KTEM_DIALOG                 317
+#define IDD_KENO_DIALOG                 318
 #define IDC_USERANGECHECK               1000
 #define IDC_FROMEDIT                    1001
 #define IDC_minSTATIC                   1002
@@ -39,6 +40,8 @@
 #define IDC_MILLI_INFO                  1022
 #define IDC_KTEM_ROWS                   1023
 #define IDC_KTEM_INFO                   1024
+#define IDC_KENO_ROWS                   1025
+#define IDC_KENO_INFO                   1026
 #define ID_LOTTOOPTIONS_LOTTOOPTIONS    32771
 #define ID_BUTTON32772                  32772
 #define ID_LOTTOOPTIONS                 32773
@@ -49,14 +52,15 @@
 #define ID_LOTTOOPTIONS_JOKERICSV       32778
 #define ID_LOTTOOPTIONS_MILLICSV        32779
 #define ID_LOTTOOPTIONS_KTEMCSV         32780
+#define ID_LOTTOOPTIONS_KENOCSV         32781
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        318
-#define _APS_NEXT_COMMAND_VALUE         32781
-#define _APS_NEXT_CONTROL_VALUE         1025
+#define _APS_NEXT_RESOURCE_VALUE        319
+#define _APS_NEXT_COMMAND_VALUE         32782
+#define _APS_NEXT_CONTROL_VALUE         1027
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

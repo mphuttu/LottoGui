@@ -12,11 +12,12 @@ The program is written in C++ with Microsoft Foundation Classes (MFC) and is int
 - Analyze Finnish Lotto CSV data from data/SuomenLottoData.csv
 - Analyze Milli CSV data from data/MilliData.csv
 - Analyze KTEM CSV data from data/KTEM.csv
+- Analyze Keno CSV data from data/KenoData.csv
 - Analyze Eurojackpot CSV data from data/EurojackpotData.csv
 - Analyze Viking Lotto CSV data from data/VikingData.csv
 - Analyze Jokeri CSV data from data/JokeriData.csv
 - Create frequency-based prediction rows from historical data
-- Display statistical analysis for Lotto, Milli, KTEM, Eurojackpot, Viking Lotto, and Jokeri number columns
+- Display statistical analysis for Lotto, Milli, KTEM, Keno, Eurojackpot, Viking Lotto, and Jokeri number columns
 
 ## Finnish Lotto CSV analysis
 
@@ -50,6 +51,14 @@ The application also includes a separate KTEM CSV dialog in the Lotto Options me
 - frequency-based prediction rows
 - twelve main-number predictions
 - the same statistical analysis used for Suomen Lotto
+
+## Keno CSV analysis
+
+The application also includes a separate Keno CSV dialog in the Lotto Options menu. It reads historical Keno rows and shows:
+
+- frequency-based prediction rows
+- ten predicted Keno numbers
+- statistical analysis for all 20 draw columns
 
 ## Eurojackpot CSV analysis
 
@@ -105,6 +114,10 @@ The Milli file contains semicolon-separated rows without a header line, for exam
 
 The KTEM file contains a header line followed by semicolon-separated data rows in the format No1;No2;No3;No4;No5;No6;No7;No8;No9;No10;No11;No12.
 
+### Keno example
+
+The Keno file contains a header line followed by semicolon-separated data rows in the format No1;No2;...;No20.
+
 ### Eurojackpot example
 
 The Eurojackpot file contains a header line followed by semicolon-separated data rows in the format Nr1;Nr2;Nr3;Nr4;Nr5;Star1;Star2.
@@ -142,6 +155,7 @@ The Jokeri file contains a header line followed by semicolon-separated data rows
    - Suomen Lotto CSV
    - Milli CSV
    - KTEM CSV
+   - Keno CSV
    - Eurojackpot CSV
    - Viking Lotto CSV
    - Jokeri CSV

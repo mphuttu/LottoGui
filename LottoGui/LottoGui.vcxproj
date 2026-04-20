@@ -191,6 +191,7 @@
     <ClInclude Include="SuomenLottoDlg.h" />
     <ClInclude Include="MilliDlg.h" />
     <ClInclude Include="KtemDlg.h" />
+    <ClInclude Include="KenoDlg.h" />
     <ClInclude Include="EurojackpotDlg.h" />
     <ClInclude Include="VikingLottoDlg.h" />
     <ClInclude Include="JokeriDlg.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="SuomenLottoDlg.cpp" />
     <ClCompile Include="MilliDlg.cpp" />
     <ClCompile Include="KtemDlg.cpp" />
+    <ClCompile Include="KenoDlg.cpp" />
     <ClCompile Include="EurojackpotDlg.cpp" />
     <ClCompile Include="VikingLottoDlg.cpp" />
     <ClCompile Include="JokeriDlg.cpp" />
