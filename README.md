@@ -158,12 +158,25 @@ An Inno Setup installer script is included at [installer/LottoGuiSetup.iss](inst
 
 The installer packages the application executable together with all CSV files from the [data](data) folder.
 
+### Upgrade support
+
+The installer supports in-place upgrades. Installing a new version over an existing one automatically removes the old version first. User data files in the `data` folder are never deleted during upgrade or uninstallation.
+
+### Language selection
+
+During installation the user can choose the UI language:
+
+- **English** — English menu, dialogs, and help file (`LottoGui_en.chm`)
+- **Suomeksi (Finnish)** — Finnish menu, dialogs, and help file (`LottoGui.chm`)
+
+The selected language is stored in the registry (`HKLM\SOFTWARE\LottoGui\Language`) and applied automatically each time the application starts.
+
 ## Using the application
 
 1. Start the program.
 2. Open the Lotto Options menu.
 3. Choose one of the available options:
-   - Classic Lotto Options
+   - Classic Lotto Options (Klassinen lotto)
    - Suomen Lotto CSV
    - Milli CSV
    - KTEM CSV
@@ -172,6 +185,12 @@ The installer packages the application executable together with all CSV files fr
    - Viking Lotto CSV
    - Jokeri CSV
 4. Generate results and review them in the client area.
+
+## Localisation
+
+The application supports English and Finnish UI languages. All menus, dialog captions, and buttons are translated when Finnish is selected. The language is chosen at install time and can be changed by re-running the installer.
+
+The Finnish resource section in `LottoGui.rc` uses `#pragma code_page(1252)` with `\x`-escaped characters (e.g. `\xe4` for ä, `\xf6` for ö) so that the Windows Resource Compiler correctly maps them to Unicode regardless of the source file encoding.
 
 ## Project status
 

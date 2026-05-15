@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<title>Viking Lotto CSV</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<span class="game-badge">VIKING LOTTO</span>
+<h1>Viking Lotto CSV</h1>
+<p>
+Viking Lotto on pohjoismainen yhteislottopeli. Arvonnassa valitaan 6 pääasiallista
+numeroa alueelta 1–48 sekä 1 Viking-numero alueelta 1–5.
+</p>
+
+<h2>Toiminto valikossa</h2>
+<p>Valitse <strong>Lotto Options → Viking Lotto CSV…</strong></p>
+
+<h2>Datatiedosto</h2>
+<p>Ohjelma lukee tiedoston <code>data\VikingData.csv</code>.
+Tiedostossa on 6 saraketta pääarvottuneille numeroille puolipiste-erottimella.
+Viking-numeroa ei tallenneta historialliseen dataan.</p>
+
+<h2>Valintaikkunan asetukset</h2>
+<ul>
+<li><strong>Number of Rows</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+</ul>
+
+<h2>Tulostus</h2>
+<ol>
+<li>Pyydetty määrä ennustusrivejä. Kukin rivi sisältää:
+  <ul>
+    <li>6 pääasiallista numeroa (1–48), valittu frekvenssipainotetusti</li>
+    <li>1 Viking-numero (1–5), valittu satunnaisesti</li>
+  </ul>
+</li>
+<li>Tilastoanalyysi kaikista 6 päänumerosarakkeesta
+    (ks. <a href="statistics.html">Tilastoanalyysi</a>).</li>
+</ol>
+
+<div class="note">
+<strong>Huom.!</strong> Viking-numero arvotaan aina satunnaisesti (1–5), koska historiallista
+Viking-numerodataa ei ole tallennettu CSV-tiedostoon. Pääasiallisten 6 numeron
+ennustus perustuu normaalisti frekvenssidataan.
+</div>
+</body>
+</html>

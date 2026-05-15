@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<title>Jokeri CSV</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<span class="game-badge">JOKERI</span>
+<h1>Jokeri CSV</h1>
+<p>
+Jokeri on Veikkauksen Suomen Loton yhteydessä pelattava oheispeli,
+jossa arvotaan 7 numeroa alueelta 0–9. Samaa numeroa voi esiintyä
+useammalla paikalla samalla rivillä – jopa kaikki 7 positiota voivat
+olla samaa numeroa.
+</p>
+
+<h2>Toiminto valikossa</h2>
+<p>Valitse <strong>Lotto Options → Jokeri CSV…</strong></p>
+
+<h2>Datatiedosto</h2>
+<p>Ohjelma lukee tiedoston <code>data\JokeriData.csv</code>.
+Tiedostossa on 7 saraketta, yksi kutakin numeropositiota kohti, puolipiste-erottimella.
+Arvot ovat yksittäisiä numeroita 0–9.</p>
+
+<h2>Valintaikkunan asetukset</h2>
+<ul>
+<li><strong>Number of Rows</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+</ul>
+
+<h2>Tulostus</h2>
+<ol>
+<li>Pyydetty määrä ennustusrivejä, joista kukin sisältää 7 numeroa (0–9).
+    <em>Samoja numeroita voi esiintyä samalla rivillä useampaan kertaan</em>,
+    aivan kuten oikeassa Jokeri-arvonnassa.</li>
+<li>Tilastoanalyysi kaikista 7 sarakkeesta
+    (ks. <a href="statistics.html">Tilastoanalyysi</a>).</li>
+</ol>
+
+<h2>Erityispiirteet</h2>
+<table>
+<tr><th>Ominaisuus</th><th>Selitys</th></tr>
+<tr>
+  <td>Toistuvat numerot sallittu</td>
+  <td>Samaa numeroa (0–9) voi esiintyä useammassa kuin yhdessä positiossa
+      samalla rivillä.</td>
+</tr>
+<tr>
+  <td>Nolla (0) on kelvollinen arvo</td>
+  <td>Toisin kuin muissa pelimuodoissa, nolla on Jokerissa täysin normaali
+      numero jokaisessa 7 positiossa.</td>
+</tr>
+<tr>
+  <td>Harmoninen keskiarvo näytetään N/A</td>
+  <td>Jos sarake sisältää yhdenkin nolla-arvon, harmonista keskiarvoa ei voida
+      laskea (jako nollalla). Ohjelma näyttää tällöin <em>N/A</em>.</td>
+</tr>
+</table>
+</body>
+</html>

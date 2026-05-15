@@ -7,6 +7,8 @@
 #include "afxdialogex.h"
 #include "LottoGui.h"
 #include "MainFrm.h"
+#include <htmlhelp.h>
+#pragma comment(lib, "htmlhelp.lib")
 
 #include "LottoGuiDoc.h"
 #include "LottoGuiView.h"
@@ -73,6 +75,26 @@ BOOL CLottoGuiApp::InitInstance()
 
 	CWinApp::InitInstance();
 
+	// Read language preference from registry and apply before window creation
+	{
+		HKEY hKey;
+		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\LottoGui"),
+			0, KEY_READ, &hKey) == ERROR_SUCCESS)
+		{
+			TCHAR szLang[16] = {};
+			DWORD dwSize = sizeof(szLang);
+			DWORD dwType = REG_SZ;
+			if (RegQueryValueEx(hKey, _T("Language"), nullptr,
+				&dwType, (LPBYTE)szLang, &dwSize) == ERROR_SUCCESS)
+			{
+				if (_tcsicmp(szLang, _T("fi")) == 0)
+					::SetThreadLocale(MAKELCID(
+						MAKELANGID(LANG_FINNISH, SUBLANG_DEFAULT),
+						SORT_DEFAULT));
+			}
+			RegCloseKey(hKey);
+		}
+	}
 
 	// Initialize OLE libraries
 	if (!AfxOleInit())
@@ -177,63 +199,6 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
-class CUsageHelpDlg : public CDialogEx
-{
-public:
-	CUsageHelpDlg() : CDialogEx(IDD_HELPDIALOG)
-	{
-	}
-
-protected:
-	virtual BOOL OnInitDialog()
-	{
-		CDialogEx::OnInitDialog();
-
-		CString helpText =
-			L"LottoGui - Usage Instructions\r\n\r\n"
-			L"1. Classic Lotto Options\r\n"
-			L"   - Open Lotto Options from the menu.\r\n"
-			L"   - Choose either a number range or your own input numbers.\r\n"
-			L"   - Set how many numbers and rows you want to generate.\r\n\r\n"
-			L"2. Suomen Lotto CSV\r\n"
-			L"   - Reads historical data from data\\SuomenLottoData.csv.\r\n"
-			L"   - Shows frequency-based predictions and column statistics.\r\n\r\n"
-			L"3. Milli CSV\r\n"
-			L"   - Reads historical data from data\\MilliData.csv.\r\n"
-			L"   - Uses the six main numbers in the data for predictions and statistics.\r\n\r\n"
-			L"4. KTEM CSV\r\n"
-			L"   - Reads Kaikki tai ei mitaan data from data\\KTEM.csv.\r\n"
-			L"   - Uses 12 numbers from the 1 to 24 range for predictions and statistics.\r\n\r\n"
-			L"5. Keno CSV\r\n"
-			L"   - Reads historical Keno data from data\\KenoData.csv.\r\n"
-			L"   - Builds frequency-based predictions for 10 selected numbers and analyzes all 20 draw columns.\r\n\r\n"
-			L"6. Eurojackpot CSV\r\n"
-			L"   - Reads main numbers and stars from data\\EurojackpotData.csv.\r\n"
-			L"   - Shows predictions and statistical analysis for both sets.\r\n\r\n"
-			L"7. Viking Lotto CSV\r\n"
-			L"   - Reads historical main numbers from data\\VikingData.csv.\r\n"
-			L"   - The Viking number is added randomly from 1 to 5 because no historical Viking-number data is stored.\r\n\r\n"
-			L"8. Jokeri CSV\r\n"
-			L"   - Reads historical Jokeri digits from data\\JokeriData.csv.\r\n"
-			L"   - Repeated digits are allowed in a prediction row, just like in the real draw.\r\n"
-			L"   - Harmonic mean is shown as N/A for columns containing zero values.\r\n\r\n"
-			L"9. Viewing results\r\n"
-			L"   - Predictions and statistics are shown in the main client area.\r\n"
-			L"   - Results can be saved and printed with the standard File menu commands.\r\n\r\n"
-			L"10. Release installer\r\n"
-			L"   - A Release installer can be built with Inno Setup using installer\\LottoGuiSetup.iss.\r\n"
-			L"   - The installer includes the CSV files from the data folder.";
-
-		SetDlgItemText(IDC_HELP_TEXT, helpText);
-		return TRUE;
-	}
-
-	DECLARE_MESSAGE_MAP()
-};
-
-BEGIN_MESSAGE_MAP(CUsageHelpDlg, CDialogEx)
-END_MESSAGE_MAP()
-
 // App command to run the dialog
 void CLottoGuiApp::OnAppAbout()
 {
@@ -243,8 +208,15 @@ void CLottoGuiApp::OnAppAbout()
 
 void CLottoGuiApp::OnHelpUsage()
 {
-	CUsageHelpDlg helpDlg;
-	helpDlg.DoModal();
+	// Build path to LottoGui.chm next to the executable
+	TCHAR szExePath[MAX_PATH];
+	GetModuleFileName(nullptr, szExePath, MAX_PATH);
+	CString strChm(szExePath);
+	int nSlash = strChm.ReverseFind(_T('\\'));
+	if (nSlash >= 0)
+		strChm = strChm.Left(nSlash + 1);
+	strChm += _T("LottoGui.chm");
+	::HtmlHelp(nullptr, strChm, HH_DISPLAY_TOC, 0);
 }
 
 // CLottoGuiApp message handlers

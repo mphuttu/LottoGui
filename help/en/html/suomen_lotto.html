@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Suomen Lotto CSV</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<span class="game-badge">SUOMEN LOTTO</span>
+<h1>Suomen Lotto CSV</h1>
+<p>
+Suomen Lotto is a Finnish national lottery organised by Veikkaus, in which
+7 numbers are drawn from the range 1–40.
+</p>
+
+<h2>Menu command</h2>
+<p>Select <strong>Lotto Options → Suomen Lotto CSV…</strong></p>
+
+<h2>Data file</h2>
+<p>The program reads <code>data\SuomenLottoData.csv</code>.
+The file has 7 semicolon-separated columns for the drawn numbers.</p>
+
+<h2>Dialog settings</h2>
+<ul>
+<li><strong>Number of Rows</strong> – Number of suggestion rows to generate (1–50, default 5).</li>
+</ul>
+
+<h2>Output</h2>
+<p>The main window displays:</p>
+<ol>
+<li>The requested number of prediction rows – each row contains 7 numbers
+    selected by frequency-weighted random selection.</li>
+<li>Statistical analysis of all 7 columns (see <a href="statistics.html">Statistical Analysis</a>).</li>
+</ol>
+
+<h3>Prediction algorithm</h3>
+<p>
+The program calculates the frequency of all observed values for each column.
+More frequently occurring values receive a higher probability of being selected.
+Numbers within each row are always distinct.
+</p>
+
+<div class="note">
+<strong>Reminder:</strong> Historical frequency does not guarantee future results.
+Predictions are statistically based suggestions, not certainties.
+</div>
+</body>
+</html>

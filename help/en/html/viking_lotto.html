@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Viking Lotto CSV</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<span class="game-badge">VIKING LOTTO</span>
+<h1>Viking Lotto CSV</h1>
+<p>
+Viking Lotto is a joint Nordic lottery game in which 6 main numbers are drawn
+from the range 1–48 and 1 Viking number from the range 1–5.
+</p>
+
+<h2>Menu command</h2>
+<p>Select <strong>Lotto Options → Viking Lotto CSV…</strong></p>
+
+<h2>Data file</h2>
+<p>The program reads <code>data\VikingData.csv</code>.
+The file has 6 semicolon-separated columns for the main numbers.
+The Viking number is not stored in the historical data.</p>
+
+<h2>Dialog settings</h2>
+<ul>
+<li><strong>Number of Rows</strong> – Number of suggestion rows to generate (1–50, default 5).</li>
+</ul>
+
+<h2>Output</h2>
+<ol>
+<li>The requested number of prediction rows. Each row contains:
+  <ul>
+    <li>6 main numbers (1–48), selected by frequency weighting</li>
+    <li>1 Viking number (1–5), selected randomly</li>
+  </ul>
+</li>
+<li>Statistical analysis of all 6 main-number columns
+    (see <a href="statistics.html">Statistical Analysis</a>).</li>
+</ol>
+
+<div class="note">
+<strong>Note:</strong> The Viking number is always drawn randomly (1–5) because
+historical Viking number data is not stored in the CSV file. The prediction
+of the 6 main numbers is based on frequency data as normal.
+</div>
+</body>
+</html>

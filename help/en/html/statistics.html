@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Statistical Analysis</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<h1>Statistical Analysis</h1>
+<p>
+LottoGui calculates a comprehensive statistical analysis for every CSV column.
+The statistics are based on all draw results in the data file for that column.
+</p>
+
+<h2>Calculated statistics</h2>
+<table>
+<tr><th>Statistic</th><th>Description</th></tr>
+<tr>
+  <td><strong>N</strong> (observation count)</td>
+  <td>How many valid values the column contains.</td>
+</tr>
+<tr>
+  <td><strong>Min</strong></td>
+  <td>The smallest observed value in the column.</td>
+</tr>
+<tr>
+  <td><strong>Max</strong></td>
+  <td>The largest observed value in the column.</td>
+</tr>
+<tr>
+  <td><strong>Mean</strong> (arithmetic)</td>
+  <td>Sum of values divided by count. Represents the "centre of gravity" of the distribution.</td>
+</tr>
+<tr>
+  <td><strong>Median</strong></td>
+  <td>The middle value when all values are sorted; half the values lie below and half above it.</td>
+</tr>
+<tr>
+  <td><strong>Mode</strong></td>
+  <td>The most frequently occurring value (or multiple values in case of a tie).</td>
+</tr>
+<tr>
+  <td><strong>Lower quartile Q1</strong></td>
+  <td>The value below which 25% of observations fall.</td>
+</tr>
+<tr>
+  <td><strong>Upper quartile Q3</strong></td>
+  <td>The value below which 75% of observations fall.</td>
+</tr>
+<tr>
+  <td><strong>Harmonic mean</strong></td>
+  <td>
+    $n / \sum_{i=1}^{n} \frac{1}{x_i}$<br>
+    Particularly suited for rate quantities. Shown as <em>N/A</em>
+    if the column contains a zero (Jokeri).
+  </td>
+</tr>
+<tr>
+  <td><strong>Geometric mean</strong></td>
+  <td>
+    $\left(\prod_{i=1}^{n} x_i\right)^{1/n}$<br>
+    The n-th root of the product of all values. Describes relative growth.
+  </td>
+</tr>
+<tr>
+  <td><strong>Root mean square (RMS)</strong></td>
+  <td>
+    $\sqrt{\frac{1}{n}\sum_{i=1}^{n} x_i^2}$<br>
+    Square root of the mean of squared values.
+  </td>
+</tr>
+<tr>
+  <td><strong>Standard deviation</strong></td>
+  <td>
+    $\sigma = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(x_i - \bar{x})^2}$<br>
+    Measures the spread of values around the mean.
+    A small value indicates a tight distribution.
+  </td>
+</tr>
+</table>
+
+<h2>Interpreting the statistics</h2>
+<p>
+The statistics can be used to determine:
+</p>
+<ul>
+<li>Whether a particular number has appeared exceptionally often or rarely.</li>
+<li>Whether the column distribution is symmetric (median ≈ mean).</li>
+<li>How wide a variation the numbers have shown (standard deviation, quartiles).</li>
+</ul>
+
+<div class="note">
+<strong>Reminder:</strong> Lottery draws are independent events.
+Statistical analysis describes the <em>past</em>, and no statistic can predict
+future draw results. Use the data as a reference aid, not as absolute predictions.
+</div>
+</body>
+</html>

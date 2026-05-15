@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<title>LottoGui – Tervetuloa</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<h1>LottoGui – Ohje</h1>
+<p>
+LottoGui on Windows-pohjainen lottoapuraohjelma, joka analysoi historiallista
+CSV-arpajaisdataa ja luo tilastopohjaisia ehdotusrivejä seitsemälle suomalaiselle
+tai pohjoismaiselle lottopelimuodolle sekä erilliselle klassiselle
+lottorivigeneraattorille.
+</p>
+
+<h2>Ohjelman pääominaisuudet</h2>
+<ul>
+<li>Tilastopohjainen numeroennustus (1–50 ehdotusriviä)</li>
+<li>Laaja tilastoanalyysi jokaiselle sarakkeelle (keskiarvo, mediaani, moodi, kvartiilit jne.)</li>
+<li>Klassinen lottorivigeneraattori vapaavalintaisella alueella tai omilla numeroilla</li>
+<li>Tulosten tallennus tiedostoon ja tulostus</li>
+</ul>
+
+<h2>Tuetut pelimuodot</h2>
+<table>
+<tr><th>Pelimuoto</th><th>Pääarvottavat numerot</th><th>Erityisnumerot</th><th>Alue</th></tr>
+<tr><td>Suomen Lotto</td><td>7</td><td>–</td><td>1–40</td></tr>
+<tr><td>Milli</td><td>6</td><td>–</td><td>1–50</td></tr>
+<tr><td>KTEM (Kaikki tai ei mitään)</td><td>12</td><td>–</td><td>1–24</td></tr>
+<tr><td>Keno</td><td>10</td><td>–</td><td>1–70</td></tr>
+<tr><td>Eurojackpot</td><td>5</td><td>2 tähtinumeroa</td><td>1–50 / 1–12</td></tr>
+<tr><td>Viking Lotto</td><td>6</td><td>1 Viking-numero</td><td>1–48 / 1–5</td></tr>
+<tr><td>Jokeri</td><td>7 numeroa (0–9)</td><td>–</td><td>0–9 per asema</td></tr>
+</table>
+
+<h2>Aloittaminen</h2>
+<ol>
+<li>Käynnistä LottoGui-ohjelma.</li>
+<li>Valitse haluamasi pelimuoto <strong>Lotto Options</strong> -valikosta.</li>
+<li>Aseta haluamasi asetukset avattuun valintaikkunaan ja vahvista <strong>OK</strong>.</li>
+<li>Ennustusrivit ja tilastot ilmestyvät pääikkunaan.</li>
+<li>Tallenna tai tulosta tulokset <strong>File</strong>-valikon komennoilla.</li>
+</ol>
+
+<div class="note">
+<strong>Huom.!</strong> CSV-datatiedostot on tallennettava ohjelman <code>data\</code>-alikansioihin.
+Ohjelma ei voi luoda ennustuksia ilman ajantasaista historiallista dataa.
+</div>
+
+<h2>Ohjeen rakenne</h2>
+<ul>
+<li><a href="classic_lotto.html">Klassinen Lotto-generaattori</a></li>
+<li><a href="suomen_lotto.html">Suomen Lotto CSV</a></li>
+<li><a href="milli.html">Milli CSV</a></li>
+<li><a href="ktem.html">KTEM CSV</a></li>
+<li><a href="keno.html">Keno CSV</a></li>
+<li><a href="eurojackpot.html">Eurojackpot CSV</a></li>
+<li><a href="viking_lotto.html">Viking Lotto CSV</a></li>
+<li><a href="jokeri.html">Jokeri CSV</a></li>
+<li><a href="statistics.html">Tilastoanalyysi</a></li>
+<li><a href="results.html">Tulosten tallennus ja tulostus</a></li>
+<li><a href="csvformat.html">CSV-tiedostomuoto</a></li>
+</ul>
+</body>
+</html>

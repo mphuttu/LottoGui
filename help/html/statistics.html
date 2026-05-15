@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<title>Tilastoanalyysi</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<h1>Tilastoanalyysi</h1>
+<p>
+LottoGui laskee jokaiselle CSV-sarakkeelle kattavan tilastoanalyysin.
+Tilastot perustuvat datatiedoston kaikkiin arvantatuloksiin kyseisessä
+sarakkeessa.
+</p>
+
+<h2>Lasketut tilastosuureet</h2>
+<table>
+<tr><th>Tilastosuure</th><th>Selitys</th></tr>
+<tr>
+  <td><strong>N</strong> (havaintojen määrä)</td>
+  <td>Kuinka monta kelvollista arvoa sarake sisältää.</td>
+</tr>
+<tr>
+  <td><strong>Min</strong></td>
+  <td>Sarakkeen pienin havaittu arvo.</td>
+</tr>
+<tr>
+  <td><strong>Max</strong></td>
+  <td>Sarakkeen suurin havaittu arvo.</td>
+</tr>
+<tr>
+  <td><strong>Keskiarvo</strong> (aritmeettinen)</td>
+  <td>Arvojen summa jaettuna lukumäärällä. Kuvaa jakauman "painopistettä".</td>
+</tr>
+<tr>
+  <td><strong>Mediaani</strong></td>
+  <td>Keskiluku, jonka molemmin puolin on yhtä monta arvoa,
+      kun arvot järjestetään suuruusjärjestykseen.</td>
+</tr>
+<tr>
+  <td><strong>Moodi</strong></td>
+  <td>Useimmin esiintynyt arvo (tai useita arvoja, jos tasatulos).</td>
+</tr>
+<tr>
+  <td><strong>Alakvartiili Q1</strong></td>
+  <td>Arvo, jonka alle jää 25 % havainnoista.</td>
+</tr>
+<tr>
+  <td><strong>Yläkvartiili Q3</strong></td>
+  <td>Arvo, jonka alle jää 75 % havainnoista.</td>
+</tr>
+<tr>
+  <td><strong>Harmoninen keskiarvo</strong></td>
+  <td>
+    $n / \sum_{i=1}^{n} \frac{1}{x_i}$<br>
+    Sopii erityisesti suhdesuureille. Näytetään <em>N/A</em>,
+    jos sarake sisältää nollan (Jokeri).
+  </td>
+</tr>
+<tr>
+  <td><strong>Geometrinen keskiarvo</strong></td>
+  <td>
+    $\left(\prod_{i=1}^{n} x_i\right)^{1/n}$<br>
+    Arvojen tulon n:s juuri. Kuvaa suhteellista kasvua.
+  </td>
+</tr>
+<tr>
+  <td><strong>Neliöllinen keskiarvo (RMS)</strong></td>
+  <td>
+    $\sqrt{\frac{1}{n}\sum_{i=1}^{n} x_i^2}$<br>
+    Root Mean Square – neliöiden keskiarvon neliöjuuri.
+  </td>
+</tr>
+<tr>
+  <td><strong>Keskihajonta</strong></td>
+  <td>
+    $\sigma = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(x_i - \bar{x})^2}$<br>
+    Kuvaa arvojen hajontaa keskiarvon ympärillä.
+    Pieni arvo tarkoittaa tiivistä jakaumaa.
+  </td>
+</tr>
+</table>
+
+<h2>Tilastojen tulkinta</h2>
+<p>
+Tilastojen perusteella voidaan päätellä:
+</p>
+<ul>
+<li>Onko jokin numero esiintynyt poikkeuksellisen usein tai harvoin?</li>
+<li>Onko sarakkeen jakauma symmetrinen (mediaani ≈ keskiarvo)?</li>
+<li>Kuinka laajaa vaihtelua numeroissa on esiintynyt (hajonta, kvartiilit)?</li>
+</ul>
+
+<div class="note">
+<strong>Muistutus:</strong> Lottoarvonnat ovat riippumattomia tapahtumia.
+Tilastoanalyysi kuvaa <em>menneisyyttä</em>, eikä yksikään tilastosuure
+pysty ennustamaan tulevia arvontatuloksia. Käytä tietoja viitteellisinä
+apuvälineinä, älä absoluuttisina ennustuksina.
+</div>
+</body>
+</html>

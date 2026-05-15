@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<title>Eurojackpot CSV</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<span class="game-badge">EUROJACKPOT</span>
+<h1>Eurojackpot CSV</h1>
+<p>
+Eurojackpot on eurooppalainen yhteislottopeli. Arvonnassa valitaan 5 pääasiallista
+numeroa alueelta 1–50 sekä 2 tähtinumeroa alueelta 1–12.
+</p>
+
+<h2>Toiminto valikossa</h2>
+<p>Valitse <strong>Lotto Options → Eurojackpot CSV…</strong></p>
+
+<h2>Datatiedosto</h2>
+<p>Ohjelma lukee tiedoston <code>data\EurojackpotData.csv</code>.
+Tiedostossa on 5 saraketta pääarvottuneille numeroille ja 2 saraketta
+tähtinumeroille, kaikki puolipiste-erottimella.</p>
+
+<h2>Valintaikkunan asetukset</h2>
+<ul>
+<li><strong>Number of Rows</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+</ul>
+
+<h2>Tulostus</h2>
+<ol>
+<li>Pyydetty määrä ennustusrivejä. Kukin rivi sisältää:
+  <ul>
+    <li>5 pääasiallista numeroa (1–50)</li>
+    <li>2 tähtinumeroa (1–12)</li>
+  </ul>
+</li>
+<li>Tilastoanalyysi 5 päänumerosarakkeesta.</li>
+<li>Tilastoanalyysi 2 tähtinumerosarakkeesta.</li>
+</ol>
+
+<p>Päänumerot ja tähtinumerot analysoidaan erikseen omilla sarakkeillaan
+(ks. <a href="statistics.html">Tilastoanalyysi</a>).</p>
+
+<div class="tip">
+<strong>Vinkki:</strong> Eurojackpot järjestetään kahdesti viikossa, joten datamäärä
+kasvaa nopeasti. Päivitä CSV-tiedosto säännöllisesti tuoreimmilla arvantatuloksilla.
+</div>
+</body>
+</html>

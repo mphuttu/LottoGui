@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Eurojackpot CSV</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<span class="game-badge">EUROJACKPOT</span>
+<h1>Eurojackpot CSV</h1>
+<p>
+Eurojackpot is a pan-European lottery game in which 5 main numbers are drawn
+from the range 1–50 and 2 star numbers from the range 1–12.
+</p>
+
+<h2>Menu command</h2>
+<p>Select <strong>Lotto Options → Eurojackpot CSV…</strong></p>
+
+<h2>Data file</h2>
+<p>The program reads <code>data\EurojackpotData.csv</code>.
+The file contains 5 columns for the main numbers and 2 columns for the star
+numbers, all separated by semicolons.</p>
+
+<h2>Dialog settings</h2>
+<ul>
+<li><strong>Number of Rows</strong> – Number of suggestion rows to generate (1–50, default 5).</li>
+</ul>
+
+<h2>Output</h2>
+<ol>
+<li>The requested number of prediction rows. Each row contains:
+  <ul>
+    <li>5 main numbers (1–50)</li>
+    <li>2 star numbers (1–12)</li>
+  </ul>
+</li>
+<li>Statistical analysis of the 5 main-number columns.</li>
+<li>Statistical analysis of the 2 star-number columns.</li>
+</ol>
+
+<p>Main numbers and star numbers are analysed separately in their own column groups
+(see <a href="statistics.html">Statistical Analysis</a>).</p>
+
+<div class="tip">
+<strong>Tip:</strong> Eurojackpot is drawn twice a week, so the data volume grows
+quickly. Update the CSV file regularly with the latest draw results.
+</div>
+</body>
+</html>

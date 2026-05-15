@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<title>Klassinen Lotto-generaattori</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<span class="game-badge">KLASSINEN LOTTO</span>
+<h1>Klassinen Lotto-generaattori</h1>
+<p>
+Klassinen Lotto-generaattori luo satunnaisia lottorivejä ilman historiallista dataa.
+Se sopii mihin tahansa lottomuotoon, jossa numerot arvotaan määritellyltä lukuväliltä
+tai ennalta valitusta joukosta.
+</p>
+
+<h2>Valintaikkunan avaaminen</h2>
+<p>Valitse valikosta <strong>Lotto Options → Classic Lotto Options…</strong></p>
+
+<h2>Asetukset</h2>
+
+<h3>Numerolähde</h3>
+<ul>
+<li><strong>Number Range</strong> – Ohjelma arpoo numerot automaattisesti annetulta väliltä.
+  Syötä pienin (<em>Min</em>) ja suurin (<em>Max</em>) sallittu numero.</li>
+<li><strong>Own Input Numbers</strong> – Syötä itse haluamasi numerot pilkulla erotettuna
+  (esim. <code>3, 7, 15, 21, 38, 42</code>). Ohjelma arpoo rivit näistä numeroista.</li>
+</ul>
+
+<h3>Rivin koko ja rivimäärä</h3>
+<ul>
+<li><strong>Numbers per Row</strong> – Montako numeroa kullekin riville arvotaan.</li>
+<li><strong>Number of Rows</strong> – Montako arpajairiviä luodaan (1–50).</li>
+</ul>
+
+<div class="tip">
+<strong>Vinkki:</strong> Klassinen generaattori ei sisällä tilastoanalyysiä.
+Jos haluat tilastopohjaisen ennustuksen, käytä jokin CSV-pohjainen pelimuoto.
+</div>
+
+<h2>Esimerkki</h2>
+<p>
+Suomen Loton tavanomainen peli: aseta Min = 1, Max = 40,
+Numbers per Row = 7, Number of Rows = 5. Tuloksena syntyy 5 riviä
+seitsemän numeron satunnaisia yhdistelmiä alueelta 1–40.
+</p>
+</body>
+</html>

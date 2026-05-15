@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="aloittaminen">
+		<param name="Local" value="html\welcome.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="CSV-tiedosto">
+		<param name="Local" value="html\csvformat.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="CSV-tiedostomuoto">
+		<param name="Local" value="html\csvformat.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Eurojackpot">
+		<param name="Local" value="html\eurojackpot.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="frekvenssipainotettu valinta">
+		<param name="Local" value="html\suomen_lotto.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="geometrinen keskiarvo">
+		<param name="Local" value="html\statistics.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="harmoninen keskiarvo">
+		<param name="Local" value="html\statistics.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Jokeri">
+		<param name="Local" value="html\jokeri.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Kaikki tai ei mitään">
+		<param name="Local" value="html\ktem.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Keno">
+		<param name="Local" value="html\keno.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="keskiarvo">
+		<param name="Local" value="html\statistics.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="keskihajonta">
+		<param name="Local" value="html\statistics.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="klassinen lotto">
+		<param name="Local" value="html\classic_lotto.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="kvartiilit">
+		<param name="Local" value="html\statistics.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="mediaani">
+		<param name="Local" value="html\statistics.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Milli">
+		<param name="Local" value="html\milli.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="moodi">
+		<param name="Local" value="html\statistics.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="neliöllinen keskiarvo">
+		<param name="Local" value="html\statistics.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="N/A">
+		<param name="Local" value="html\jokeri.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="oma numeroalue">
+		<param name="Local" value="html\classic_lotto.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="RMS">
+		<param name="Local" value="html\statistics.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Suomen Lotto">
+		<param name="Local" value="html\suomen_lotto.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="tallentaminen">
+		<param name="Local" value="html\results.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="tilastoanalyysi">
+		<param name="Local" value="html\statistics.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="tilastosuureet">
+		<param name="Local" value="html\statistics.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="tulostaminen">
+		<param name="Local" value="html\results.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="tähtinumerot">
+		<param name="Local" value="html\eurojackpot.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Viking Lotto">
+		<param name="Local" value="html\viking_lotto.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Viking-numero">
+		<param name="Local" value="html\viking_lotto.html">
+		</OBJECT>
+</UL>
+</BODY></HTML>

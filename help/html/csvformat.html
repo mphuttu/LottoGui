@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<title>CSV-tiedostomuoto</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<h1>CSV-tiedostomuoto</h1>
+<p>
+LottoGui käyttää historiallista arvantatiedostoa CSV-muodossa (Comma-Separated Values).
+Ohjelmassa erotinmerkkinä käytetään <strong>puolipistettä</strong> (;).
+</p>
+
+<h2>Yleinen rakenne</h2>
+<ul>
+<li>Yksi arvontakierros per rivi.</li>
+<li>Sarakkeet erotetaan puolipisteellä <code>;</code>.</li>
+<li>Arvojen on oltava kokonaislukuja.</li>
+<li>Ohjelma ohittaa automaattisesti tyhjät rivit ja nolla-arvot
+    (poikkeus: Jokeri, jossa 0 on kelvollinen arvo).</li>
+</ul>
+
+<h2>Sarakerakenne pelimuodoittain</h2>
+<table>
+<tr><th>Pelimuoto</th><th>Tiedosto</th><th>Sarakkeiden lukumäärä</th><th>Numeroalue</th></tr>
+<tr><td>Suomen Lotto</td><td><code>SuomenLottoData.csv</code></td><td>7</td><td>1–40</td></tr>
+<tr><td>Milli</td><td><code>MilliData.csv</code></td><td>6</td><td>1–50</td></tr>
+<tr><td>KTEM</td><td><code>KTEM.csv</code></td><td>12</td><td>1–24</td></tr>
+<tr><td>Keno</td><td><code>KenoData.csv</code></td><td>20</td><td>1–70</td></tr>
+<tr><td>Eurojackpot</td><td><code>EurojackpotData.csv</code></td><td>7 (5+2)</td><td>1–50 / 1–12</td></tr>
+<tr><td>Viking Lotto</td><td><code>VikingData.csv</code></td><td>6</td><td>1–48</td></tr>
+<tr><td>Jokeri</td><td><code>JokeriData.csv</code></td><td>7</td><td>0–9</td></tr>
+</table>
+
+<h2>Esimerkkirivi – Suomen Lotto</h2>
+<p><code>3;12;18;25;33;37;40</code></p>
+
+<h2>Esimerkkirivi – Eurojackpot</h2>
+<p>Ensin 5 pääasiallista numeroa, sitten 2 tähtinumeroa:<br>
+<code>7;14;22;36;49;3;11</code></p>
+
+<h2>Esimerkkirivi – Keno</h2>
+<p>20 arvottua numeroa:<br>
+<code>2;8;11;19;23;29;34;37;41;45;48;52;55;58;61;63;65;67;69;70</code></p>
+
+<h2>Esimerkkirivi – Jokeri</h2>
+<p>7 yksinumeroa (0–9, toistot sallittu):<br>
+<code>4;0;7;7;2;9;1</code></p>
+
+<h2>Tiedostojen sijainti</h2>
+<p>
+CSV-tiedostot tallennetaan ohjelman asennushakemiston <code>data\</code>-alikansioihin:
+</p>
+<p><code>C:\Program Files\LottoGui\data\</code></p>
+
+<div class="note">
+<strong>Muistutus:</strong> Pidä datatiedostot ajantasaisina lisäämällä uudet
+arvontatulokset tiedostojen loppuun. Mitä enemmän historiallista dataa on
+käytettävissä, sitä luotettavampi tilastoanalyysi on.
+</div>
+</body>
+</html>

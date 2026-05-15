@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Keno CSV</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<span class="game-badge">KENO</span>
+<h1>Keno CSV</h1>
+<p>
+Keno is a fast draw game by Veikkaus in which 20 numbers are drawn from the
+range 1–70. A player may select 1–10 numbers to match. The program generates
+10-number suggestions.
+</p>
+
+<h2>Menu command</h2>
+<p>Select <strong>Lotto Options → Keno CSV…</strong></p>
+
+<h2>Data file</h2>
+<p>The program reads <code>data\KenoData.csv</code>.
+The file contains 20 columns for all drawn numbers, separated by semicolons.
+The program automatically filters out zeros and malformed rows.</p>
+
+<h2>Dialog settings</h2>
+<ul>
+<li><strong>Number of Rows</strong> – Number of suggestion rows to generate (1–50, default 5).</li>
+</ul>
+
+<h2>Output</h2>
+<ol>
+<li>The requested number of prediction rows, each containing 10 numbers in the range 1–70.</li>
+<li>Statistical analysis of <em>all</em> 20 columns
+    (see <a href="statistics.html">Statistical Analysis</a>).</li>
+</ol>
+
+<div class="tip">
+<strong>Tip:</strong> In a Keno draw all 20 numbers are drawn every round, but the
+statistical analysis covers all of them on a per-column basis. This gives a
+broad picture of how often numbers appear at each draw position.
+</div>
+
+<div class="note">
+<strong>Note:</strong> The program accepts only values in the range 1–70 as valid
+Keno data. Zeros and out-of-range values are removed during data import.
+</div>
+</body>
+</html>

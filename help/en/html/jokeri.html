@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Jokeri CSV</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<span class="game-badge">JOKERI</span>
+<h1>Jokeri CSV</h1>
+<p>
+Jokeri is a side game played alongside Suomen Lotto, organised by Veikkaus.
+Seven digits are drawn, each from the range 0–9. The same digit may appear
+in more than one position on the same row – all seven positions could even
+show the same digit.
+</p>
+
+<h2>Menu command</h2>
+<p>Select <strong>Lotto Options → Jokeri CSV…</strong></p>
+
+<h2>Data file</h2>
+<p>The program reads <code>data\JokeriData.csv</code>.
+The file has 7 columns, one for each digit position, separated by semicolons.
+Values are single digits 0–9.</p>
+
+<h2>Dialog settings</h2>
+<ul>
+<li><strong>Number of Rows</strong> – Number of suggestion rows to generate (1–50, default 5).</li>
+</ul>
+
+<h2>Output</h2>
+<ol>
+<li>The requested number of prediction rows, each containing 7 digits (0–9).
+    <em>Repeated digits are allowed on the same row</em>,
+    just as in an actual Jokeri draw.</li>
+<li>Statistical analysis of all 7 columns
+    (see <a href="statistics.html">Statistical Analysis</a>).</li>
+</ol>
+
+<h2>Special characteristics</h2>
+<table>
+<tr><th>Feature</th><th>Description</th></tr>
+<tr>
+  <td>Repeated digits allowed</td>
+  <td>The same digit (0–9) may appear in more than one position on the same row.</td>
+</tr>
+<tr>
+  <td>Zero (0) is a valid value</td>
+  <td>Unlike all other game types, zero is a perfectly normal digit for any
+      of the 7 positions in Jokeri.</td>
+</tr>
+<tr>
+  <td>Harmonic mean shown as N/A</td>
+  <td>If a column contains even one zero value, the harmonic mean cannot be
+      calculated (division by zero). The program displays <em>N/A</em> in that case.</td>
+</tr>
+</table>
+</body>
+</html>

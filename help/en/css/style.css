@@ -1,0 +1,112 @@
+/* LottoGui Help stylesheet */
+body {
+    font-family: Segoe UI, Arial, sans-serif;
+    font-size: 13px;
+    color: #1a1a1a;
+    background: #ffffff;
+    margin: 0;
+    padding: 16px 24px 32px 24px;
+    line-height: 1.55;
+}
+
+h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #003380;
+    border-bottom: 2px solid #003380;
+    padding-bottom: 6px;
+    margin-top: 0;
+}
+
+h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #003380;
+    margin-top: 22px;
+    margin-bottom: 4px;
+}
+
+h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #2255aa;
+    margin-top: 14px;
+    margin-bottom: 2px;
+}
+
+p { margin: 6px 0 10px 0; }
+
+ul, ol {
+    margin: 4px 0 10px 0;
+    padding-left: 22px;
+}
+
+li { margin-bottom: 3px; }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px 0;
+    font-size: 12px;
+}
+
+th {
+    background: #003380;
+    color: #ffffff;
+    text-align: left;
+    padding: 5px 8px;
+    font-weight: 600;
+}
+
+td {
+    padding: 4px 8px;
+    border-bottom: 1px solid #dde3ef;
+    vertical-align: top;
+}
+
+tr:nth-child(even) td { background: #f0f4fb; }
+
+.note {
+    background: #fffbe6;
+    border-left: 4px solid #f0c040;
+    padding: 7px 12px;
+    margin: 10px 0;
+    border-radius: 2px;
+}
+
+.tip {
+    background: #e8f5e9;
+    border-left: 4px solid #43a047;
+    padding: 7px 12px;
+    margin: 10px 0;
+    border-radius: 2px;
+}
+
+.game-badge {
+    display: inline-block;
+    background: #003380;
+    color: #fff;
+    border-radius: 3px;
+    padding: 1px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    margin-bottom: 8px;
+}
+
+code {
+    font-family: Consolas, "Courier New", monospace;
+    background: #eef0f5;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 12px;
+}
+
+a { color: #003380; }
+a:hover { color: #2255aa; }
+
+hr {
+    border: none;
+    border-top: 1px solid #cdd5e8;
+    margin: 18px 0;
+}

@@ -1,0 +1,28 @@
+[OPTIONS]
+Compiled file=LottoGui.chm
+Contents file=LottoGui.hhc
+Index file=LottoGui.hhk
+Default topic=html\welcome.html
+Language=0x040b Finnish
+Title=LottoGui Ohje
+Default Window=main
+
+[WINDOWS]
+main="LottoGui Ohje","LottoGui.hhc","LottoGui.hhk","html\welcome.html","html\welcome.html",,,,,0x63520,,0x384e,,,,,,,,0
+
+[FILES]
+css\style.css
+html\welcome.html
+html\classic_lotto.html
+html\suomen_lotto.html
+html\milli.html
+html\ktem.html
+html\keno.html
+html\eurojackpot.html
+html\viking_lotto.html
+html\jokeri.html
+html\statistics.html
+html\results.html
+html\csvformat.html
+
+[INFOTYPES]

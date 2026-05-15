@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<title>Keno CSV</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<span class="game-badge">KENO</span>
+<h1>Keno CSV</h1>
+<p>
+Keno on Veikkauksen nopea arvontapeli, jossa arvotaan 20 numeroa alueelta 1–70.
+Pelaaja voi valita 1–10 numeroa osumia varten. Ohjelma luo 10 numeron ehdotuksen.
+</p>
+
+<h2>Toiminto valikossa</h2>
+<p>Valitse <strong>Lotto Options → Keno CSV…</strong></p>
+
+<h2>Datatiedosto</h2>
+<p>Ohjelma lukee tiedoston <code>data\KenoData.csv</code>.
+Tiedostossa on 20 saraketta kaikille arvotuille numeroille puolipiste-erottimella.
+Ohjelma suodattaa automaattisesti pois nollat ja virheelliset rivit.</p>
+
+<h2>Valintaikkunan asetukset</h2>
+<ul>
+<li><strong>Number of Rows</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+</ul>
+
+<h2>Tulostus</h2>
+<ol>
+<li>Pyydetty määrä ennustusrivejä, joista kukin sisältää 10 numeroa alueelta 1–70.</li>
+<li>Tilastoanalyysi <em>kaikista</em> 20 sarakkeesta
+    (ks. <a href="statistics.html">Tilastoanalyysi</a>).</li>
+</ol>
+
+<div class="tip">
+<strong>Vinkki:</strong> Keno-arvonnassa kaikki 20 numeroa arvotaan jokaisessa kierroksessa,
+mutta tilastoanalyysi kattaa ne kaikki sarakekohtaisesti.
+Tämä antaa laajan kuvan numeroiden esiintymistiheydestä eri vetopositioilla.
+</div>
+
+<div class="note">
+<strong>Huom.!</strong> Ohjelma hyväksyy Keno-dataksi ainoastaan arvot väliltä 1–70.
+Nollat ja tätä aluetta ulkopuolella olevat arvot poistetaan datan tuonnissa.
+</div>
+</body>
+</html>

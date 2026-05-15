@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<title>Milli CSV</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<span class="game-badge">MILLI</span>
+<h1>Milli CSV</h1>
+<p>
+Milli on Veikkauksen päivittäinen arvonta, jossa arvotaan 6 numeroa alueelta 1–50.
+</p>
+
+<h2>Toiminto valikossa</h2>
+<p>Valitse <strong>Lotto Options → Milli CSV…</strong></p>
+
+<h2>Datatiedosto</h2>
+<p>Ohjelma lukee tiedoston <code>data\MilliData.csv</code>.
+Tiedostossa on 6 saraketta pääarvottuneille numeroille puolipiste-erottimella.</p>
+
+<h2>Valintaikkunan asetukset</h2>
+<ul>
+<li><strong>Number of Rows</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+</ul>
+
+<h2>Tulostus</h2>
+<ol>
+<li>Pyydetty määrä ennustusrivejä, joista kukin sisältää 6 numeroa.</li>
+<li>Tilastoanalyysi kaikista 6 sarakkeesta (ks. <a href="statistics.html">Tilastoanalyysi</a>).</li>
+</ol>
+
+<div class="tip">
+<strong>Vinkki:</strong> Milli arvotaan useammin kuin perinteinen viikkolotto,
+joten CSV-tiedoston datamäärä kasvaa nopeasti. Pidä tiedosto ajantasaisena
+parhaan ennustustarkkuuden saavuttamiseksi.
+</div>
+</body>
+</html>
