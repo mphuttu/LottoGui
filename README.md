@@ -18,6 +18,7 @@ The program is written in C++ with Microsoft Foundation Classes (MFC) and is int
 - Analyze Jokeri CSV data from data/JokeriData.csv
 - Create frequency-based prediction rows from historical data
 - Display statistical analysis for Lotto, Milli, KTEM, Keno, Eurojackpot, Viking Lotto, and Jokeri number columns
+- Custom application icon (`LottoGuiIcon.ico`) used by both the application and the installer
 
 ## Finnish Lotto CSV analysis
 

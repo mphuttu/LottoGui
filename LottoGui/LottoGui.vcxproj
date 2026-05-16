@@ -231,8 +231,8 @@
     <ResourceCompile Include="LottoGui.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\LottoGui.ico" />
     <Image Include="res\LottoGuiDoc.ico" />
+    <Image Include="res\LottoGuiIcon.ico" />
     <Image Include="res\Toolbar.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
