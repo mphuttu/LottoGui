@@ -4,6 +4,8 @@ LottoGui is a small Windows desktop application for generating lottery lines and
 
 The program is written in C++ with Microsoft Foundation Classes (MFC) and is intended to be opened and built in Microsoft Visual Studio on Windows. The project now supports both Win32 and x64 build targets.
 
+![LottoGui screenshot](docs/images/2026-05-18-LottoGui-Screenshot.png)
+
 ## Features
 
 - Generate classic lottery lines with a custom amount of numbers and rows
