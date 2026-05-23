@@ -38,7 +38,7 @@
 		<param name="Local" value="html\jokeri.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Kaikki tai ei mitÃ¤Ã¤n">
+		<param name="Name" value="Kaikki tai ei mitään">
 		<param name="Local" value="html\ktem.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
@@ -74,7 +74,7 @@
 		<param name="Local" value="html\statistics.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="neliÃ¶llinen keskiarvo">
+		<param name="Name" value="neliöllinen keskiarvo">
 		<param name="Local" value="html\statistics.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
@@ -110,7 +110,7 @@
 		<param name="Local" value="html\results.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="tÃ¤htinumerot">
+		<param name="Name" value="tähtinumerot">
 		<param name="Local" value="html\eurojackpot.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">

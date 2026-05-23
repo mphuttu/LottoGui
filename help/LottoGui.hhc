@@ -9,7 +9,7 @@
 </OBJECT>
 <UL>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Tervetuloa â€“ LottoGui Ohje">
+		<param name="Name" value="Tervetuloa – LottoGui Ohje">
 		<param name="Local" value="html\welcome.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
@@ -29,7 +29,7 @@
 			<param name="Local" value="html\milli.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="KTEM â€“ Kaikki tai ei mitÃ¤Ã¤n">
+			<param name="Name" value="KTEM – Kaikki tai ei mitään">
 			<param name="Local" value="html\ktem.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">

@@ -195,6 +195,29 @@ The application supports English and Finnish UI languages. All menus, dialog cap
 
 The Finnish resource section in `LottoGui.rc` uses `#pragma code_page(1252)` with `\x`-escaped characters (e.g. `\xe4` for ä, `\xf6` for ö) so that the Windows Resource Compiler correctly maps them to Unicode regardless of the source file encoding.
 
+## Help system
+
+The application ships two compiled HTML Help files:
+
+- `help/LottoGui.chm` — Finnish help
+- `help/en/LottoGui_en.chm` — English help
+
+Both are built from HTML sources, a table-of-contents file (`.hhc`), a keyword-index file (`.hhk`), and a project file (`.hhp`) using **HTML Help Workshop** (`hhc.exe`).
+
+### Encoding requirement for HHC and HHK files
+
+`hhc.exe` reads `.hhc` and `.hhk` files as **ANSI (Windows-1252)**, regardless of any charset declaration. The HTML topic files themselves can be UTF-8 (they carry their own `<meta charset>` tag), but the TOC and index files must be saved as Windows-1252, otherwise Scandinavian characters (ä, ö) and special punctuation (–) appear garbled in the compiled CHM's Contents and Index panes.
+
+When editing `.hhc` or `.hhk` files in VS Code, re-save them with the correct encoding:
+`Ctrl+Shift+P` → *Change File Encoding* → *Save with Encoding* → **Western (Windows 1252)**.
+
+### Rebuilding the CHM files
+
+```
+"C:\Program Files (x86)\HTML Help Workshop\hhc.exe" help\LottoGui.hhp
+"C:\Program Files (x86)\HTML Help Workshop\hhc.exe" help\en\LottoGui_en.hhp
+```
+
 ## Project status
 
 This is a lightweight hobby-style MFC application focused on lottery line generation and simple statistical exploration.
