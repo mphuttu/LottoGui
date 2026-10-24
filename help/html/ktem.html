@@ -14,7 +14,7 @@ KTEM (Kaikki tai ei mitään) on Veikkauksen arvontapeli, jossa arvotaan
 </p>
 
 <h2>Toiminto valikossa</h2>
-<p>Valitse <strong>Lotto Options → KTEM CSV…</strong></p>
+<p>Valitse <strong>Lotto-asetukset → KTEM CSV…</strong></p>
 
 <h2>Datatiedosto</h2>
 <p>Ohjelma lukee tiedoston <code>data\KTEM.csv</code>.
@@ -22,8 +22,16 @@ Tiedostossa on 12 saraketta puolipiste-erottimella.</p>
 
 <h2>Valintaikkunan asetukset</h2>
 <ul>
-<li><strong>Number of Rows</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+<li><strong>Ennustusrivejä</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+<li><strong>Panos/rivi</strong> – Valitse 1,00–5,00 € 0,50 euron askelin. Oletus on 1,00 €.</li>
+<li><strong>Onnenapila</strong> – Valitse lisäominaisuus, jolloin rivihinta on kaksinkertainen panos. Oletuksena Onnenapilaa ei valita.</li>
 </ul>
+
+<h2>Voittojen tarkistus</h2>
+<p>Voittosumma lasketaan valitun rivipanoksen ja osumamäärän kertoimen perusteella.
+Nolla ja 12 oikein ovat päävoittoja; osumaluokissa 5–7 ei ole voittoa.
+Tarkistuksessa näytetään kunkin rivin voitto ja rivien yhteissumma. Tietokannassa ei ole
+Onnenapilan tulosta, joten sen mahdollista nelinkertaistavaa vaikutusta ei lasketa.</p>
 
 <h2>Tulostus</h2>
 <ol>
@@ -36,5 +44,21 @@ Tiedostossa on 12 saraketta puolipiste-erottimella.</p>
 ovat usein lähellä toisiaan. Tämä näkyy myös kapearempana tilastojakaumana
 verrattuna esimerkiksi Suomen Lottoon.
 </div>
+
+<h2>Valintaikkunan strategiat</h2>
+<p>Valintaikkunassa on 8 valinnaista strategiaa. Valitse haluamasi valintaruuduilla.
+Pääalgoritmi käyttää aina frekvenssianalyysiä pohjana; valitut strategiat lisätään sen päälle.</p>
+<ul>
+<li><strong>Tasapainotettu</strong> – Noin 50 % pieniä (1–12) ja 50 % suuria (13–24) numeroita sekä 50 % parillisia ja 50 % parittomia.</li>
+<li><strong>Delta-tekniikka</strong> – Arpoo nousevan joukon eri numeroita historiallisten tietojen pienimmän ja suurimman arvon väliltä.</li>
+<li><strong>Onnenpyörä</strong> – Syötä vähintään 13 numeroa Numerot-kenttään; kaikki yhdistelmät listataan, jos niitä on enintään 100, muuten valitaan 100 satunnaista yhdistelmää.</li>
+<li><strong>Epätavalliset numerot</strong> – Suosii numeroita yli 31 kolminkertaisella painolla (KTEM:ssä käytännössä ei vaikutusta, sillä maksimi on 24).</li>
+<li><strong>Peräkkäiset numerot</strong> – Sisältää vähintään yhden peräkkäisen numeroparin, jos käytettävissä olevat numerot mahdollistavat sen.</li>
+<li><strong>Maaginen summa</strong> – Tavoittelee aluetta, joka on 80–120 % historiallisten frekvenssien painottamasta odotussummasta. Jos sopivaa riviä ei löydy, näytetään lähin kokeiltu rivi ja merkitään se.</li>
+<li><strong>Matriisitekniikka</strong> – Luo 3×3-matriisin ja käyttää rivi-, sarake- ja diagonaalisummia numeroiden muodostamiseen.</li>
+<li><strong>Rivien hajautus</strong> – Suosii aiemmilla ennusteriveillä harvemmin käytettyjä numeroita ja välttää päällekkäisiä päänumeroyhdistelmiä mahdollisuuksien mukaan.</li>
+</ul>
+<p>Arvonnat ovat toisistaan riippumattomia: nämä menetelmät muuttavat ehdotusrivien rakennetta, eivät yksittäisen rivin voittotodennäköisyyttä.</p>
+<p>Tulosten lopussa luetellaan käytössä olleet strategiat, esim. <code>Käytössä olevat strategiat: Peräkkäiset numerot, Matriisi</code>.</p>
 </body>
 </html>

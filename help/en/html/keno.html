@@ -10,8 +10,8 @@
 <h1>Keno CSV</h1>
 <p>
 Keno is a fast draw game by Veikkaus in which 20 numbers are drawn from the
-range 1–70. A player may select 1–10 numbers to match. The program generates
-10-number suggestions.
+range 1–70. A player selects a level from 2 to 10; the program generates
+suggestions with that many numbers.
 </p>
 
 <h2>Menu command</h2>
@@ -25,11 +25,20 @@ The program automatically filters out zeros and malformed rows.</p>
 <h2>Dialog settings</h2>
 <ul>
 <li><strong>Number of Rows</strong> – Number of suggestion rows to generate (1–50, default 5).</li>
+<li><strong>Level</strong> – Select 2–10 picks per row. The default is level 10.</li>
+<li><strong>Stake</strong> – Select €0.50–€10.00 in €0.50 steps. The default is €1.00.</li>
+<li><strong>Kunkkukerroin</strong> – Select this add-on to double the stake per row. It is off by default.</li>
 </ul>
+
+<h2>Checking winnings</h2>
+<p>Winnings are calculated by multiplying the selected stake by the multiplier for the selected level
+and number of matches. With Kunkkukerroin, the Kunkku multipliers are used with the selected base
+stake, even though the row price is doubled. After checking results, the program shows each row's
+winnings and their total. Level 11 is not available in the program.</p>
 
 <h2>Output</h2>
 <ol>
-<li>The requested number of prediction rows, each containing 10 numbers in the range 1–70.</li>
+<li>The requested number of prediction rows, each containing the selected level's number of picks in the range 1–70.</li>
 <li>Statistical analysis of <em>all</em> 20 columns
     (see <a href="statistics.html">Statistical Analysis</a>).</li>
 </ol>
@@ -44,5 +53,20 @@ broad picture of how often numbers appear at each draw position.
 <strong>Note:</strong> The program accepts only values in the range 1–70 as valid
 Keno data. Zeros and out-of-range values are removed during data import.
 </div>
+
+<h2>Dialog strategies</h2>
+<p>The dialog offers 8 optional strategies. Strategies apply to the selected number of picks (1–70). Tick the check boxes for the ones you want.</p>
+<ul>
+<li><strong>Balanced</strong> – Approx. 50% small (1–35) and 50% large (36–70) numbers, and 50% even and 50% odd.</li>
+<li><strong>Delta technique</strong> – Randomly selects distinct numbers in ascending order within the minimum and maximum values in the historical data.</li>
+<li><strong>Wheel system</strong> – Enter at least 11 numbers in the Numbers field; all combinations are listed up to 100, otherwise 100 unique combinations are sampled at random.</li>
+<li><strong>Unusual numbers</strong> – Favours numbers above 31 with triple weight.</li>
+<li><strong>Consecutive pair</strong> – Includes at least one consecutive pair when the available numbers allow it.</li>
+<li><strong>Magic sum</strong> – Targets 80–120% of the frequency-weighted expected sum. If no sampled row meets the range, the closest sampled row is shown and marked.</li>
+<li><strong>Matrix technique</strong> – Builds a 3×3 matrix and uses its row, column, and diagonal sums as candidate numbers.</li>
+<li><strong>Portfolio Coverage</strong> – Favors numbers used less often in earlier generated rows and avoids duplicate combinations where possible.</li>
+</ul>
+<p>Draws are independent random events. These methods change the structure of suggested rows, not the chance that an individual valid line will win.</p>
+<p>The strategies in use are recorded at the bottom of the results, e.g. <code>Active strategies: Unusual, Consecutive</code>.</p>
 </body>
 </html>

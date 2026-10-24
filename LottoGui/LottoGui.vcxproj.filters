@@ -63,6 +63,15 @@
     <ClInclude Include="JokeriDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LotteryPrices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckResultsDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LottoGuiCore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LottoGui.cpp">
@@ -102,6 +111,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="JokeriDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckResultsDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LottoGuiCore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

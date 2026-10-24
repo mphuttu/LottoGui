@@ -26,6 +26,8 @@ Values are single digits 0–9.</p>
 <h2>Dialog settings</h2>
 <ul>
 <li><strong>Number of Rows</strong> – Number of suggestion rows to generate (1–50, default 5).</li>
+<li><strong>Double</strong> – Select this option to increase the row price from €2.00 to €3.00. It is off by default.</li>
+<li><strong>Use historical repeated-digit profile</strong> – Adds predictions based on the historical distribution of distinct-digit counts.</li>
 </ul>
 
 <h2>Output</h2>
@@ -33,6 +35,7 @@ Values are single digits 0–9.</p>
 <li>The requested number of prediction rows, each containing 7 digits (0–9).
     <em>Repeated digits are allowed on the same row</em>,
     just as in an actual Jokeri draw.</li>
+<li>An optional prediction set uses the historical distinct-digit distribution while sampling each position independently with its own frequency weights.</li>
 <li>Statistical analysis of all 7 columns
     (see <a href="statistics.html">Statistical Analysis</a>).</li>
 </ol>
@@ -43,6 +46,10 @@ Values are single digits 0–9.</p>
 <tr>
   <td>Repeated digits allowed</td>
   <td>The same digit (0–9) may appear in more than one position on the same row.</td>
+</tr>
+<tr>
+  <td>Historical repeated-digit profile</td>
+  <td>Additional predictions follow the historical distribution of distinct-digit counts. Repeats remain allowed, and this does not change the odds of a draw.</td>
 </tr>
 <tr>
   <td>Zero (0) is a valid value</td>

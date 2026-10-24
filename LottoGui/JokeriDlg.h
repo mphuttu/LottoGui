@@ -13,10 +13,14 @@ public:
 	enum { IDD = IDD_JOKERI_DIALOG };
 
 	int m_nPredictionRows;
+	BOOL m_bRepeatProfile;
+	BOOL m_bDouble;
+	afx_msg void OnClickedDouble();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);
 	virtual BOOL OnInitDialog();
+	void UpdateLinePrice();
 
 	DECLARE_MESSAGE_MAP()
 };

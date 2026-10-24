@@ -24,6 +24,8 @@ public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 protected:
 	virtual void OnInitialUpdate(); // Called for the first time after construct
+	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
+	virtual void OnPrint(CDC* pDC, CPrintInfo* pInfo);
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
 	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
@@ -37,6 +39,7 @@ public:
 #endif
 
 protected:
+	int m_nReportContentBottom;
 
 // Generated message map functions
 protected:
@@ -48,4 +51,3 @@ protected:
 inline CLottoGuiDoc* CLottoGuiView::GetDocument() const
    { return reinterpret_cast<CLottoGuiDoc*>(m_pDocument); }
 #endif
-

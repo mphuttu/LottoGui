@@ -90,6 +90,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -115,6 +116,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,6 +142,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -165,6 +168,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -188,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LottoDialog.h" />
+    <ClInclude Include="CheckResultsDlg.h" />
     <ClInclude Include="SuomenLottoDlg.h" />
     <ClInclude Include="MilliDlg.h" />
     <ClInclude Include="KtemDlg.h" />
@@ -195,6 +200,8 @@
     <ClInclude Include="EurojackpotDlg.h" />
     <ClInclude Include="VikingLottoDlg.h" />
     <ClInclude Include="JokeriDlg.h" />
+    <ClInclude Include="LotteryPrices.h" />
+    <ClInclude Include="LottoGuiCore.h" />
     <ClInclude Include="LottoGui.h" />
     <ClInclude Include="LottoGuiDoc.h" />
     <ClInclude Include="LottoGuiView.h" />
@@ -205,6 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LottoDialog.cpp" />
+    <ClCompile Include="CheckResultsDlg.cpp" />
     <ClCompile Include="SuomenLottoDlg.cpp" />
     <ClCompile Include="MilliDlg.cpp" />
     <ClCompile Include="KtemDlg.cpp" />
@@ -214,6 +222,9 @@
     <ClCompile Include="JokeriDlg.cpp" />
     <ClCompile Include="LottoGui.cpp" />
     <ClCompile Include="LottoGuiDoc.cpp" />
+    <ClCompile Include="LottoGuiCore.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="LottoGuiView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="stdafx.cpp">

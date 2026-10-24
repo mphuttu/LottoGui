@@ -16,7 +16,7 @@ olla samaa numeroa.
 </p>
 
 <h2>Toiminto valikossa</h2>
-<p>Valitse <strong>Lotto Options → Jokeri CSV…</strong></p>
+<p>Valitse <strong>Lotto-asetukset → Jokeri CSV…</strong></p>
 
 <h2>Datatiedosto</h2>
 <p>Ohjelma lukee tiedoston <code>data\JokeriData.csv</code>.
@@ -25,7 +25,9 @@ Arvot ovat yksittäisiä numeroita 0–9.</p>
 
 <h2>Valintaikkunan asetukset</h2>
 <ul>
-<li><strong>Number of Rows</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+<li><strong>Ennustusrivejä</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+<li><strong>Tuplaus</strong> – Valitse Tuplaus, jolloin rivihinta nousee 2,00 eurosta 3,00 euroon. Oletuksena Tuplausta ei valita.</li>
+<li><strong>Käytä historiallista toistoprofiilia</strong> – Luo lisärivejä aiempien arvontojen erilaisten numeroiden lukumäärän jakauman perusteella.</li>
 </ul>
 
 <h2>Tulostus</h2>
@@ -33,6 +35,7 @@ Arvot ovat yksittäisiä numeroita 0–9.</p>
 <li>Pyydetty määrä ennustusrivejä, joista kukin sisältää 7 numeroa (0–9).
     <em>Samoja numeroita voi esiintyä samalla rivillä useampaan kertaan</em>,
     aivan kuten oikeassa Jokeri-arvonnassa.</li>
+<li>Valinnainen ennustesarja, joka käyttää historiallista erilaisten numeroiden määrää mutta arpoo jokaisen position erikseen sen omilla frekvensseillä.</li>
 <li>Tilastoanalyysi kaikista 7 sarakkeesta
     (ks. <a href="statistics.html">Tilastoanalyysi</a>).</li>
 </ol>
@@ -46,14 +49,18 @@ Arvot ovat yksittäisiä numeroita 0–9.</p>
       samalla rivillä.</td>
 </tr>
 <tr>
+  <td>Historiallinen toistoprofiili</td>
+  <td>Lisäennuste noudattaa aiemmissa arvonnoissa havaittua erilaisten numeroiden lukumäärän jakaumaa. Se ei poista toistoja eikä muuta arvonnan voittotodennäköisyyksiä.</td>
+</tr>
+<tr>
   <td>Nolla (0) on kelvollinen arvo</td>
   <td>Toisin kuin muissa pelimuodoissa, nolla on Jokerissa täysin normaali
       numero jokaisessa 7 positiossa.</td>
 </tr>
 <tr>
-  <td>Harmoninen keskiarvo näytetään N/A</td>
+  <td>Harmonista keskiarvoa ei voida laskea</td>
   <td>Jos sarake sisältää yhdenkin nolla-arvon, harmonista keskiarvoa ei voida
-      laskea (jako nollalla). Ohjelma näyttää tällöin <em>N/A</em>.</td>
+      laskea (jako nollalla). Ohjelma näyttää tällöin <em>Ei tietoa</em>.</td>
 </tr>
 </table>
 </body>

@@ -14,7 +14,7 @@ numeroa alueelta 1–48 sekä 1 Viking-numero alueelta 1–5.
 </p>
 
 <h2>Toiminto valikossa</h2>
-<p>Valitse <strong>Lotto Options → Viking Lotto CSV…</strong></p>
+<p>Valitse <strong>Lotto-asetukset → Viking Lotto CSV…</strong></p>
 
 <h2>Datatiedosto</h2>
 <p>Ohjelma lukee tiedoston <code>data\VikingData.csv</code>.
@@ -23,7 +23,8 @@ Viking-numeroa ei tallenneta historialliseen dataan.</p>
 
 <h2>Valintaikkunan asetukset</h2>
 <ul>
-<li><strong>Number of Rows</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+<li><strong>Ennustusrivejä</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+<li><strong>Plusnumero</strong> – Valitse Plusnumero, jolloin rivihinta nousee 1,00 eurosta 1,50 euroon. Oletuksena Plusnumeroa ei valita.</li>
 </ul>
 
 <h2>Tulostus</h2>
@@ -43,5 +44,20 @@ Viking-numeroa ei tallenneta historialliseen dataan.</p>
 Viking-numerodataa ei ole tallennettu CSV-tiedostoon. Pääasiallisten 6 numeron
 ennustus perustuu normaalisti frekvenssidataan.
 </div>
+
+<h2>Valintaikkunan strategiat</h2>
+<p>Valintaikkunassa on 8 valinnaista strategiaa. Strategiat koskevat ainoastaan 6 pääasiallista numeroa (1–48); Viking-numero (1–5) arvotaan aina satunnaisesti.</p>
+<ul>
+<li><strong>Tasapainotettu</strong> – Noin 50 % pieniä (1–24) ja 50 % suuria (25–48) numeroita sekä 50 % parillisia ja 50 % parittomia.</li>
+<li><strong>Delta-tekniikka</strong> – Arpoo nousevan joukon eri numeroita historiallisten tietojen pienimmän ja suurimman arvon väliltä.</li>
+<li><strong>Onnenpyörä</strong> – Syötä vähintään 7 numeroa Numerot-kenttään; kaikki yhdistelmät listataan, jos niitä on enintään 100, muuten valitaan 100 satunnaista yhdistelmää.</li>
+<li><strong>Epätavalliset numerot</strong> – Suosii numeroita yli 31 kolminkertaisella painolla.</li>
+<li><strong>Peräkkäiset numerot</strong> – Sisältää vähintään yhden peräkkäisen numeroparin, jos käytettävissä olevat numerot mahdollistavat sen.</li>
+<li><strong>Maaginen summa</strong> – Tavoittelee aluetta, joka on 80–120 % historiallisten frekvenssien painottamasta odotussummasta. Jos sopivaa riviä ei löydy, näytetään lähin kokeiltu rivi ja merkitään se.</li>
+<li><strong>Matriisitekniikka</strong> – Luo 3×3-matriisin ja käyttää rivi-, sarake- ja diagonaalisummia numeroiden muodostamiseen.</li>
+<li><strong>Rivien hajautus</strong> – Suosii aiemmilla ennusteriveillä harvemmin käytettyjä päänumeroita ja välttää päällekkäisiä yhdistelmiä mahdollisuuksien mukaan.</li>
+</ul>
+<p>Arvonnat ovat toisistaan riippumattomia: nämä menetelmät muuttavat ehdotusrivien rakennetta, eivät yksittäisen rivin voittotodennäköisyyttä.</p>
+<p>Tulosten lopussa luetellaan käytössä olleet strategiat, esim. <code>Käytössä olevat strategiat: Delta, Peräkkäiset numerot</code>.</p>
 </body>
 </html>

@@ -23,7 +23,15 @@ The file has 12 semicolon-separated columns.</p>
 <h2>Dialog settings</h2>
 <ul>
 <li><strong>Number of Rows</strong> – Number of suggestion rows to generate (1–50, default 5).</li>
+<li><strong>Stake per row</strong> – Select €1.00–€5.00 in €0.50 steps. The default is €1.00.</li>
+<li><strong>Onnenapila</strong> – Select this add-on to double the stake per row. It is off by default.</li>
 </ul>
+
+<h2>Checking winnings</h2>
+<p>Winnings are calculated from the selected stake per row and the multiplier for the number
+of matches. Zero and 12 matches are jackpots; match classes 5–7 have no prize.
+The program shows each row's winnings and their total. The database does not include the
+Onnenapila result, so its possible fourfold bonus is not included.</p>
 
 <h2>Output</h2>
 <ol>
@@ -36,5 +44,21 @@ The file has 12 semicolon-separated columns.</p>
 different columns tend to be close to each other. This results in a narrower
 statistical distribution compared to, for example, Suomen Lotto.
 </div>
+
+<h2>Dialog strategies</h2>
+<p>The dialog offers 8 optional strategies. Tick the check boxes for the ones you want.
+Frequency analysis is always used as the base; selected strategies are added on top.</p>
+<ul>
+<li><strong>Balanced</strong> – Approx. 50% small (1–12) and 50% large (13–24) numbers, and 50% even and 50% odd.</li>
+<li><strong>Delta technique</strong> – Randomly selects distinct numbers in ascending order within the minimum and maximum values in the historical data.</li>
+<li><strong>Wheel system</strong> – Enter at least 13 numbers in the Numbers field; all combinations are listed up to 100, otherwise 100 unique combinations are sampled at random.</li>
+<li><strong>Unusual numbers</strong> – Favours numbers above 31 with triple weight (has no practical effect in KTEM since the maximum is 24).</li>
+<li><strong>Consecutive pair</strong> – Includes at least one consecutive pair when the available numbers allow it.</li>
+<li><strong>Magic sum</strong> – Targets 80–120% of the frequency-weighted expected sum. If no sampled row meets the range, the closest sampled row is shown and marked.</li>
+<li><strong>Matrix technique</strong> – Builds a 3×3 matrix and uses its row, column, and diagonal sums as candidate numbers.</li>
+<li><strong>Portfolio Coverage</strong> – Favors numbers used less often in earlier generated rows and avoids duplicate main-number combinations where possible.</li>
+</ul>
+<p>Draws are independent random events. These methods change the structure of suggested rows, not the chance that an individual valid line will win.</p>
+<p>The strategies in use are recorded at the bottom of the results, e.g. <code>Active strategies: Consecutive, Matrix</code>.</p>
 </body>
 </html>

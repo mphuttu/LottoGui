@@ -1,5 +1,5 @@
 #define MyAppName "LottoGui"
-#define MyAppVersion "1.1"
+#define MyAppVersion "1.3"
 #define MyAppPublisher "Mika Huttunen"
 #define MyAppURL "https://github.com/mphuttu/LottoGui"
 #define MyAppExeName "LottoGui.exe"
@@ -66,6 +66,7 @@ Root: HKLM; Subkey: "SOFTWARE\LottoGui"; ValueType: string; ValueName: "Language
 [Files]
 ; Main executable – always replaced with the new version.
 Source: "{#MyAppSourceDir}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\LottoGui\res\icons\LICENSE.txt"; DestDir: "{app}\licenses"; Flags: ignoreversion
 
 ; Data CSV templates – installed the first time only (when the file
 ; does not yet exist).  The uninsneveruninstall flag ensures the
@@ -91,6 +92,7 @@ Source: "{#MyDataDir}\SuomenLottoData.csv"; DestDir: "{app}\data"; \
 Source: "{#MyDataDir}\VikingData.csv"; DestDir: "{app}\data"; \
     Flags: uninsneveruninstall skipifsourcedoesntexist; \
     Check: not FileExists(ExpandConstant('{app}\data\VikingData.csv'))
+Source: "redist\VC_redist.x64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall;
 
 ; English help (installed as LottoGui.chm – the name the app expects).
 Source: "{#MyHelpEn}"; DestDir: "{app}"; DestName: "LottoGui.chm"; \
@@ -105,7 +107,9 @@ Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
+Filename: "{tmp}\VC_redist.x64.exe"; Parameters: "/install /quiet /norestart"; StatusMsg: "Installing Microsoft Visual C++ Runtime..."; Flags: waituntilterminated
 Filename: "{app}\{#MyAppExeName}"; Description: "Launch {#MyAppName}"; Flags: nowait postinstall skipifsilent
+
 
 ; ------------------------------------------------------------------
 ; Uninstall notes

@@ -75,7 +75,7 @@ BOOL CLottoGuiApp::InitInstance()
 
 	CWinApp::InitInstance();
 
-	// Read language preference from registry and apply before window creation
+	// Read the installer language preference before loading language resources.
 	{
 		HKEY hKey;
 		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\LottoGui"),
@@ -88,9 +88,17 @@ BOOL CLottoGuiApp::InitInstance()
 				&dwType, (LPBYTE)szLang, &dwSize) == ERROR_SUCCESS)
 			{
 				if (_tcsicmp(szLang, _T("fi")) == 0)
-					::SetThreadLocale(MAKELCID(
-						MAKELANGID(LANG_FINNISH, SUBLANG_DEFAULT),
-						SORT_DEFAULT));
+				{
+					const LANGID language = MAKELANGID(LANG_FINNISH, SUBLANG_DEFAULT);
+					::SetThreadLocale(MAKELCID(language, SORT_DEFAULT));
+					::SetThreadUILanguage(language);
+				}
+				else if (_tcsicmp(szLang, _T("en")) == 0)
+				{
+					const LANGID language = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US);
+					::SetThreadLocale(MAKELCID(language, SORT_DEFAULT));
+					::SetThreadUILanguage(language);
+				}
 			}
 			RegCloseKey(hKey);
 		}

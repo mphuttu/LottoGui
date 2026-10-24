@@ -14,7 +14,7 @@ numeroa alueelta 1–50 sekä 2 tähtinumeroa alueelta 1–12.
 </p>
 
 <h2>Toiminto valikossa</h2>
-<p>Valitse <strong>Lotto Options → Eurojackpot CSV…</strong></p>
+<p>Valitse <strong>Lotto-asetukset → Eurojackpot CSV…</strong></p>
 
 <h2>Datatiedosto</h2>
 <p>Ohjelma lukee tiedoston <code>data\EurojackpotData.csv</code>.
@@ -23,8 +23,14 @@ tähtinumeroille, kaikki puolipiste-erottimella.</p>
 
 <h2>Valintaikkunan asetukset</h2>
 <ul>
-<li><strong>Number of Rows</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+<li><strong>Ennustusrivejä</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+<li>Eurojackpot-rivin hinta on 2,00 €.</li>
 </ul>
+
+<h2>Voittojen tarkistus</h2>
+<p>Voittoluokat ovat 5+2, 5+1, 5, 4+2, 4+1, 4, 3+2, 3+1, 3, 2+2, 2+1 ja 1+2 oikein.
+Viisi päänumeroa ja kaksi tähtinumeroa on päävoitto. Voitto-osuudet vaihtelevat arvonnoittain,
+joten ohjelma näyttää voittoluokan eikä käytä yksittäisen arvonnan euromääriä tulevien tulosten arviointiin.</p>
 
 <h2>Tulostus</h2>
 <ol>
@@ -45,5 +51,20 @@ tähtinumeroille, kaikki puolipiste-erottimella.</p>
 <strong>Vinkki:</strong> Eurojackpot järjestetään kahdesti viikossa, joten datamäärä
 kasvaa nopeasti. Päivitä CSV-tiedosto säännöllisesti tuoreimmilla arvantatuloksilla.
 </div>
+
+<h2>Valintaikkunan strategiat</h2>
+<p>Valintaikkunassa on 8 valinnaista strategiaa. Strategiat koskevat ainoastaan 5 pääasiallista numeroa (1–50); tähtinumerot arvotaan erikseen, ja rivien hajautus sovelletaan myös niihin.</p>
+<ul>
+<li><strong>Tasapainotettu</strong> – Noin 50 % pieniä (1–25) ja 50 % suuria (26–50) numeroita sekä 50 % parillisia ja 50 % parittomia.</li>
+<li><strong>Delta-tekniikka</strong> – Arpoo nousevan joukon eri numeroita historiallisten tietojen pienimmän ja suurimman arvon väliltä.</li>
+<li><strong>Onnenpyörä</strong> – Syötä vähintään 6 numeroa Numerot-kenttään; kaikki yhdistelmät listataan, jos niitä on enintään 100, muuten valitaan 100 satunnaista yhdistelmää.</li>
+<li><strong>Epätavalliset numerot</strong> – Suosii numeroita yli 31 kolminkertaisella painolla.</li>
+<li><strong>Peräkkäiset numerot</strong> – Sisältää vähintään yhden peräkkäisen numeroparin, jos käytettävissä olevat numerot mahdollistavat sen.</li>
+<li><strong>Maaginen summa</strong> – Tavoittelee aluetta, joka on 80–120 % historiallisten frekvenssien painottamasta odotussummasta. Jos sopivaa riviä ei löydy, näytetään lähin kokeiltu rivi ja merkitään se.</li>
+<li><strong>Matriisitekniikka</strong> – Luo 3×3-matriisin ja käyttää rivi-, sarake- ja diagonaalisummia numeroiden muodostamiseen.</li>
+<li><strong>Rivien hajautus</strong> – Suosii aiemmilla ennusteriveillä harvemmin käytettyjä pää- ja tähtinumeroita ja välttää päällekkäisiä pääyhdistelmiä mahdollisuuksien mukaan.</li>
+</ul>
+<p>Arvonnat ovat toisistaan riippumattomia: nämä menetelmät muuttavat ehdotusrivien rakennetta, eivät yksittäisen rivin voittotodennäköisyyttä.</p>
+<p>Tulosten lopussa luetellaan käytössä olleet strategiat, esim. <code>Käytössä olevat strategiat: Tasapainotettu, Onnenpyörä</code>.</p>
 </body>
 </html>

@@ -1,5 +1,7 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 //
+#pragma code_page(65001)
+
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -17,36 +19,15 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// Shared, language-neutral application and toolbar resources
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
+#if !defined(AFX_RESOURCE_DLL)
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\LottoGuiIcon.ico"
-
 IDR_LottoGuiTYPE        ICON                    "res\\LottoGuiDoc.ico"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
-
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Toolbar
-//
+IDB_MENUICONS           BITMAP                  "res\\MenuIcons.bmp"
 
 IDR_MAINFRAME TOOLBAR 32, 32
 BEGIN
@@ -62,7 +43,13 @@ BEGIN
     BUTTON      ID_FILE_PRINT
     BUTTON      ID_APP_ABOUT
 END
+#endif
 
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -86,35 +73,36 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
-    POPUP "&Lotto Options"
+    POPUP "&Lotto-valinnat"
     BEGIN
-        MENUITEM "Classic Lotto Options...",    ID_LOTTOOPTIONS
-        MENUITEM "Suomen Lotto CSV...",         ID_LOTTOOPTIONS_SUOMENLOTTO
-        MENUITEM "Milli CSV...",                ID_LOTTOOPTIONS_MILLICSV
-        MENUITEM "KTEM CSV...",                 ID_LOTTOOPTIONS_KTEMCSV
-        MENUITEM "Keno CSV...",                 ID_LOTTOOPTIONS_KENOCSV
-        MENUITEM "Eurojackpot CSV...",          ID_LOTTOOPTIONS_EUROJACKPOTCSV
-        MENUITEM "Viking Lotto CSV...",         ID_LOTTOOPTIONS_VIKINGLOTTOCSV
-        MENUITEM "Jokeri CSV...",               ID_LOTTOOPTIONS_JOKERICSV
+        MENUITEM "Klassinen Lotto -asetukset...",    ID_LOTTOOPTIONS
+        MENUITEM "Suomen Lotto CSV...",              ID_LOTTOOPTIONS_SUOMENLOTTO
+        MENUITEM "Milli CSV...",                     ID_LOTTOOPTIONS_MILLICSV
+        MENUITEM "KTEM CSV...",                      ID_LOTTOOPTIONS_KTEMCSV
+        MENUITEM "Keno CSV...",                      ID_LOTTOOPTIONS_KENOCSV
+        MENUITEM "Eurojackpot CSV...",               ID_LOTTOOPTIONS_EUROJACKPOTCSV
+        MENUITEM "Viking Lotto CSV...",              ID_LOTTOOPTIONS_VIKINGLOTTOCSV
+        MENUITEM "Jokeri CSV...",                    ID_LOTTOOPTIONS_JOKERICSV
+        MENUITEM "Tarkista tulokset...",             ID_LOTTOOPTIONS_CHECKRESULTS
     END
-    POPUP "&Edit"
+    POPUP "&Muokkaa"
     BEGIN
-        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM "&Peruuta\tCtrl+Z",               ID_EDIT_UNDO
         MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+        MENUITEM "Leikkaa\tCtrl+X",               ID_EDIT_CUT
+        MENUITEM "&Kopioi\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Liitä\tCtrl+V",                ID_EDIT_PASTE
     END
-    POPUP "&View"
+    POPUP "&Näytä"
     BEGIN
-        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
-        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM "&Työkalurivi",                   ID_VIEW_TOOLBAR
+        MENUITEM "&Tilarivi",                      ID_VIEW_STATUS_BAR
     END
-    POPUP "&Help"
+    POPUP "&Ohje"
     BEGIN
-        MENUITEM "&Usage Help...",              ID_HELP_USAGE
+        MENUITEM "&Käyttöohje...",                 ID_HELP_USAGE
         MENUITEM SEPARATOR
-        MENUITEM "&About LottoGui...",          ID_APP_ABOUT
+        MENUITEM "&Tietoja LottoGuista...",         ID_APP_ABOUT
     END
 END
 
@@ -154,7 +142,7 @@ CAPTION "About LottoGui"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
-    LTEXT           "LottoGui, Beta Version 1.1",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "LottoGui, Beta Version 1.3",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) Mika Huttunen, 2026",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
 END
@@ -168,7 +156,18 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,221,177,50,14
 END
 
-IDD_JOKERI_DIALOG DIALOGEX 0, 0, 258, 94
+IDD_CHECK_RESULTS_DIALOG DIALOGEX 0, 0, 330, 145
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Check results"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "Numbers (optional bonus numbers after |; e.g. 11 17 20 22 35 | 4 8):",IDC_STATIC,10,10,310,20
+    EDITTEXT        IDC_CHECK_RESULTS_NUMBERS,10,36,310,20,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "Check",IDOK,179,109,60,14
+    PUSHBUTTON      "Cancel",IDCANCEL,249,109,60,14
+END
+
+IDD_JOKERI_DIALOG DIALOGEX 0, 0, 258, 150
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Jokeri CSV"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -176,44 +175,96 @@ BEGIN
     LTEXT           "Generate predictions from data\\JokeriData.csv",IDC_JOKERI_INFO,14,13,222,18
     LTEXT           "Prediction rows:",IDC_STATIC,15,44,60,8
     EDITTEXT        IDC_JOKERI_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,201,71,50,14
+    LTEXT           "Line price: 2.00 EUR",IDC_JOKERI_PRICE,15,64,110,8
+    CONTROL         "Double",IDC_JOKERI_DOUBLE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,79,150,10
+    CONTROL         "Use historical repeated-digit profile",IDC_JOKERI_REPEAT_PROFILE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,95,220,10
+    DEFPUSHBUTTON   "OK",IDOK,147,120,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,201,120,50,14
 END
 
-IDD_MILLI_DIALOG DIALOGEX 0, 0, 258, 94
+IDD_MILLI_DIALOG DIALOGEX 0, 0, 258, 250
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Milli CSV"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Generate predictions from data\\MilliData.csv",IDC_MILLI_INFO,14,13,222,18
-    LTEXT           "Prediction rows:",IDC_STATIC,15,44,60,8
-    EDITTEXT        IDC_MILLI_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,201,71,50,14
+    LTEXT           "Generate predictions from data\\MilliData.csv",IDC_MILLI_INFO,14,7,230,18
+    LTEXT           "Prediction rows:",IDC_STATIC,15,30,70,8
+    EDITTEXT        IDC_MILLI_ROWS,90,27,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Line price: 1.00 EUR",IDC_MILLI_PRICE,15,50,120,8
+    GROUPBOX        "Strategies",IDC_STATIC,7,68,244,152
+    CONTROL         "Balanced (50% small/large, 50% even/odd)",IDC_SL_BALANCED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,80,230,10
+    CONTROL         "Delta technique",IDC_SL_DELTA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,94,150,10
+    CONTROL         "Wheel system",IDC_SL_WHEEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,108,100,10
+    LTEXT           "Numbers:",IDC_STATIC,20,121,36,8
+    EDITTEXT        IDC_SL_WHEEL_NUMS,58,119,186,14,ES_AUTOHSCROLL
+    CONTROL         "Unusual numbers (prefer >31)",IDC_SL_UNUSUAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,138,220,10
+    CONTROL         "Consecutive pair",IDC_SL_CONSECUTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,152,150,10
+    CONTROL         "Magic sum (adaptive range)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
+    CONTROL         "Matrix technique",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
+    CONTROL         "Portfolio coverage (reduce overlap)",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,220,10
+    DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,205,228,50,14
 END
 
-IDD_KTEM_DIALOG DIALOGEX 0, 0, 258, 94
+IDD_KTEM_DIALOG DIALOGEX 0, 0, 258, 250
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "KTEM CSV"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Generate predictions from data\\KTEM.csv",IDC_KTEM_INFO,14,13,222,18
-    LTEXT           "Prediction rows:",IDC_STATIC,15,44,60,8
-    EDITTEXT        IDC_KTEM_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,201,71,50,14
+    LTEXT           "Generate predictions from data\\KTEM.csv",IDC_KTEM_INFO,14,7,230,18
+    LTEXT           "Prediction rows:",IDC_STATIC,15,30,70,8
+    EDITTEXT        IDC_KTEM_ROWS,90,27,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Stake per row:",IDC_STATIC,15,50,60,8
+    COMBOBOX        IDC_KTEM_STAKE,78,46,68,90,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Onnenapila",IDC_KTEM_ONNENAPILA,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,151,49,100,10
+    GROUPBOX        "Strategies",IDC_STATIC,7,68,244,152
+    CONTROL         "Balanced (50% small/large, 50% even/odd)",IDC_SL_BALANCED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,80,230,10
+    CONTROL         "Delta technique",IDC_SL_DELTA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,94,150,10
+    CONTROL         "Wheel system",IDC_SL_WHEEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,108,100,10
+    LTEXT           "Numbers:",IDC_STATIC,20,121,36,8
+    EDITTEXT        IDC_SL_WHEEL_NUMS,58,119,186,14,ES_AUTOHSCROLL
+    CONTROL         "Unusual numbers (prefer >31)",IDC_SL_UNUSUAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,138,220,10
+    CONTROL         "Consecutive pair",IDC_SL_CONSECUTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,152,150,10
+    CONTROL         "Magic sum (adaptive range)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
+    CONTROL         "Matrix technique",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
+    CONTROL         "Portfolio coverage (reduce overlap)",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,220,10
+    DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,205,228,50,14
 END
 
-IDD_KENO_DIALOG DIALOGEX 0, 0, 258, 94
+IDD_KENO_DIALOG DIALOGEX 0, 0, 258, 262
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Keno CSV"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Generate predictions from data\\KenoData.csv",IDC_KENO_INFO,14,13,222,18
-    LTEXT           "Prediction rows:",IDC_STATIC,15,44,60,8
-    EDITTEXT        IDC_KENO_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,201,71,50,14
+    LTEXT           "Generate predictions from data\\KenoData.csv",IDC_KENO_INFO,14,7,230,18
+    LTEXT           "Prediction rows:",IDC_STATIC,15,30,70,8
+    EDITTEXT        IDC_KENO_ROWS,90,27,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Level:",IDC_STATIC,15,50,30,8
+    COMBOBOX        IDC_KENO_LEVEL,48,46,56,90,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Stake:",IDC_STATIC,116,50,30,8
+    COMBOBOX        IDC_KENO_STAKE,150,46,75,90,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Kunkkukerroin",IDC_KENO_KUNKKUKERROIN,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,66,190,10
+    GROUPBOX        "Strategies",IDC_STATIC,7,85,244,140
+    CONTROL         "Balanced (50% small/large, 50% even/odd)",IDC_SL_BALANCED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,97,230,10
+    CONTROL         "Delta technique",IDC_SL_DELTA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,111,150,10
+    CONTROL         "Wheel system",IDC_SL_WHEEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,125,100,10
+    LTEXT           "Numbers:",IDC_STATIC,20,138,36,8
+    EDITTEXT        IDC_SL_WHEEL_NUMS,58,136,186,14,ES_AUTOHSCROLL
+    CONTROL         "Unusual numbers (prefer >31)",IDC_SL_UNUSUAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,155,220,10
+    CONTROL         "Consecutive pair",IDC_SL_CONSECUTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,169,150,10
+    CONTROL         "Magic sum (adaptive range)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,183,200,10
+    CONTROL         "Matrix technique",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,197,150,10
+    CONTROL         "Portfolio coverage (reduce overlap)",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,211,220,10
+    DEFPUSHBUTTON   "OK",IDOK,151,236,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,205,236,50,14
 END
 
 IDD_LOTTODIALOG DIALOGEX 0, 0, 309, 176
@@ -238,40 +289,83 @@ BEGIN
     EDITTEXT        IDC_NUMSEDIT,15,89,278,34,ES_MULTILINE | ES_AUTOVSCROLL
 END
 
-IDD_SUOMENLOTTO_DIALOG DIALOGEX 0, 0, 258, 94
+IDD_SUOMENLOTTO_DIALOG DIALOGEX 0, 0, 258, 250
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Suomen Lotto"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Generate predictions from data\\SuomenLottoData.csv",IDC_SUOMENLOTTO_INFO,14,13,222,18
-    LTEXT           "Prediction rows:",IDC_STATIC,15,44,60,8
-    EDITTEXT        IDC_SUOMENLOTTO_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,201,71,50,14
+    LTEXT           "Generate predictions from data\\SuomenLottoData.csv",IDC_SUOMENLOTTO_INFO,14,7,230,18
+    LTEXT           "Prediction rows:",IDC_STATIC,15,30,70,8
+    EDITTEXT        IDC_SUOMENLOTTO_ROWS,90,27,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Line price: 1.00 EUR",IDC_SUOMENLOTTO_PRICE,15,50,120,8
+    CONTROL         "Plus",IDC_SUOMENLOTTO_PLUS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,130,49,120,10
+    GROUPBOX        "Strategies",IDC_STATIC,7,68,244,152
+    CONTROL         "Balanced (50% small/large, 50% even/odd)",IDC_SL_BALANCED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,80,230,10
+    CONTROL         "Delta technique",IDC_SL_DELTA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,94,150,10
+    CONTROL         "Wheel system",IDC_SL_WHEEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,108,100,10
+    LTEXT           "Numbers:",IDC_STATIC,20,121,36,8
+    EDITTEXT        IDC_SL_WHEEL_NUMS,58,119,186,14,ES_AUTOHSCROLL
+    CONTROL         "Unusual numbers (prefer >31)",IDC_SL_UNUSUAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,138,220,10
+    CONTROL         "Consecutive pair",IDC_SL_CONSECUTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,152,150,10
+    CONTROL         "Magic sum (adaptive range)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
+    CONTROL         "Matrix technique",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
+    CONTROL         "Portfolio coverage (reduce overlap)",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,220,10
+    DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,205,228,50,14
 END
 
-IDD_EUROJACKPOT_DIALOG DIALOGEX 0, 0, 258, 94
+IDD_EUROJACKPOT_DIALOG DIALOGEX 0, 0, 258, 250
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Eurojackpot CSV"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Generate predictions from data\\EurojackpotData.csv",IDC_EUROJACKPOT_INFO,14,13,222,18
-    LTEXT           "Prediction rows:",IDC_STATIC,15,44,60,8
-    EDITTEXT        IDC_EUROJACKPOT_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,201,71,50,14
+    LTEXT           "Generate predictions from data\\EurojackpotData.csv",IDC_EUROJACKPOT_INFO,14,7,230,18
+    LTEXT           "Prediction rows:",IDC_STATIC,15,30,70,8
+    EDITTEXT        IDC_EUROJACKPOT_ROWS,90,27,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Line price: 2.00 EUR",IDC_EUROJACKPOT_PRICE,15,50,120,8
+    GROUPBOX        "Strategies",IDC_STATIC,7,68,244,152
+    CONTROL         "Balanced (50% small/large, 50% even/odd)",IDC_SL_BALANCED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,80,230,10
+    CONTROL         "Delta technique",IDC_SL_DELTA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,94,150,10
+    CONTROL         "Wheel system",IDC_SL_WHEEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,108,100,10
+    LTEXT           "Numbers:",IDC_STATIC,20,121,36,8
+    EDITTEXT        IDC_SL_WHEEL_NUMS,58,119,186,14,ES_AUTOHSCROLL
+    CONTROL         "Unusual numbers (prefer >31)",IDC_SL_UNUSUAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,138,220,10
+    CONTROL         "Consecutive pair",IDC_SL_CONSECUTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,152,150,10
+    CONTROL         "Magic sum (adaptive range)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
+    CONTROL         "Matrix technique",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
+    CONTROL         "Portfolio coverage (reduce overlap)",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,220,10
+    DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,205,228,50,14
 END
 
-IDD_VIKINGLOTTO_DIALOG DIALOGEX 0, 0, 258, 94
+IDD_VIKINGLOTTO_DIALOG DIALOGEX 0, 0, 258, 250
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Viking Lotto CSV"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Generate predictions from data\\VikingData.csv",IDC_VIKINGLOTTO_INFO,14,13,222,18
-    LTEXT           "Prediction rows:",IDC_STATIC,15,44,60,8
-    EDITTEXT        IDC_VIKINGLOTTO_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,201,71,50,14
+    LTEXT           "Generate predictions from data\\VikingData.csv",IDC_VIKINGLOTTO_INFO,14,7,230,18
+    LTEXT           "Prediction rows:",IDC_STATIC,15,30,70,8
+    EDITTEXT        IDC_VIKINGLOTTO_ROWS,90,27,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Line price: 1.00 EUR",IDC_VIKINGLOTTO_PRICE,15,50,120,8
+    CONTROL         "Plus number",IDC_VIKINGLOTTO_PLUS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,130,49,120,10
+    GROUPBOX        "Strategies",IDC_STATIC,7,68,244,152
+    CONTROL         "Balanced (50% small/large, 50% even/odd)",IDC_SL_BALANCED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,80,230,10
+    CONTROL         "Delta technique",IDC_SL_DELTA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,94,150,10
+    CONTROL         "Wheel system",IDC_SL_WHEEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,108,100,10
+    LTEXT           "Numbers:",IDC_STATIC,20,121,36,8
+    EDITTEXT        IDC_SL_WHEEL_NUMS,58,119,186,14,ES_AUTOHSCROLL
+    CONTROL         "Unusual numbers (prefer >31)",IDC_SL_UNUSUAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,138,220,10
+    CONTROL         "Consecutive pair",IDC_SL_CONSECUTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,152,150,10
+    CONTROL         "Magic sum (adaptive range)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
+    CONTROL         "Matrix technique",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
+    CONTROL         "Portfolio coverage (reduce overlap)",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,220,10
+    DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,205,228,50,14
 END
 
 
@@ -281,8 +375,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 1,3,0,0
+ PRODUCTVERSION 1,3,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -297,14 +391,14 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "CompanyName", "TODO: <Company name>"
-            VALUE "FileDescription", "LottoGui"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "CompanyName", "Mika Huttunen"
+            VALUE "FileDescription", "Lottery Analysis Application"
+            VALUE "FileVersion", "1.3.0.0"
             VALUE "InternalName", "LottoGui.exe"
-            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "LegalCopyright", "(c) Mika Huttunen.  All rights reserved."
             VALUE "OriginalFilename", "LottoGui.exe"
-            VALUE "ProductName", "TODO: <Product name>"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "ProductName", "LottoGui"
+            VALUE "ProductVersion", "1.3.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -338,12 +432,16 @@ BEGIN
         BOTTOMMARGIN, 189
     END
 
+    IDD_CHECK_RESULTS_DIALOG, DIALOG
+    BEGIN
+    END
+
     IDD_JOKERI_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 251
         TOPMARGIN, 7
-        BOTTOMMARGIN, 87
+        BOTTOMMARGIN, 103
     END
 
     IDD_MILLI_DIALOG, DIALOG
@@ -562,7 +660,6 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FIN)
 LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
-#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -574,9 +671,9 @@ BEGIN
     POPUP "&Tiedosto"
     BEGIN
         MENUITEM "&Uusi\tCtrl+N",               ID_FILE_NEW
-        MENUITEM "&Avaa...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Avaa... \tCtrl+O",           ID_FILE_OPEN
         MENUITEM "&Tallenna\tCtrl+S",           ID_FILE_SAVE
-        MENUITEM "Tallenna &nimell�...",        ID_FILE_SAVE_AS
+        MENUITEM "Tallenna &nimellä...",       ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
         MENUITEM "&Tulosta...\tCtrl+P",         ID_FILE_PRINT
         MENUITEM "Esika&tselu",                 ID_FILE_PRINT_PREVIEW
@@ -596,23 +693,24 @@ BEGIN
         MENUITEM "Eurojackpot CSV...",          ID_LOTTOOPTIONS_EUROJACKPOTCSV
         MENUITEM "Viking Lotto CSV...",         ID_LOTTOOPTIONS_VIKINGLOTTOCSV
         MENUITEM "Jokeri CSV...",               ID_LOTTOOPTIONS_JOKERICSV
+        MENUITEM "Tarkista osumat...",          ID_LOTTOOPTIONS_CHECKRESULTS
     END
     POPUP "&Muokkaa"
     BEGIN
-        MENUITEM "&Kumoa\tCtrl+Z",              ID_EDIT_UNDO
+        MENUITEM "&Kumoa        Ctrl+Z",        ID_EDIT_UNDO
         MENUITEM SEPARATOR
-        MENUITEM "&Leikkaa\tCtrl+X",            ID_EDIT_CUT
-        MENUITEM "&Kopioi\tCtrl+C",             ID_EDIT_COPY
-        MENUITEM "&Liit�\tCtrl+V",              ID_EDIT_PASTE
+        MENUITEM "&Leikkaa      Ctrl+X",        ID_EDIT_CUT
+        MENUITEM "&Kopioi       Ctrl+C",        ID_EDIT_COPY
+        MENUITEM "&Liitä        Ctrl+V",        ID_EDIT_PASTE
     END
-    POPUP "N�kym�"
+    POPUP "Näytä"
     BEGIN
-        MENUITEM "&Ty�kalurivi",                ID_VIEW_TOOLBAR
+        MENUITEM "&Työkalurivi",               ID_VIEW_TOOLBAR
         MENUITEM "&Tilapalkki",                 ID_VIEW_STATUS_BAR
     END
     POPUP "&Ohje"
     BEGIN
-        MENUITEM "K�ytt�ohje...",               ID_HELP_USAGE
+        MENUITEM "Käyttöohje...",             ID_HELP_USAGE
         MENUITEM SEPARATOR
         MENUITEM "&Tietoja LottoGui:sta...",    ID_APP_ABOUT
     END
@@ -630,18 +728,29 @@ CAPTION "Tietoja LottoGui:sta"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
-    LTEXT           "LottoGui, Beta Version 1.1",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) Mika Huttunen, 2026",IDC_STATIC,42,26,114,8
+    LTEXT           "LottoGui, beetaversio 1.3",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "Tekijänoikeus © Mika Huttunen, 2026",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
 END
 
 IDD_HELPDIALOG DIALOGEX 0, 0, 278, 196
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "LottoGui  13 Ohje"
+CAPTION "LottoGui-ohje"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     EDITTEXT        IDC_HELP_TEXT,7,7,264,166,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
     DEFPUSHBUTTON   "OK",IDOK,221,177,50,14
+END
+
+IDD_CHECK_RESULTS_DIALOG DIALOGEX 0, 0, 330, 145
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Tarkista tulokset"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "Numerot (valinnaiset lisänumerot |-merkin jälkeen; esim. 11 17 20 22 35 | 4 8):",IDC_STATIC,10,10,310,20
+    EDITTEXT        IDC_CHECK_RESULTS_NUMBERS,10,36,310,20,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "Tarkista",IDOK,179,109,60,14
+    PUSHBUTTON      "Peruuta",IDCANCEL,249,109,60,14
 END
 
 IDD_LOTTODIALOG DIALOGEX 0, 0, 309, 176
@@ -651,7 +760,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,198,155,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,252,155,50,14
-    CONTROL         "K�yt� numeroita v�lilt�:",IDC_USERANGECHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,15,110,10
+    CONTROL         "Käytä numeroita väliltä:",IDC_USERANGECHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,16,15,110,10
     EDITTEXT        IDC_FROMEDIT,156,14,29,13,ES_AUTOHSCROLL | ES_NUMBER
     LTEXT           "Min:",IDC_minSTATIC,141,15,14,8
     LTEXT           "Max:",IDC_maxSTATIC,197,15,17,8
@@ -666,88 +775,186 @@ BEGIN
     EDITTEXT        IDC_NUMSEDIT,15,89,278,34,ES_MULTILINE | ES_AUTOVSCROLL
 END
 
-IDD_SUOMENLOTTO_DIALOG DIALOGEX 0, 0, 258, 94
+IDD_MILLI_DIALOG DIALOGEX 0, 0, 258, 250
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Milli CSV"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Luo ennustukset tiedostosta data\\MilliData.csv",IDC_MILLI_INFO,14,7,230,18
+    LTEXT           "Ennustusrivejä:",IDC_STATIC,15,30,70,8
+    EDITTEXT        IDC_MILLI_ROWS,90,27,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Rivihinta: 1,00 €",IDC_MILLI_PRICE,15,50,120,8
+    GROUPBOX        "Strategiat",IDC_STATIC,7,68,244,152
+    CONTROL         "Tasapainotettu (50% pieniä/suuria, parill./paritt.)",IDC_SL_BALANCED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,80,230,10
+    CONTROL         "Delta-tekniikka",IDC_SL_DELTA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,94,150,10
+    CONTROL         "Onnenpyörä",IDC_SL_WHEEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,108,100,10
+    LTEXT           "Numerot:",IDC_STATIC,20,121,36,8
+    EDITTEXT        IDC_SL_WHEEL_NUMS,58,119,186,14,ES_AUTOHSCROLL
+    CONTROL         "Epätavalliset numerot (suosi >31)",IDC_SL_UNUSUAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,138,220,10
+    CONTROL         "Peräkkäiset numerot",IDC_SL_CONSECUTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,152,150,10
+    CONTROL         "Maaginen summa (adaptiivinen)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
+    CONTROL         "Matriisitekniikka",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
+    CONTROL         "Rivien hajautus",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,220,10
+    DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
+    PUSHBUTTON      "Peruuta",IDCANCEL,205,228,50,14
+END
+
+IDD_KTEM_DIALOG DIALOGEX 0, 0, 258, 250
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "KTEM CSV"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Luo ennustukset tiedostosta data\\KTEM.csv",IDC_KTEM_INFO,14,7,230,18
+    LTEXT           "Ennustusrivejä:",IDC_STATIC,15,30,70,8
+    EDITTEXT        IDC_KTEM_ROWS,90,27,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Panos/rivi:",IDC_STATIC,15,50,60,8
+    COMBOBOX        IDC_KTEM_STAKE,78,46,68,90,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Onnenapila",IDC_KTEM_ONNENAPILA,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,151,49,100,10
+    GROUPBOX        "Strategiat",IDC_STATIC,7,68,244,152
+    CONTROL         "Tasapainotettu (50% pieniä/suuria, parill./paritt.)",IDC_SL_BALANCED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,80,230,10
+    CONTROL         "Delta-tekniikka",IDC_SL_DELTA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,94,150,10
+    CONTROL         "Onnenpyörä",IDC_SL_WHEEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,108,100,10
+    LTEXT           "Numerot:",IDC_STATIC,20,121,36,8
+    EDITTEXT        IDC_SL_WHEEL_NUMS,58,119,186,14,ES_AUTOHSCROLL
+    CONTROL         "Epätavalliset numerot (suosi >31)",IDC_SL_UNUSUAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,138,220,10
+    CONTROL         "Peräkkäiset numerot",IDC_SL_CONSECUTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,152,150,10
+    CONTROL         "Maaginen summa (adaptiivinen)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
+    CONTROL         "Matriisitekniikka",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
+    CONTROL         "Rivien hajautus",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,220,10
+    DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
+    PUSHBUTTON      "Peruuta",IDCANCEL,205,228,50,14
+END
+
+IDD_KENO_DIALOG DIALOGEX 0, 0, 258, 262
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Keno CSV"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Luo ennustukset tiedostosta data\\KenoData.csv",IDC_KENO_INFO,14,7,230,18
+    LTEXT           "Ennustusrivejä:",IDC_STATIC,15,30,70,8
+    EDITTEXT        IDC_KENO_ROWS,90,27,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Taso:",IDC_STATIC,15,50,30,8
+    COMBOBOX        IDC_KENO_LEVEL,48,46,56,90,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Panos:",IDC_STATIC,116,50,30,8
+    COMBOBOX        IDC_KENO_STAKE,150,46,75,90,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Kunkkukerroin",IDC_KENO_KUNKKUKERROIN,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,66,220,10
+    GROUPBOX        "Strategiat",IDC_STATIC,7,85,244,140
+    CONTROL         "Tasapainotettu (50% pieniä/suuria, parill./paritt.)",IDC_SL_BALANCED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,97,230,10
+    CONTROL         "Delta-tekniikka",IDC_SL_DELTA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,111,150,10
+    CONTROL         "Onnenpyörä",IDC_SL_WHEEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,125,100,10
+    LTEXT           "Numerot:",IDC_STATIC,20,138,36,8
+    EDITTEXT        IDC_SL_WHEEL_NUMS,58,136,186,14,ES_AUTOHSCROLL
+    CONTROL         "Epätavalliset numerot (suosi >31)",IDC_SL_UNUSUAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,155,220,10
+    CONTROL         "Peräkkäiset numerot",IDC_SL_CONSECUTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,169,150,10
+    CONTROL         "Maaginen summa (adaptiivinen)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,183,200,10
+    CONTROL         "Matriisitekniikka",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,197,150,10
+    CONTROL         "Rivien hajautus",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,211,220,10
+    DEFPUSHBUTTON   "OK",IDOK,151,236,50,14
+    PUSHBUTTON      "Peruuta",IDCANCEL,205,236,50,14
+END
+
+IDD_SUOMENLOTTO_DIALOG DIALOGEX 0, 0, 258, 250
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Suomen Lotto"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Luo ennustukset tiedostosta data\\SuomenLottoData.csv",IDC_SUOMENLOTTO_INFO,14,13,222,18
-    LTEXT           "Ennustusrivej�:",IDC_STATIC,15,44,60,8
-    EDITTEXT        IDC_SUOMENLOTTO_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Peruuta",IDCANCEL,201,71,50,14
+    LTEXT           "Luo ennustukset tiedostosta data\\SuomenLottoData.csv",IDC_SUOMENLOTTO_INFO,14,7,230,18
+    LTEXT           "Ennustusrivejä:",IDC_STATIC,15,30,60,8
+    EDITTEXT        IDC_SUOMENLOTTO_ROWS,90,27,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Rivihinta: 1,00 €",IDC_SUOMENLOTTO_PRICE,15,50,100,8
+    CONTROL         "Plus",IDC_SUOMENLOTTO_PLUS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,130,49,120,10
+    GROUPBOX        "Strategiat",IDC_STATIC,7,68,244,152
+    CONTROL         "Tasapainotettu (50% pieniä/suuria, par./parit.)",IDC_SL_BALANCED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,80,230,10
+    CONTROL         "Delta-tekniikka",IDC_SL_DELTA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,94,150,10
+    CONTROL         "Onnenpyörä",IDC_SL_WHEEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,108,120,10
+    LTEXT           "Numerot:",IDC_STATIC,20,121,36,8
+    EDITTEXT        IDC_SL_WHEEL_NUMS,58,119,186,14,ES_AUTOHSCROLL
+    CONTROL         "Epätavalliset numerot (suosi >31)",IDC_SL_UNUSUAL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,138,220,10
+    CONTROL         "Peräkkäiset numerot",IDC_SL_CONSECUTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,152,160,10
+    CONTROL         "Maaginen summa (adaptiivinen)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
+    CONTROL         "Matriisitekniikka",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
+    CONTROL         "Rivien hajautus",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,180,10
+    DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
+    PUSHBUTTON      "Peruuta",IDCANCEL,205,228,50,14
 END
 
-IDD_EUROJACKPOT_DIALOG DIALOGEX 0, 0, 258, 94
+IDD_EUROJACKPOT_DIALOG DIALOGEX 0, 0, 258, 250
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Eurojackpot CSV"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Luo ennustukset tiedostosta data\\EurojackpotData.csv",IDC_EUROJACKPOT_INFO,14,13,222,18
-    LTEXT           "Ennustusrivej�:",IDC_STATIC,15,44,60,8
-    EDITTEXT        IDC_EUROJACKPOT_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Peruuta",IDCANCEL,201,71,50,14
+    LTEXT           "Luo ennustukset tiedostosta data\\EurojackpotData.csv",IDC_EUROJACKPOT_INFO,14,7,230,18
+    LTEXT           "Ennustusrivejä:",IDC_STATIC,15,30,60,8
+    EDITTEXT        IDC_EUROJACKPOT_ROWS,90,27,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Rivihinta: 2,00 €",IDC_EUROJACKPOT_PRICE,15,50,120,8
+    GROUPBOX        "Strategiat",IDC_STATIC,7,68,244,152
+    CONTROL         "Tasapainotettu (50% pieniä/suuria, par./parit.)",IDC_SL_BALANCED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,80,230,10
+    CONTROL         "Delta-tekniikka",IDC_SL_DELTA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,94,150,10
+    CONTROL         "Onnenpyörä",IDC_SL_WHEEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,108,120,10
+    LTEXT           "Numerot:",IDC_STATIC,20,121,36,8
+    EDITTEXT        IDC_SL_WHEEL_NUMS,58,119,186,14,ES_AUTOHSCROLL
+    CONTROL         "Epätavalliset numerot (suosi >31)",IDC_SL_UNUSUAL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,138,220,10
+    CONTROL         "Peräkkäiset numerot",IDC_SL_CONSECUTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,152,160,10
+    CONTROL         "Maaginen summa (adaptiivinen)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
+    CONTROL         "Matriisitekniikka",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
+    CONTROL         "Rivien hajautus",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,180,10
+    DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
+    PUSHBUTTON      "Peruuta",IDCANCEL,205,228,50,14
 END
 
-IDD_VIKINGLOTTO_DIALOG DIALOGEX 0, 0, 258, 94
+IDD_VIKINGLOTTO_DIALOG DIALOGEX 0, 0, 258, 250
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Viking Lotto CSV"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Luo ennustukset tiedostosta data\\VikingData.csv",IDC_VIKINGLOTTO_INFO,14,13,222,18
-    LTEXT           "Ennustusrivej�:",IDC_STATIC,15,44,60,8
-    EDITTEXT        IDC_VIKINGLOTTO_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Peruuta",IDCANCEL,201,71,50,14
+    LTEXT           "Luo ennustukset tiedostosta data\\VikingData.csv",IDC_VIKINGLOTTO_INFO,14,7,230,18
+    LTEXT           "Ennustusrivejä:",IDC_STATIC,15,30,60,8
+    EDITTEXT        IDC_VIKINGLOTTO_ROWS,90,27,38,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Rivihinta: 1,00 €",IDC_VIKINGLOTTO_PRICE,15,50,100,8
+    CONTROL         "Plusnumero",IDC_VIKINGLOTTO_PLUS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,130,49,120,10
+    GROUPBOX        "Strategiat",IDC_STATIC,7,68,244,152
+    CONTROL         "Tasapainotettu (50% pieniä/suuria, par./parit.)",IDC_SL_BALANCED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,80,230,10
+    CONTROL         "Delta-tekniikka",IDC_SL_DELTA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,94,150,10
+    CONTROL         "Onnenpyörä",IDC_SL_WHEEL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,108,120,10
+    LTEXT           "Numerot:",IDC_STATIC,20,121,36,8
+    EDITTEXT        IDC_SL_WHEEL_NUMS,58,119,186,14,ES_AUTOHSCROLL
+    CONTROL         "Epätavalliset numerot (suosi >31)",IDC_SL_UNUSUAL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,138,220,10
+    CONTROL         "Peräkkäiset numerot",IDC_SL_CONSECUTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,152,160,10
+    CONTROL         "Maaginen summa (adaptiivinen)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
+    CONTROL         "Matriisitekniikka",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
+    CONTROL         "Rivien hajautus",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,180,10
+    DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
+    PUSHBUTTON      "Peruuta",IDCANCEL,205,228,50,14
 END
 
-IDD_JOKERI_DIALOG DIALOGEX 0, 0, 258, 94
+IDD_JOKERI_DIALOG DIALOGEX 0, 0, 258, 150
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Jokeri CSV"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Luo ennustukset tiedostosta data\\JokeriData.csv",IDC_JOKERI_INFO,14,13,222,18
-    LTEXT           "Ennustusrivej�:",IDC_STATIC,15,44,60,8
+    LTEXT           "Ennustusrivejä:",IDC_STATIC,15,44,60,8
     EDITTEXT        IDC_JOKERI_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Peruuta",IDCANCEL,201,71,50,14
-END
-
-IDD_MILLI_DIALOG DIALOGEX 0, 0, 258, 94
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Milli CSV"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "Luo ennustukset tiedostosta data\\MilliData.csv",IDC_MILLI_INFO,14,13,222,18
-    LTEXT           "Ennustusrivej�:",IDC_STATIC,15,44,60,8
-    EDITTEXT        IDC_MILLI_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Peruuta",IDCANCEL,201,71,50,14
-END
-
-IDD_KTEM_DIALOG DIALOGEX 0, 0, 258, 94
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "KTEM CSV"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "Luo ennustukset tiedostosta data\\KTEM.csv",IDC_KTEM_INFO,14,13,222,18
-    LTEXT           "Ennustusrivej�:",IDC_STATIC,15,44,60,8
-    EDITTEXT        IDC_KTEM_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Peruuta",IDCANCEL,201,71,50,14
-END
-
-IDD_KENO_DIALOG DIALOGEX 0, 0, 258, 94
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Keno CSV"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "Luo ennustukset tiedostosta data\\KenoData.csv",IDC_KENO_INFO,14,13,222,18
-    LTEXT           "Ennustusrivej�:",IDC_STATIC,15,44,60,8
-    EDITTEXT        IDC_KENO_ROWS,90,41,38,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "OK",IDOK,147,71,50,14
-    PUSHBUTTON      "Peruuta",IDCANCEL,201,71,50,14
+    LTEXT           "Rivihinta: 2,00 €",IDC_JOKERI_PRICE,15,64,110,8
+    CONTROL         "Tuplaus",IDC_JOKERI_DOUBLE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,79,150,10
+    CONTROL         "Käytä historiallista toistoprofiilia",IDC_JOKERI_REPEAT_PROFILE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,95,220,10
+    DEFPUSHBUTTON   "OK",IDOK,147,120,50,14
+    PUSHBUTTON      "Peruuta",IDCANCEL,201,120,50,14
 END
 
 
@@ -761,85 +968,55 @@ GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 163
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 55
     END
 
     IDD_HELPDIALOG, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 271
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 189
     END
 
     IDD_LOTTODIALOG, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 302
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 169
     END
 
     IDD_SUOMENLOTTO_DIALOG, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 251
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 87
     END
 
     IDD_EUROJACKPOT_DIALOG, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 251
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 87
-    END
-
-    IDD_VIKINGLOTTO_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 251
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 87
     END
 
     IDD_JOKERI_DIALOG, DIALOG
     BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 251
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 87
-    END
-
-    IDD_MILLI_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 251
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 87
-    END
-
-    IDD_KTEM_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 251
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 87
-    END
-
-    IDD_KENO_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 251
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 87
     END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_EUROJACKPOT_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_JOKERI_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_LOTTODIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_SUOMENLOTTO_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
 
 
 #ifdef APSTUDIO_INVOKED
@@ -855,26 +1032,16 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "#ifndef APSTUDIO_INVOKED\r\n"
-    "#include ""targetver.h""\r\n"
-    "#endif\r\n"
-    "#include ""afxres.h""\r\n"
-    "#include ""verrsrc.h""\r\n"
+    "#include \"targetver.h\"\r\n"
+    "#include \"afxres.h\"\r\n"
+    "#include \"verrsrc.h\"\r\n"
     "\0"
 END
 
 3 TEXTINCLUDE 
 BEGIN
-    "#define _AFX_NO_OLE_RESOURCES\r\n"
-    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
-    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "#include \"res\\LottoGui.rc2\"\r\n"
     "\r\n"
-    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
-    "LANGUAGE 9, 1\r\n"
-    "#include ""res\\LottoGui.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
-    "#include ""afxres.rc""      // Standard components\r\n"
-    "#include ""afxprint.rc""    // printing/print preview resources\r\n"
-    "#endif\r\n"
     "\0"
 END
 
@@ -888,57 +1055,74 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "LottoGui\n\nLottoGui\nLottoGui-tiedostot (*.lot)\n.lot\nLottoGui.Document\nLottoGui.Document"
-END
-
-STRINGTABLE
-BEGIN
-    AFX_IDS_APP_TITLE       "LottoGui"
-    AFX_IDS_IDLEMESSAGE     "Valmis"
-END
-
-STRINGTABLE
-BEGIN
     ID_FILE_NEW             "Luo uusi asiakirja\nUusi"
     ID_FILE_OPEN            "Avaa olemassa oleva asiakirja\nAvaa"
-    ID_FILE_CLOSE           "Sulje aktiivinen asiakirja\nSulje"
     ID_FILE_SAVE            "Tallenna aktiivinen asiakirja\nTallenna"
-    ID_FILE_SAVE_AS         "Tallenna aktiivinen asiakirja uudella nimell�\nTallenna nimell�"
-    ID_FILE_PAGE_SETUP      "Muuta tulostusasetuksia\nSivun asetukset"
-    ID_FILE_PRINT_SETUP     "Muuta tulostimen ja tulostuksen asetuksia\nTulostusasetukset"
+    ID_FILE_SAVE_AS         "Tallenna aktiivinen asiakirja uudella nimellä\nTallenna nimellä"
     ID_FILE_PRINT           "Tulosta aktiivinen asiakirja\nTulosta"
-    ID_FILE_PRINT_DIRECT    "Tulosta aktiivinen asiakirja nykyisill� asetuksilla\nPikatulostus"
-    ID_FILE_PRINT_PREVIEW   "N�yt� sivut kokonaan\nEsikatselu"
+    ID_FILE_PRINT_DIRECT    "Tulosta aktiivinen asiakirja nykyisillä asetuksilla\nPikatulostus"
+    ID_FILE_PRINT_PREVIEW   "Näytä sivut kokonaan\nEsikatselu"
 END
 
 STRINGTABLE
 BEGIN
-    ID_APP_ABOUT            "N�yt� ohjelmatiedot, versionumero ja tekij�noikeus\nTietoja"
-    ID_APP_EXIT             "Lopeta ohjelma; pyydet��n tallentamaan asiakirjat\nLopeta"
+    ID_APP_ABOUT            "Näytä ohjelmatiedot, versionumero ja tekijänoikeus\nTietoja"
+    ID_APP_EXIT             "Lopeta ohjelma; pyydetään tallentamaan asiakirjat\nLopeta"
 END
 
 STRINGTABLE
 BEGIN
-    ID_LOTTOOPTIONS         "Avaa lotto-asetukset-valintaikkuna"
+    ID_LOTTOOPTIONS         "Avaa Lotto-asetukset-valintaikkuna"
     ID_LOTTOOPTIONS_SUOMENLOTTO "Avaa Suomen Lotto CSV -ennustusvalintaikkuna"
     ID_LOTTOOPTIONS_EUROJACKPOTCSV 
                             "Avaa Eurojackpot CSV -ennustusvalintaikkuna"
     ID_LOTTOOPTIONS_VIKINGLOTTOCSV 
                             "Avaa Viking Lotto CSV -ennustusvalintaikkuna"
-    ID_HELP_USAGE           "N�yt� k�ytt�ohjeet\nK�ytt�ohje"
+    ID_HELP_USAGE           "Näytä käyttöohjeet\nKäyttöohje"
     ID_LOTTOOPTIONS_JOKERICSV "Avaa Jokeri CSV -ennustusvalintaikkuna"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_MRU_FILE1       "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE2       "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE3       "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE4       "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE5       "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE6       "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE7       "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE8       "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE9       "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE10      "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE11      "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE12      "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE13      "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE14      "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE15      "Avaa tämä asiakirja"
+    ID_FILE_MRU_FILE16      "Avaa tämä asiakirja"
+END
+
+STRINGTABLE
+BEGIN
+    ID_NEXT_PANE            "Siirry seuraavaan ikkunan paneeliin\nSeuraava paneeli"
+    ID_PREV_PANE            "Palaa edelliseen paneeliin\nEdellinen paneeli"
+END
+
+STRINGTABLE
+BEGIN
+    ID_WINDOW_SPLIT         "Jaa aktiivinen ikkuna paneeleihin\nJaa"
 END
 
 STRINGTABLE
 BEGIN
     ID_EDIT_CLEAR           "Poista valinta\nPoista"
     ID_EDIT_CLEAR_ALL       "Poista kaikki\nPoista kaikki"
-    ID_EDIT_COPY            "Kopioi valinta leikep�yd�lle\nKopioi"
-    ID_EDIT_CUT             "Leikkaa valinta leikep�yd�lle\nLeikkaa"
-    ID_EDIT_FIND            "Etsi m��ritetty� teksti�\nEtsi"
-    ID_EDIT_PASTE           "Liit� leikep�yd�n sis�lt�\nLiit�"
+    ID_EDIT_COPY            "Kopioi valinta leikepöydälle\nKopioi"
+    ID_EDIT_CUT             "Leikkaa valinta leikepöydälle\nLeikkaa"
+    ID_EDIT_FIND            "Etsi määritettyä tekstiä\nEtsi"
+    ID_EDIT_PASTE           "Liitä leikepöydän sisältö\nLiitä"
     ID_EDIT_REPEAT          "Toista viimeisin toiminto\nToista"
-    ID_EDIT_REPLACE         "Korvaa teksti toisella tekstill�\nKorvaa"
+    ID_EDIT_REPLACE         "Korvaa teksti toisella tekstillä\nKorvaa"
     ID_EDIT_SELECT_ALL      "Valitse koko asiakirja\nValitse kaikki"
     ID_EDIT_UNDO            "Kumoa viimeisin toiminto\nKumoa"
     ID_EDIT_REDO            "Tee uudelleen kumottu toiminto\nTee uudelleen"
@@ -946,8 +1130,25 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_VIEW_TOOLBAR         "N�yt� tai piilota ty�kalurivi\nTy�kalurivi"
-    ID_VIEW_STATUS_BAR      "N�yt� tai piilota tilapalkki\nTilapalkki"
+    ID_VIEW_TOOLBAR         "Näytä tai piilota työkalurivi\nTyökalurivi"
+    ID_VIEW_STATUS_BAR      "Näytä tai piilota tilapalkki\nTilapalkki"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCSIZE          "Muuta ikkunan kokoa"
+    AFX_IDS_SCMOVE          "Muuta ikkunan sijaintia"
+    AFX_IDS_SCMINIMIZE      "Pienennä ikkuna kuvakkeeksi"
+    AFX_IDS_SCMAXIMIZE      "Suurenna ikkuna täyteen kokoon"
+    AFX_IDS_SCNEXTWINDOW    "Siirry seuraavaan asiakirjaikkunaan"
+    AFX_IDS_SCPREVWINDOW    "Siirry edelliseen asiakirjaikkunaan"
+    AFX_IDS_SCCLOSE         "Sulje aktiivinen ikkuna ja pyydä tallentamaan asiakirjat"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCRESTORE       "Palauta ikkuna normaaliin kokoon"
+    AFX_IDS_SCTASKLIST      "Aktivoi tehtävälista"
 END
 
 STRINGTABLE
@@ -965,17 +1166,8 @@ END
 //
 // Generated from the TEXTINCLUDE 3 resource.
 //
-#define _AFX_NO_OLE_RESOURCES
-#define _AFX_NO_TRACKER_RESOURCES
-#define _AFX_NO_PROPERTY_RESOURCES
 
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-LANGUAGE 9, 1
-#include "res\LottoGui.rc2"  // non-Microsoft Visual C++ edited resources
-#include "afxres.rc"      // Standard components
-#include "afxprint.rc"    // printing/print preview resources
-#endif
+#include "res\LottoGui.rc2"
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-

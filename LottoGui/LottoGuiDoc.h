@@ -49,6 +49,8 @@ protected:
 #endif // SHARED_HANDLERS
 public:
 	afx_msg void OnLottooptions();
+	afx_msg void OnCheckResults();
+	afx_msg void OnUpdateCheckResults(CCmdUI* pCmdUI);
 	afx_msg void OnSuomenlotto();
 	afx_msg void OnMilli();
 	afx_msg void OnKtem();
@@ -63,7 +65,20 @@ public:
 	int m_nMinNum;
 	int m_nMaxNum;
 	CString m_strSampleNums;
+	CString m_strCurrentGameType;
+	BOOL m_bJokeriDouble;
+	int m_nKenoLevel;
+	int m_nKenoStakeCents;
+	BOOL m_bKenoKunkkukerroin;
+	CString m_strKenoTotalPrize;
+	int m_nKtemStakeCents;
+	CString m_strKtemTotalPrize;
 	int m_nLines;
+	CString m_strActualResults;
+	vector<int> m_vResultCounts;
+	vector<CString> m_vPrizeTexts;
+	vector<vector<int> > m_vMatchedNumbers;
+	void ClearResultCheck();
 	// vector<CString> m_vstrNums;
 	CStringArray m_vstrNums;
 	virtual void DeleteContents();

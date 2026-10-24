@@ -9,36 +9,62 @@
 <h1>Tulosten tallennus ja tulostus</h1>
 <p>
 Kaikki LottoGui-ohjelman luomat ennustusrivit ja tilastot näytetään
-pääikkunan asiakasalueella Consolas-fontilla. Näitä tuloksia voidaan
-tallentaa tiedostoon tai tulostaa.
+pääikkunan asiakasalueella A4-pystyarkkia muistuttavana raporttina. Raportti
+keskitetään asiakasalueelle, kun tilaa on riittävästi, ja siinä käytetään
+Segoe UI -fonttia. Raportissa on pelin nimi, lähtötiedot, ryhmitellyt
+ennusterivit sekä selkeästi erotellut osiot aina samassa järjestyksessä:
+ennusteyhteenveto, tilastollinen analyysi, yksityiskohtaiset ennusteet ja
+johtopäätökset. Johtopäätös muistuttaa, etteivät historialliset arvontatulokset
+takaa tai ennusta tulevia tuloksia. Tulosten tarkistamisen jälkeen
+ennusteriveillä näytetään myös osumat ja pelikohtainen voittotulos.
+Tulostuksessa sivunvaihdot sovitetaan tulostusalueeseen, ja jatkuvan osion
+otsikko sekä tilastotaulukon sarakeotsikot toistetaan seuraavalla sivulla.
+Esikatselu ja paperituloste käyttävät samaa asettelua. Raportin ulkoasu ei
+muuta laskentatuloksia.
+</p>
+
+<h2>Rivien hinnat</h2>
+<p>Pelikohtaisten ennusteiden yläreunassa näytetään valittu hinta riviä kohti
+ja kaikkien luotujen pelirivien kokonaishinta. Rivimäärään lasketaan mukaan
+perusennusteet, valittujen strategioiden lisärivit, Onnenpyörän yhdistelmät
+sekä Jokerin toistoprofiilin lisärivit. Pelikohtaiset hinnat ja lisävalinnat
+asetetaan samassa ikkunassa rivimäärän kanssa.</p>
+
+<h2>Ennusterivien tarkistaminen</h2>
+<p>
+Kun ennuste on luotu, valitse <strong>Lotto-asetukset → Tarkista osumat…</strong>.
+Syötä arvot ja paina <strong>Tarkista</strong>. Pääluvut erotetaan välilyönneillä,
+pilkuilla tai puolipisteillä. Jos pelissä on tähtinumeroita tai muu bonusnumero,
+erota ne pystyviivalla, esimerkiksi <code>11 17 20 22 35 | 4 8</code>.
+Jokaisen ennusterivin perään näytetään osumien määrä ja osuneet numerot.
 </p>
 
 <h2>Tallentaminen</h2>
 <ul>
-<li><strong>File → Save</strong> – Tallentaa tulokset nykyiseen tiedostoon.</li>
-<li><strong>File → Save As…</strong> – Tallentaa tulokset uuteen tiedostoon.
+<li><strong>Tiedosto → Tallenna</strong> – Tallentaa tulokset nykyiseen tiedostoon.</li>
+<li><strong>Tiedosto → Tallenna nimellä…</strong> – Tallentaa tulokset uuteen tiedostoon.
     Valitse nimi ja sijainti tiedostohakemistikkunan kautta.</li>
 </ul>
 
 <h2>Tulostaminen</h2>
 <ul>
-<li><strong>File → Print…</strong> – Avaa tulostusikkunan ja tulostaa tulokset
+<li><strong>Tiedosto → Tulosta…</strong> – Avaa tulostusikkunan ja tulostaa tulokset
     valitulle tulostimelle.</li>
-<li><strong>File → Print Preview</strong> – Esikatsele tulostusasettelu ennen
+<li><strong>Tiedosto → Esikatselu</strong> – Esikatsele tulostusasettelu ennen
     tulostamista.</li>
-<li><strong>File → Print Setup…</strong> – Muuta tulostusasetuksia
+<li><strong>Tiedosto → Tulostusasetukset…</strong> – Muuta tulostusasetuksia
     (paperin koko, suunta jne.).</li>
 </ul>
 
 <h2>Uusien tulosten luominen</h2>
 <p>
-Kun valitset uuden pelimuodon valikon kautta ja napsautat OK, pääikkunan
+Kun valitset uuden pelimuodon valikosta ja napsautat OK, pääikkunan
 sisältö korvataan uusilla tuloksilla. Tallenna aiemmat tulokset ennen
 uuden analyysin ajamista, jos haluat ne säilyttää.
 </p>
 
 <div class="tip">
-<strong>Vinkki:</strong> <strong>File → New</strong> tyhjentää nykyisen
+<strong>Vinkki:</strong> <strong>Tiedosto → Uusi</strong> tyhjentää nykyisen
 tulosnäkymän. Voit aloittaa puhtaalta pöydältä ennen uuden analyysin
 ajamista.
 </div>

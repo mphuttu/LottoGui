@@ -10,11 +10,11 @@
 <h1>Keno CSV</h1>
 <p>
 Keno on Veikkauksen nopea arvontapeli, jossa arvotaan 20 numeroa alueelta 1–70.
-Pelaaja voi valita 1–10 numeroa osumia varten. Ohjelma luo 10 numeron ehdotuksen.
+Pelaaja voi valita tason 2–10. Ohjelma luo valitun tason mukaisen ehdotusrivin.
 </p>
 
 <h2>Toiminto valikossa</h2>
-<p>Valitse <strong>Lotto Options → Keno CSV…</strong></p>
+<p>Valitse <strong>Lotto-asetukset → Keno CSV…</strong></p>
 
 <h2>Datatiedosto</h2>
 <p>Ohjelma lukee tiedoston <code>data\KenoData.csv</code>.
@@ -23,12 +23,21 @@ Ohjelma suodattaa automaattisesti pois nollat ja virheelliset rivit.</p>
 
 <h2>Valintaikkunan asetukset</h2>
 <ul>
-<li><strong>Number of Rows</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+<li><strong>Ennustusrivejä</strong> – Luotavien ehdotusrivien määrä (1–50, oletus 5).</li>
+<li><strong>Taso</strong> – Valitse 2–10 numeroa riviin. Oletus on taso 10.</li>
+<li><strong>Panos</strong> – Valitse 0,50–10,00 € 0,50 euron askelin. Oletus on 1,00 €.</li>
+<li><strong>Kunkkukerroin</strong> – Valitse lisäominaisuus, jolloin rivihinta on kaksinkertainen panos. Oletuksena kerrointa ei valita.</li>
 </ul>
+
+<h2>Voittojen tarkistus</h2>
+<p>Voitto lasketaan valitun tason ja osumamäärän kertoimesta kerrottuna valitulla peruspanoksella.
+Kunkkukertoimella käytetään Kunkku-taulukon kertoimia ja samaa valittua peruspanosta, vaikka rivihinta
+kaksinkertaistuu. Tarkistuksen jälkeen ohjelma näyttää rivikohtaiset voitot ja niiden yhteissumman.
+Tasoa 11 ei voi valita ohjelmassa.</p>
 
 <h2>Tulostus</h2>
 <ol>
-<li>Pyydetty määrä ennustusrivejä, joista kukin sisältää 10 numeroa alueelta 1–70.</li>
+<li>Pyydetty määrä ennustusrivejä, joissa on valitun tason verran numeroita alueelta 1–70.</li>
 <li>Tilastoanalyysi <em>kaikista</em> 20 sarakkeesta
     (ks. <a href="statistics.html">Tilastoanalyysi</a>).</li>
 </ol>
@@ -43,5 +52,20 @@ Tämä antaa laajan kuvan numeroiden esiintymistiheydestä eri vetopositioilla.
 <strong>Huom.!</strong> Ohjelma hyväksyy Keno-dataksi ainoastaan arvot väliltä 1–70.
 Nollat ja tätä aluetta ulkopuolella olevat arvot poistetaan datan tuonnissa.
 </div>
+
+<h2>Valintaikkunan strategiat</h2>
+<p>Valintaikkunassa on 8 valinnaista strategiaa. Strategiat koskevat valitun tason numeroita (1–70). Valitse haluamasi valintaruuduilla.</p>
+<ul>
+<li><strong>Tasapainotettu</strong> – Noin 50 % pieniä (1–35) ja 50 % suuria (36–70) numeroita sekä 50 % parillisia ja 50 % parittomia.</li>
+<li><strong>Delta-tekniikka</strong> – Arpoo nousevan joukon eri numeroita historiallisten tietojen pienimmän ja suurimman arvon väliltä.</li>
+<li><strong>Onnenpyörä</strong> – Syötä Numerot-kenttään vähintään yksi numero enemmän kuin valitulla tasolla; kaikki yhdistelmät listataan, jos niitä on enintään 100, muuten valitaan 100 satunnaista yhdistelmää.</li>
+<li><strong>Epätavalliset numerot</strong> – Suosii numeroita yli 31 kolminkertaisella painolla.</li>
+<li><strong>Peräkkäiset numerot</strong> – Sisältää vähintään yhden peräkkäisen numeroparin, jos käytettävissä olevat numerot mahdollistavat sen.</li>
+<li><strong>Maaginen summa</strong> – Tavoittelee aluetta, joka on 80–120 % historiallisten frekvenssien painottamasta odotussummasta. Jos sopivaa riviä ei löydy, näytetään lähin kokeiltu rivi ja merkitään se.</li>
+<li><strong>Matriisitekniikka</strong> – Luo 3×3-matriisin ja käyttää rivi-, sarake- ja diagonaalisummia numeroiden muodostamiseen.</li>
+<li><strong>Rivien hajautus</strong> – Suosii aiemmilla ennusteriveillä harvemmin käytettyjä numeroita ja välttää päällekkäisiä yhdistelmiä mahdollisuuksien mukaan.</li>
+</ul>
+<p>Arvonnat ovat toisistaan riippumattomia: nämä menetelmät muuttavat ehdotusrivien rakennetta, eivät yksittäisen rivin voittotodennäköisyyttä.</p>
+<p>Tulosten lopussa luetellaan käytössä olleet strategiat, esim. <code>Käytössä olevat strategiat: Epätavalliset numerot, Peräkkäiset numerot</code>.</p>
 </body>
 </html>

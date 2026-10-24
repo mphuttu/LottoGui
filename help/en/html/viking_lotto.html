@@ -24,6 +24,7 @@ The Viking number is not stored in the historical data.</p>
 <h2>Dialog settings</h2>
 <ul>
 <li><strong>Number of Rows</strong> – Number of suggestion rows to generate (1–50, default 5).</li>
+<li><strong>Plus number</strong> – Select the add-on to increase the row price from €1.00 to €1.50. It is off by default.</li>
 </ul>
 
 <h2>Output</h2>
@@ -43,5 +44,20 @@ The Viking number is not stored in the historical data.</p>
 historical Viking number data is not stored in the CSV file. The prediction
 of the 6 main numbers is based on frequency data as normal.
 </div>
+
+<h2>Dialog strategies</h2>
+<p>The dialog offers 8 optional strategies. Strategies apply to the 6 main numbers (1–48) only; the Viking number (1–5) is always chosen at random.</p>
+<ul>
+<li><strong>Balanced</strong> – Approx. 50% small (1–24) and 50% large (25–48) numbers, and 50% even and 50% odd.</li>
+<li><strong>Delta technique</strong> – Randomly selects distinct numbers in ascending order within the minimum and maximum values in the historical data.</li>
+<li><strong>Wheel system</strong> – Enter at least 7 numbers in the Numbers field; all combinations are listed up to 100, otherwise 100 unique combinations are sampled at random.</li>
+<li><strong>Unusual numbers</strong> – Favours numbers above 31 with triple weight.</li>
+<li><strong>Consecutive pair</strong> – Includes at least one consecutive pair when the available numbers allow it.</li>
+<li><strong>Magic sum</strong> – Targets 80–120% of the frequency-weighted expected sum. If no sampled row meets the range, the closest sampled row is shown and marked.</li>
+<li><strong>Matrix technique</strong> – Builds a 3×3 matrix and uses its row, column, and diagonal sums as candidate numbers.</li>
+<li><strong>Portfolio Coverage</strong> – Favors numbers used less often in earlier generated rows and avoids duplicate main-number combinations where possible.</li>
+</ul>
+<p>Draws are independent random events. These methods change the structure of suggested rows, not the chance that an individual valid line will win.</p>
+<p>The strategies in use are recorded at the bottom of the results, e.g. <code>Active strategies: Delta, Consecutive</code>.</p>
 </body>
 </html>
