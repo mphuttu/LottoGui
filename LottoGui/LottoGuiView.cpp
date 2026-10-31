@@ -10,6 +10,7 @@
 #endif
 
 #include "LottoGuiDoc.h"
+#include "LottoGuiCore.h"
 #include "LottoGuiView.h"
 
 #include <algorithm>
@@ -490,24 +491,38 @@ namespace
 					matches.Format(isFinnish ? L"%d oikein" : L"%d correct",
 						pDoc->m_vResultCounts[index]);
 
-					if (pDoc->m_vMatchedNumbers.size() > static_cast<size_t>(index) &&
-						!pDoc->m_vMatchedNumbers[index].empty())
+					if (pDoc->m_strCurrentGameType.Find(L"Eurojackpot") >= 0 &&
+						pDoc->m_vMatchedNumbers.size() > static_cast<size_t>(index) &&
+						pDoc->m_vBonusMatchedNumbers.size() > static_cast<size_t>(index))
 					{
+						matches = LottoGuiCore::FormatEurojackpotMatches(
+							pDoc->m_vMatchedNumbers[index],
+							pDoc->m_vBonusMatchedNumbers[index], isFinnish).c_str();
+					}
+					else if (pDoc->m_vMatchedNumbers.size() > static_cast<size_t>(index) &&
+						pDoc->m_vBonusMatchedNumbers.size() > static_cast<size_t>(index))
+					{
+						std::vector<int> allMatches = pDoc->m_vMatchedNumbers[index];
+						allMatches.insert(allMatches.end(), pDoc->m_vBonusMatchedNumbers[index].begin(),
+							pDoc->m_vBonusMatchedNumbers[index].end());
 						CString matchedValues;
 						for (size_t matchIndex = 0;
-							matchIndex < pDoc->m_vMatchedNumbers[index].size(); ++matchIndex)
+							matchIndex < allMatches.size(); ++matchIndex)
 						{
 							if (matchIndex > 0)
 							{
 								matchedValues += L", ";
 							}
 							CString valueText;
-							valueText.Format(L"%d", pDoc->m_vMatchedNumbers[index][matchIndex]);
+							valueText.Format(L"%d", allMatches[matchIndex]);
 							matchedValues += valueText;
 						}
-						matches += isFinnish
-							? L" (osumat: " + matchedValues + L")"
-							: L" (matches: " + matchedValues + L")";
+						if (!allMatches.empty())
+						{
+							matches += isFinnish
+								? L" (osumat: " + matchedValues + L")"
+								: L" (matches: " + matchedValues + L")";
+						}
 					}
 					block.detail = matches;
 					pDC->SelectObject(detailFont);

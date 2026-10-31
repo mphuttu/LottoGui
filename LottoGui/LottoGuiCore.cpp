@@ -155,6 +155,70 @@ namespace LottoGuiCore
 		}
 	}
 
+	void FindPositionalMatches(
+		const std::vector<int>& predicted,
+		const std::vector<int>& actual,
+		std::vector<int>& matches)
+	{
+		for (size_t index = 0; index < predicted.size() && index < actual.size(); ++index)
+		{
+			if (predicted[index] == actual[index])
+			{
+				matches.push_back(predicted[index]);
+			}
+		}
+	}
+
+	bool IsJokeriPrizeDoubled(
+		bool doubleSelected,
+		const std::vector<int>& predicted,
+		const std::vector<int>& actual)
+	{
+		return doubleSelected && predicted.size() == 7 && actual.size() == 7 &&
+			predicted[6] == actual[6];
+	}
+
+	bool IsValidJokeriDraw(const std::vector<int>& mainNumbers, const std::vector<int>& bonusNumbers)
+	{
+		if (mainNumbers.size() != 7 || !bonusNumbers.empty())
+		{
+			return false;
+		}
+		for (size_t index = 0; index < mainNumbers.size(); ++index)
+		{
+			if (mainNumbers[index] < 0 || mainNumbers[index] > 9)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	std::wstring FormatEurojackpotMatches(
+		const std::vector<int>& mainMatches,
+		const std::vector<int>& starMatches,
+		bool finnish)
+	{
+		std::wostringstream output;
+		output << mainMatches.size() << L" + " << starMatches.size()
+			<< (finnish ? L" oikein (osumat: " : L" correct (matches: ");
+		for (size_t index = 0; index < mainMatches.size(); ++index)
+		{
+			if (index > 0) output << L", ";
+			output << mainMatches[index];
+		}
+		if (mainMatches.empty()) output << (finnish ? L"ei osumia" : L"none");
+		output << (finnish ? L" (päänumerot); " : L" (main numbers); ");
+		for (size_t index = 0; index < starMatches.size(); ++index)
+		{
+			if (index > 0) output << L", ";
+			output << starMatches[index];
+		}
+		if (starMatches.empty()) output << (finnish ? L"ei osumia" : L"none");
+		output << (finnish ? L" (tähtinumerot))" : L" (star numbers))");
+		return output.str();
+	}
+
 	LotteryResult ClassifyFinnishOrVikingLottoResult(
 		const std::wstring& gameType,
 		int mainMatches,

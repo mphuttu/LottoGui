@@ -1826,9 +1826,19 @@ void CLottoGuiDoc::OnCheckResults()
 		return;
 	}
 
+	if (m_strCurrentGameType.Find(L"Jokeri") >= 0 &&
+		!LottoGuiCore::IsValidJokeriDraw(actualMainNumbers, actualBonusNumbers))
+	{
+		AfxMessageBox(LocalizeText(
+			L"Enter exactly seven Jokeri digits from 0 to 9, in draw order, without bonus numbers.",
+			L"Syötä täsmälleen seitsemän Jokeri-numeroa väliltä 0–9 arvontajärjestyksessä, ilman lisänumeroita."));
+		return;
+	}
+
 	m_strActualResults = actualResults;
 	m_vResultCounts.clear();
 	m_vMatchedNumbers.clear();
+	m_vBonusMatchedNumbers.clear();
 	m_vPrizeTexts.clear();
 	m_strKenoTotalPrize.Empty();
 	m_strKtemTotalPrize.Empty();
@@ -1844,13 +1854,21 @@ void CLottoGuiDoc::OnCheckResults()
 		{
 			m_vResultCounts.push_back(-1);
 			m_vMatchedNumbers.push_back(vector<int>());
+			m_vBonusMatchedNumbers.push_back(vector<int>());
 			m_vPrizeTexts.push_back(L"");
 			continue;
 		}
 
 		vector<int> matches;
 		vector<int> bonusMatches;
-		FindMatches(predictedMainNumbers, actualMainNumbers, matches);
+		if (m_strCurrentGameType.Find(L"Jokeri") >= 0)
+		{
+			LottoGuiCore::FindPositionalMatches(predictedMainNumbers, actualMainNumbers, matches);
+		}
+		else
+		{
+			FindMatches(predictedMainNumbers, actualMainNumbers, matches);
+		}
 		FindMatches(predictedBonusNumbers, actualBonusNumbers, bonusMatches);
 		const int mainMatches = static_cast<int>(matches.size());
 		const int bonusMatchCount = static_cast<int>(bonusMatches.size());
@@ -1866,13 +1884,12 @@ void CLottoGuiDoc::OnCheckResults()
 		totalKtemPrizeCents += ktemPrizeCents;
 		m_vResultCounts.push_back(correctMatches);
 		m_vMatchedNumbers.push_back(matches);
-		for (size_t index = 0; index < bonusMatches.size(); ++index)
-		{
-			m_vMatchedNumbers.back().push_back(bonusMatches[index]);
-		}
+		m_vBonusMatchedNumbers.push_back(bonusMatches);
 		m_vPrizeTexts.push_back(DescribePrize(
 			m_strCurrentGameType, mainMatches, bonusMatchCount, m_nAmount,
-			m_bJokeriDouble, kenoPrizeCents, ktemPrizeCents));
+			LottoGuiCore::IsJokeriPrizeDoubled(
+				m_bJokeriDouble != FALSE, predictedMainNumbers, actualMainNumbers),
+			kenoPrizeCents, ktemPrizeCents));
 	}
 
 	if (checkingKeno)
@@ -1902,6 +1919,7 @@ void CLottoGuiDoc::ClearResultCheck()
 	m_strActualResults.Empty();
 	m_vResultCounts.clear();
 	m_vMatchedNumbers.clear();
+	m_vBonusMatchedNumbers.clear();
 	m_vPrizeTexts.clear();
 	m_strKenoTotalPrize.Empty();
 	m_strKtemTotalPrize.Empty();

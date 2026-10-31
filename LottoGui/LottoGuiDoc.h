@@ -78,6 +78,7 @@ public:
 	vector<int> m_vResultCounts;
 	vector<CString> m_vPrizeTexts;
 	vector<vector<int> > m_vMatchedNumbers;
+	vector<vector<int> > m_vBonusMatchedNumbers;
 	void ClearResultCheck();
 	// vector<CString> m_vstrNums;
 	CStringArray m_vstrNums;

@@ -59,6 +59,41 @@ for that result. For games with variable or unavailable prize tables, the
 program shows a short textual summary instead of a fixed euro value, matching
 the current rules for the selected game.
 
+Eurojackpot reports the two groups separately. For example, comparing
+`40 42 46 47 48 | 5 9` with `21 26 37 39 42 | 5 7` produces
+`1 + 1 correct (matches: 42 (main numbers); 5 (star numbers))`, or the
+corresponding Finnish text. Jokeri digits match only in the same position as
+in the draw. Enter exactly seven digits in draw order; Jokeri Double applies
+only when selected and the last digit also matches.
+
+## Lottery strategies and jackpot odds
+
+The Finnish and English application help includes a strategy FAQ and the
+following jackpot probabilities for one basic row in one draw, without
+add-on games. These are not the probabilities of winning any prize. Check
+the current game rules with [Veikkaus](https://www.veikkaus.fi/fi/lottopelit).
+
+| Game and jackpot condition | Probability |
+|---|---:|
+| Suomen Lotto: 7/40 | 1 in 18,643,560 |
+| Viking Lotto: 6/48 and Viking number 1/5 | 1 in 61,357,560 |
+| Eurojackpot: 5/50 and 2/12 stars | 1 in 139,838,160 |
+| Jokeri: 7 digits in their correct positions | 1 in 10,000,000 |
+| Milli: 6/40 | 1 in 3,838,380 |
+| Keno: level 10, all 10 among the 20 drawn | about 1 in 2,147,181 |
+| KTEM: 12 or 0 matches (12/24) | 1 in 1,352,078 |
+
+Keno's all-numbers-match probability depends on the selected level `k` and
+equals C(20, k) / C(70, k). In KTEM the 12-match and zero-match jackpots each
+have a probability of 1 in 2,704,156.
+
+Neither quick picks nor self-selected numbers improve the odds of an individual
+row. Avoiding popular combinations may reduce prize sharing; group play shares
+costs and any winnings. More distinct rows cover more combinations but also
+cost more. Treat lottery play as entertainment, set a budget and play only
+with money you can afford to lose. In Finland, support is available from
+[Peluuri](https://www.peluuri.fi/).
+
 ## Analytics report
 
 Generated predictions and historical statistics are presented as a structured

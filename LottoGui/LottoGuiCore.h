@@ -25,6 +25,19 @@ namespace LottoGuiCore
 		const std::vector<int>& predicted,
 		const std::vector<int>& actual,
 		std::vector<int>& matches);
+	void FindPositionalMatches(
+		const std::vector<int>& predicted,
+		const std::vector<int>& actual,
+		std::vector<int>& matches);
+	bool IsValidJokeriDraw(const std::vector<int>& mainNumbers, const std::vector<int>& bonusNumbers);
+	bool IsJokeriPrizeDoubled(
+		bool doubleSelected,
+		const std::vector<int>& predicted,
+		const std::vector<int>& actual);
+	std::wstring FormatEurojackpotMatches(
+		const std::vector<int>& mainMatches,
+		const std::vector<int>& starMatches,
+		bool finnish);
 	LotteryResult ClassifyFinnishOrVikingLottoResult(
 		const std::wstring& gameType,
 		int mainMatches,

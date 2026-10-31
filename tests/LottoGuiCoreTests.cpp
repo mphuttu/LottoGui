@@ -114,6 +114,58 @@ TEST(ResultMatching, CountsRepeatedDigitsOnlyUpToDrawMultiplicity)
 	EXPECT_EQ(expected, matches);
 }
 
+TEST(ResultMatching, JokeriMatchesOnlyDigitsInTheSamePosition)
+{
+	const std::vector<int> predicted{ 1, 2, 2, 4, 5, 6, 7 };
+	const std::vector<int> actual{ 2, 2, 1, 4, 6, 5, 7 };
+	std::vector<int> matches;
+	LottoGuiCore::FindPositionalMatches(predicted, actual, matches);
+	EXPECT_EQ((std::vector<int>{ 2, 4, 7 }), matches);
+	EXPECT_EQ(600, LottoGuiCore::GetJokeriPrizeCents(static_cast<int>(matches.size()), false));
+}
+
+TEST(ResultMatching, JokeriDoubleRequiresSelectionAndCorrectLastDigit)
+{
+	const std::vector<int> predicted{ 1, 2, 3, 4, 5, 6, 7 };
+	EXPECT_TRUE(LottoGuiCore::IsJokeriPrizeDoubled(
+		true, predicted, { 9, 2, 3, 4, 5, 6, 7 }));
+	EXPECT_FALSE(LottoGuiCore::IsJokeriPrizeDoubled(
+		false, predicted, { 9, 2, 3, 4, 5, 6, 7 }));
+	EXPECT_FALSE(LottoGuiCore::IsJokeriPrizeDoubled(
+		true, predicted, { 1, 2, 3, 4, 5, 6, 9 }));
+	EXPECT_FALSE(LottoGuiCore::IsJokeriPrizeDoubled(true, predicted, { 7 }));
+}
+
+TEST(ResultMatching, JokeriDrawRequiresSevenDigitsAndNoBonus)
+{
+	EXPECT_TRUE(LottoGuiCore::IsValidJokeriDraw({ 0, 0, 1, 2, 3, 4, 9 }, {}));
+	EXPECT_FALSE(LottoGuiCore::IsValidJokeriDraw({ 0, 1 }, {}));
+	EXPECT_FALSE(LottoGuiCore::IsValidJokeriDraw({ 0, 1, 2, 3, 4, 5, 10 }, {}));
+	EXPECT_FALSE(LottoGuiCore::IsValidJokeriDraw({ 0, 1, 2, 3, 4, 5, 6 }, { 7 }));
+}
+
+TEST(ResultMatching, EurojackpotSeparatesMainAndStarMatches)
+{
+	std::vector<int> mainMatches;
+	std::vector<int> starMatches;
+	LottoGuiCore::FindMatches({ 40, 42, 46, 47, 48 }, { 21, 26, 37, 39, 42 }, mainMatches);
+	LottoGuiCore::FindMatches({ 5, 9 }, { 5, 7 }, starMatches);
+	EXPECT_EQ(L"1 + 1 oikein (osumat: 42 (päänumerot); 5 (tähtinumerot))",
+		LottoGuiCore::FormatEurojackpotMatches(mainMatches, starMatches, true));
+	EXPECT_EQ(L"1 + 1 correct (matches: 42 (main numbers); 5 (star numbers))",
+		LottoGuiCore::FormatEurojackpotMatches(mainMatches, starMatches, false));
+}
+
+TEST(ResultMatching, EurojackpotFormatsEmptyAndOverlappingNumberGroups)
+{
+	EXPECT_EQ(L"0 + 0 oikein (osumat: ei osumia (päänumerot); ei osumia (tähtinumerot))",
+		LottoGuiCore::FormatEurojackpotMatches({}, {}, true));
+	EXPECT_EQ(L"2 + 1 correct (matches: 5, 42 (main numbers); 5 (star numbers))",
+		LottoGuiCore::FormatEurojackpotMatches({ 5, 42 }, { 5 }, false));
+	EXPECT_EQ(L"0 + 1 oikein (osumat: ei osumia (päänumerot); 7 (tähtinumerot))",
+		LottoGuiCore::FormatEurojackpotMatches({}, { 7 }, true));
+}
+
 TEST(LotteryResults, SuomenLottoRequiresFourMatchesAndSevenIsJackpot)
 {
 	using LottoGuiCore::LotteryResult;
