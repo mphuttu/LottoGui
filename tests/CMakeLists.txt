@@ -17,9 +17,12 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(LottoGuiRegressionTests
     LottoGuiCoreTests.cpp
+    ResourceTextTests.cpp
     ../LottoGui/LottoGuiCore.cpp
 )
 target_include_directories(LottoGuiRegressionTests PRIVATE ../LottoGui)
+target_compile_definitions(LottoGuiRegressionTests PRIVATE
+    LOTTOGUI_RESOURCE_FILE="${CMAKE_CURRENT_LIST_DIR}/../LottoGui/LottoGui.rc")
 target_compile_features(LottoGuiRegressionTests PRIVATE cxx_std_14)
 target_link_libraries(LottoGuiRegressionTests PRIVATE GTest::gtest_main)
 

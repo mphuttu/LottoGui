@@ -773,16 +773,16 @@ END
 
 IDD_STRUCTURAL_DIALOG DIALOGEX 0, 0, 250, 150
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Yhdistelt?v?t rakennestrategiat"
+CAPTION "Yhdisteltävät rakennestrategiat"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT "Yksi lis?riviryhm?; kaikki valitut ehdot samoille riveille.",IDC_STATIC,10,8,230,18
+    LTEXT "Yksi lisäriviryhmä; kaikki valitut ehdot samoille riveille.",IDC_STATIC,10,8,230,18
     CONTROL "Hajauta kymmenlukuryhmiin",IDC_STRUCT_DECADES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,29,220,10
-    CONTROL "Samaa p??tenumeroa enint??n kaksi",IDC_STRUCT_ENDINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,43,220,10
-    CONTROL "Alkulukujen suhteellinen m??r? (+/- 1)",IDC_STRUCT_PRIMES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,57,220,10
+    CONTROL "Samaa päätenumeroa enintään kaksi",IDC_STRUCT_ENDINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,43,220,10
+    CONTROL "Alkulukujen suhteellinen määrä (+/- 1)",IDC_STRUCT_PRIMES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,57,220,10
     CONTROL "Tasapaino pienet/suuret ja parilliset/parittomat",IDC_STRUCT_BALANCED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,71,230,10
-    CONTROL "Ei yli kolmen per?kk?isi? sarjoja",IDC_STRUCT_RUNS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,220,10
-    LTEXT "Minimiv?li:",IDC_STATIC,10,103,70,10
+    CONTROL "Ei yli kolmen peräkkäisiä sarjoja",IDC_STRUCT_RUNS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,220,10
+    LTEXT "Minimiväli:",IDC_STATIC,10,103,70,10
     EDITTEXT IDC_STRUCT_GAP,90,100,35,14,ES_AUTOHSCROLL | ES_NUMBER
     DEFPUSHBUTTON "OK",IDOK,140,128,50,14
     PUSHBUTTON "Peruuta",IDCANCEL,194,128,50,14
@@ -842,7 +842,7 @@ BEGIN
     CONTROL         "Maaginen summa (adaptiivinen)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
     CONTROL         "Matriisitekniikka",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
     CONTROL         "Rivien hajautus",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,220,10
-    CONTROL         "Jalkitestaus: frekvenssi ja satunnainen (100)",IDC_SL_BACKTEST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,210,220,10
+    CONTROL         "Jälkitestaus: frekvenssi ja satunnainen (100)",IDC_SL_BACKTEST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,210,220,10
     CONTROL         "Rakennestrategiat...",IDC_SL_STRUCTURAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,229,130,10
     DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,205,228,50,14
@@ -872,7 +872,7 @@ BEGIN
     CONTROL         "Maaginen summa (adaptiivinen)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
     CONTROL         "Matriisitekniikka",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
     CONTROL         "Rivien hajautus",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,220,10
-    CONTROL         "Jalkitestaus: frekvenssi ja satunnainen (100)",IDC_SL_BACKTEST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,210,220,10
+    CONTROL         "Jälkitestaus: frekvenssi ja satunnainen (100)",IDC_SL_BACKTEST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,210,220,10
     CONTROL         "Rakennestrategiat...",IDC_SL_STRUCTURAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,229,130,10
     DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,205,228,50,14
@@ -904,7 +904,7 @@ BEGIN
     CONTROL         "Maaginen summa (adaptiivinen)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,183,200,10
     CONTROL         "Matriisitekniikka",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,197,150,10
     CONTROL         "Rivien hajautus",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,211,220,10
-    CONTROL         "Jalkitestaus: frekvenssi ja satunnainen (100)",IDC_SL_BACKTEST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,225,220,10
+    CONTROL         "Jälkitestaus: frekvenssi ja satunnainen (100)",IDC_SL_BACKTEST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,225,220,10
     CONTROL         "Rakennestrategiat...",IDC_SL_STRUCTURAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,237,130,10
     DEFPUSHBUTTON   "OK",IDOK,151,236,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,205,236,50,14
@@ -934,7 +934,7 @@ BEGIN
     CONTROL         "Maaginen summa (adaptiivinen)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
     CONTROL         "Matriisitekniikka",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
     CONTROL         "Rivien hajautus",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,180,10
-    CONTROL         "Jalkitestaus: frekvenssi ja satunnainen (100)",IDC_SL_BACKTEST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,210,220,10
+    CONTROL         "Jälkitestaus: frekvenssi ja satunnainen (100)",IDC_SL_BACKTEST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,210,220,10
     CONTROL         "Rakennestrategiat...",IDC_SL_STRUCTURAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,229,130,10
     DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,205,228,50,14
@@ -962,7 +962,7 @@ BEGIN
     CONTROL         "Maaginen summa (adaptiivinen)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
     CONTROL         "Matriisitekniikka",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
     CONTROL         "Rivien hajautus",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,180,10
-    CONTROL         "Jalkitestaus: frekvenssi ja satunnainen (100)",IDC_SL_BACKTEST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,210,220,10
+    CONTROL         "Jälkitestaus: frekvenssi ja satunnainen (100)",IDC_SL_BACKTEST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,210,220,10
     CONTROL         "Rakennestrategiat...",IDC_SL_STRUCTURAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,229,130,10
     DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,205,228,50,14
@@ -992,7 +992,7 @@ BEGIN
     CONTROL         "Maaginen summa (adaptiivinen)",IDC_SL_MAGIC_SUM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,166,200,10
     CONTROL         "Matriisitekniikka",IDC_SL_MATRIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,180,150,10
     CONTROL         "Rivien hajautus",IDC_SL_COVERAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,194,180,10
-    CONTROL         "Jalkitestaus: frekvenssi ja satunnainen (100)",IDC_SL_BACKTEST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,210,220,10
+    CONTROL         "Jälkitestaus: frekvenssi ja satunnainen (100)",IDC_SL_BACKTEST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,210,220,10
     CONTROL         "Rakennestrategiat...",IDC_SL_STRUCTURAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,229,130,10
     DEFPUSHBUTTON   "OK",IDOK,151,228,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,205,228,50,14
