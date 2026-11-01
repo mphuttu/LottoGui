@@ -23,6 +23,8 @@ public:
 	BOOL m_bMagicSum;
 	BOOL m_bMatrix;
 	BOOL m_bCoverage;
+	BOOL m_bBacktest;
+	BOOL m_bStructural;
 	CString m_strWheelNums;
 	afx_msg void OnClickedPlusNumber();
 

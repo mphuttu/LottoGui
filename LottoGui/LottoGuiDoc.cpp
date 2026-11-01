@@ -54,6 +54,72 @@ namespace
 		return IsFinnishLanguage() ? finnishText : englishText;
 	}
 
+	class StructuralDialog : public CDialogEx
+	{
+	public:
+		explicit StructuralDialog(int maximum)
+			: CDialogEx(IDD_STRUCTURAL_DIALOG), maximumNumber(maximum),
+			decades(FALSE), endings(FALSE), primes(FALSE), balanced(FALSE),
+			runs(FALSE), gap(1)
+		{
+		}
+
+		LottoGuiCore::StructuralOptions Options() const
+		{
+			LottoGuiCore::StructuralOptions options;
+			options.decades = decades != FALSE;
+			options.endings = endings != FALSE;
+			options.primes = primes != FALSE;
+			options.balanced = balanced != FALSE;
+			options.avoidRuns = runs != FALSE;
+			options.minimumGap = gap;
+			return options;
+		}
+
+	protected:
+		void DoDataExchange(CDataExchange* pDX) override
+		{
+			CDialogEx::DoDataExchange(pDX);
+			DDX_Check(pDX, IDC_STRUCT_DECADES, decades);
+			DDX_Check(pDX, IDC_STRUCT_ENDINGS, endings);
+			DDX_Check(pDX, IDC_STRUCT_PRIMES, primes);
+			DDX_Check(pDX, IDC_STRUCT_BALANCED, balanced);
+			DDX_Check(pDX, IDC_STRUCT_RUNS, runs);
+			DDX_Text(pDX, IDC_STRUCT_GAP, gap);
+			DDV_MinMaxInt(pDX, gap, 1, maximumNumber);
+		}
+
+		void OnOK() override
+		{
+			if (!UpdateData(TRUE))
+				return;
+			if (!decades && !endings && !primes && !balanced && !runs && gap == 1)
+			{
+				AfxMessageBox(LocalizeText(L"Select at least one rule or set a minimum gap greater than one.",
+					L"Valitse vähintään yksi ehto tai aseta minimiväliksi yli yksi."));
+				return;
+			}
+			CDialogEx::OnOK();
+		}
+
+	private:
+		int maximumNumber;
+		BOOL decades, endings, primes, balanced, runs;
+		int gap;
+	};
+
+	bool ChooseStructuralOptions(BOOL enabled, int maximumNumber,
+		LottoGuiCore::StructuralOptions& options)
+	{
+		if (!enabled)
+			return true;
+		StructuralDialog dialog(maximumNumber);
+		if (dialog.DoModal() != IDOK)
+			return false;
+		options = dialog.Options();
+		return true;
+	}
+
 	wstring GetPredictionPrefix()
 	{
 		return IsFinnishLanguage() ? L"Ennuste " : L"Prediction ";
@@ -429,6 +495,72 @@ namespace
 		return false;
 	}
 
+	void AppendFrequencyBacktest(CStringArray& output, const CString& path,
+		int maximumNumber, int drawSize, int picks, int columns)
+	{
+		output.Add(L" ");
+		output.Add(LocalizeText(L"Frequency backtest (main numbers only):",
+			L"Frekvenssin jälkitestaus (vain päänumerot):"));
+		CStdioFile file;
+		if (!file.Open(path, CFile::modeRead | CFile::typeText))
+		{
+			output.Add(LocalizeText(L"Backtest unavailable: cannot read the CSV.",
+				L"Jälkitestaus ei onnistu: CSV-tiedostoa ei voi lukea."));
+			return;
+		}
+		vector<vector<int> > rows;
+		CString line;
+		int lineNumber = 0;
+		while (file.ReadString(line))
+		{
+			++lineNumber;
+			line.Trim();
+			if (line.IsEmpty())
+				continue;
+			if (lineNumber == 1 && (line.Left(4).CompareNoCase(L"Nro1") == 0 ||
+				line.Left(3).CompareNoCase(L"No1") == 0))
+				continue;
+			vector<int> row;
+			if (!LottoGuiCore::ParseNumberList(ToWideString(line), row) ||
+				static_cast<int>(row.size()) != columns)
+				row.clear();
+			rows.push_back(row);
+		}
+
+		LottoGuiCore::BacktestResult result;
+		if (!LottoGuiCore::BacktestFrequency(rows, maximumNumber, drawSize, picks,
+			100, 100, 1234567U, result))
+		{
+			if (result.invalidRow != 0)
+			{
+				CString error;
+				error.Format(LocalizeText(
+					L"Backtest unavailable: invalid draw %u (data rows, oldest first).",
+					L"Jälkitestaus ei onnistu: virheellinen arvonta %u (datarivit vanhimmasta alkaen)."),
+					static_cast<unsigned int>(result.invalidRow));
+				output.Add(error);
+			}
+			else
+			{
+				output.Add(LocalizeText(
+					L"Backtest unavailable: insufficient history or distinct numbers in a training window.",
+					L"Jälkitestaus ei onnistu: liian vähän historiaa tai eri numeroita opetusikkunassa."));
+			}
+			return;
+		}
+		CString summary;
+		summary.Format(LocalizeText(
+			L"%u draws, 100 preceding draws per prediction; average matches: frequency %.3f, uniform random %.3f (fixed seed).",
+			L"%u arvontaa, 100 edeltävää arvontaa per ennuste; keskimääräiset osumat: frekvenssi %.3f, tasainen satunnaisvertailu %.3f (kiinteä siemen)."),
+			static_cast<unsigned int>(result.draws),
+			static_cast<double>(result.frequencyMatches) / result.draws,
+			static_cast<double>(result.randomMatches) / result.draws);
+		output.Add(summary);
+		output.Add(LocalizeText(
+			L"One simulated row per draw; extra numbers and selected strategies are not tested. Missing draws and historical rule changes cannot be detected without dates.",
+			L"Yksi simuloitu rivi arvontaa kohti; lisänumeroita ja valittuja strategioita ei testata. Puuttuvia arvontoja ja vanhoja sääntömuutoksia ei voi havaita ilman päivämääriä."));
+	}
+
 	bool LoadSuomenLottoRows(vector<vector<int> >& rows, CString& usedPath)
 	{
 		return LoadCsvRows(L"SuomenLottoData.csv", rows, usedPath);
@@ -776,6 +908,80 @@ namespace
 
 		sort(result.begin(), result.end());
 		return result;
+	}
+
+	void AppendStructuralPredictions(CStringArray& output, int maximumNumber, int picks,
+		int rowCount, const LottoGuiCore::StructuralOptions& options, mt19937& generator,
+		const map<int, int>* starFrequencies = NULL, int starCount = 0,
+		bool includeVikingNumber = false)
+	{
+		if (starFrequencies != NULL &&
+			(starFrequencies->empty() || static_cast<int>(starFrequencies->size()) < starCount ||
+			 starFrequencies->begin()->first < 1 || starFrequencies->rbegin()->first > 12))
+		{
+			output.Add(L" ");
+			output.Add(LocalizeText(L"Structural rows not generated: insufficient valid star numbers.",
+				L"Rakennestrategian rivejä ei luotu: kelvollisia tähtinumeroita ei ole riittävästi."));
+			return;
+		}
+		vector<vector<int> > rows;
+		for (int i = 0; i < rowCount; ++i)
+		{
+			vector<int> row;
+			const LottoGuiCore::StructuralResult result =
+				LottoGuiCore::GenerateStructuralLine(maximumNumber, picks, options, generator, row);
+			if (result != LottoGuiCore::StructuralResult::Success)
+			{
+				output.Add(L" ");
+				output.Add(result == LottoGuiCore::StructuralResult::SearchLimit
+					? LocalizeText(L"Structural rows not generated: search limit reached.",
+						L"Rakennestrategian rivejä ei luotu: hakuraja täyttyi.")
+					: LocalizeText(L"Structural rows not generated: the selected rules cannot be satisfied.",
+						L"Rakennestrategian rivejä ei luotu: valittuja ehtoja ei voida täyttää."));
+				return;
+			}
+			rows.push_back(row);
+		}
+
+		output.Add(L" ");
+		output.Add(LocalizeText(L"Combined structural rows:", L"Yhdistetyt rakennestrategiarivit:"));
+		CString description = LocalizeText(L"Rules:", L"Ehdot:");
+		if (options.decades) description += LocalizeText(L" decades", L" kymmenluvut");
+		if (options.endings) description += LocalizeText(L" endings", L" päätenumerot");
+		if (options.primes) description += LocalizeText(L" primes", L" alkuluvut");
+		if (options.balanced) description += LocalizeText(L" balanced", L" tasapaino");
+		if (options.avoidRuns) description += LocalizeText(L" short runs", L" lyhyet sarjat");
+		CString gapText;
+		gapText.Format(LocalizeText(L" gap=%d", L" väli=%d"), options.minimumGap);
+		output.Add(description + gapText);
+
+		for (size_t i = 0; i < rows.size(); ++i)
+		{
+			wostringstream text;
+			text << GetPredictionPrefix() << (i + 1) << L": ";
+			for (size_t j = 0; j < rows[i].size(); ++j)
+			{
+				if (j != 0) text << L", ";
+				text << rows[i][j];
+			}
+			if (starFrequencies != NULL && starCount > 0)
+			{
+				const vector<int> stars = BuildPredictionLine(*starFrequencies, starCount, generator);
+				text << L" | " << LocalizeText(L"Stars: ", L"Tähdet: ").GetString();
+				for (size_t j = 0; j < stars.size(); ++j)
+				{
+					if (j != 0) text << L", ";
+					text << stars[j];
+				}
+			}
+			if (includeVikingNumber)
+			{
+				uniform_int_distribution<int> distribution(1, 5);
+				text << L" | " << LocalizeText(L"Viking number: ", L"Viking-numero: ").GetString()
+					<< distribution(generator);
+			}
+			AddCStringArrayText(output, text.str());
+		}
 	}
 
 	int CountSetDigits(int digitMask)
@@ -1935,6 +2141,9 @@ void CLottoGuiDoc::OnSuomenlotto()
 	{
 		return;
 	}
+	LottoGuiCore::StructuralOptions structuralOptions;
+	if (!ChooseStructuralOptions(dialog.m_bStructural, 40, structuralOptions))
+		return;
 	WritePricePreference(_T("SuomenLottoPlus"), dialog.m_bPlus);
 
 	vector<vector<int> > rows;
@@ -2012,6 +2221,11 @@ void CLottoGuiDoc::OnSuomenlotto()
 		dialog.m_bBalanced, dialog.m_bDelta, dialog.m_bWheel, dialog.m_strWheelNums,
 		dialog.m_bUnusual, dialog.m_bConsecutive, dialog.m_bMagicSum, dialog.m_bMatrix, dialog.m_bCoverage,
 		generator);
+	if (dialog.m_bStructural)
+		AppendStructuralPredictions(m_vstrNums, 40, mainCount, dialog.m_nPredictionRows,
+			structuralOptions, generator);
+	if (dialog.m_bBacktest)
+		AppendFrequencyBacktest(m_vstrNums, usedPath, 40, 7, mainCount, 7);
 	AppendTicketCost(m_strSampleNums, m_vstrNums,
 		LotteryPrices::kSuomenLottoBaseCents +
 		(dialog.m_bPlus ? LotteryPrices::kSuomenLottoPlusCents : 0));
@@ -2062,6 +2276,9 @@ void CLottoGuiDoc::OnMilli()
 	{
 		return;
 	}
+	LottoGuiCore::StructuralOptions structuralOptions;
+	if (!ChooseStructuralOptions(dialog.m_bStructural, 40, structuralOptions))
+		return;
 
 	vector<vector<int> > rows;
 	CString usedPath;
@@ -2125,6 +2342,11 @@ void CLottoGuiDoc::OnMilli()
 		dialog.m_bBalanced, dialog.m_bDelta, dialog.m_bWheel, dialog.m_strWheelNums,
 		dialog.m_bUnusual, dialog.m_bConsecutive, dialog.m_bMagicSum, dialog.m_bMatrix, dialog.m_bCoverage,
 		generator);
+	if (dialog.m_bStructural)
+		AppendStructuralPredictions(m_vstrNums, 40, mainCount, dialog.m_nPredictionRows,
+			structuralOptions, generator);
+	if (dialog.m_bBacktest)
+		AppendFrequencyBacktest(m_vstrNums, usedPath, 40, 6, mainCount, 6);
 	AppendTicketCost(m_strSampleNums, m_vstrNums, LotteryPrices::kMilliBaseCents);
 
 	vector<ColumnStats> allStats;
@@ -2181,6 +2403,9 @@ void CLottoGuiDoc::OnKtem()
 	{
 		return;
 	}
+	LottoGuiCore::StructuralOptions structuralOptions;
+	if (!ChooseStructuralOptions(dialog.m_bStructural, 24, structuralOptions))
+		return;
 	WritePricePreference(_T("KtemStakeIndex"), dialog.m_nStakeIndex);
 	WritePricePreference(_T("KtemOnnenapila"), dialog.m_bOnnenapila);
 
@@ -2283,6 +2508,11 @@ void CLottoGuiDoc::OnKtem()
 		dialog.m_bBalanced, dialog.m_bDelta, dialog.m_bWheel, dialog.m_strWheelNums,
 		dialog.m_bUnusual, dialog.m_bConsecutive, dialog.m_bMagicSum, dialog.m_bMatrix, dialog.m_bCoverage,
 		generator);
+	if (dialog.m_bStructural)
+		AppendStructuralPredictions(m_vstrNums, 24, mainCount, dialog.m_nPredictionRows,
+			structuralOptions, generator);
+	if (dialog.m_bBacktest)
+		AppendFrequencyBacktest(m_vstrNums, usedPath, 24, 12, mainCount, 12);
 	AppendTicketCost(m_strSampleNums, m_vstrNums,
 		ktemStakeCents * (dialog.m_bOnnenapila ? 2 : 1));
 
@@ -2310,6 +2540,9 @@ void CLottoGuiDoc::OnKeno()
 	{
 		return;
 	}
+	LottoGuiCore::StructuralOptions structuralOptions;
+	if (!ChooseStructuralOptions(dialog.m_bStructural, 70, structuralOptions))
+		return;
 	WritePricePreference(_T("KenoLevelIndex"), dialog.m_nLevelIndex);
 	WritePricePreference(_T("KenoStakeIndex"), dialog.m_nStakeIndex);
 	WritePricePreference(_T("KenoKunkkukerroin"), dialog.m_bKunkkukerroin);
@@ -2434,6 +2667,11 @@ void CLottoGuiDoc::OnKeno()
 		dialog.m_bBalanced, dialog.m_bDelta, dialog.m_bWheel, dialog.m_strWheelNums,
 		dialog.m_bUnusual, dialog.m_bConsecutive, dialog.m_bMagicSum, dialog.m_bMatrix, dialog.m_bCoverage,
 		generator);
+	if (dialog.m_bStructural)
+		AppendStructuralPredictions(m_vstrNums, 70, predictionCount, dialog.m_nPredictionRows,
+			structuralOptions, generator);
+	if (dialog.m_bBacktest)
+		AppendFrequencyBacktest(m_vstrNums, usedPath, 70, 20, predictionCount, 20);
 	AppendTicketCost(m_strSampleNums, m_vstrNums,
 		kenoStakeCents * (dialog.m_bKunkkukerroin ? 2 : 1));
 
@@ -2451,6 +2689,9 @@ void CLottoGuiDoc::OnEurojackpot()
 	{
 		return;
 	}
+	LottoGuiCore::StructuralOptions structuralOptions;
+	if (!ChooseStructuralOptions(dialog.m_bStructural, 50, structuralOptions))
+		return;
 
 	vector<vector<int> > rows;
 	CString usedPath;
@@ -2596,6 +2837,11 @@ void CLottoGuiDoc::OnEurojackpot()
 		dialog.m_bBalanced, dialog.m_bDelta, dialog.m_bWheel, dialog.m_strWheelNums,
 		dialog.m_bUnusual, dialog.m_bConsecutive, dialog.m_bMagicSum, dialog.m_bMatrix, dialog.m_bCoverage,
 		generator, &starFrequencies, starCount);
+	if (dialog.m_bStructural)
+		AppendStructuralPredictions(m_vstrNums, 50, mainCount, dialog.m_nPredictionRows,
+			structuralOptions, generator, &starFrequencies, 2);
+	if (dialog.m_bBacktest)
+		AppendFrequencyBacktest(m_vstrNums, usedPath, 50, 5, mainCount, 7);
 	AppendTicketCost(m_strSampleNums, m_vstrNums, LotteryPrices::kEurojackpotBaseCents);
 
 	m_nLines = static_cast<int>(m_vstrNums.GetSize()) + 6;
@@ -2613,6 +2859,9 @@ void CLottoGuiDoc::OnVikinglotto()
 	{
 		return;
 	}
+	LottoGuiCore::StructuralOptions structuralOptions;
+	if (!ChooseStructuralOptions(dialog.m_bStructural, 48, structuralOptions))
+		return;
 	WritePricePreference(_T("VikingLottoPlusNumber"), dialog.m_bPlusNumber);
 
 	vector<vector<int> > rows;
@@ -2717,6 +2966,11 @@ void CLottoGuiDoc::OnVikinglotto()
 		dialog.m_bBalanced, dialog.m_bDelta, dialog.m_bWheel, dialog.m_strWheelNums,
 		dialog.m_bUnusual, dialog.m_bConsecutive, dialog.m_bMagicSum, dialog.m_bMatrix, dialog.m_bCoverage,
 		generator, NULL, 0, true);
+	if (dialog.m_bStructural)
+		AppendStructuralPredictions(m_vstrNums, 48, mainCount, dialog.m_nPredictionRows,
+			structuralOptions, generator, NULL, 0, true);
+	if (dialog.m_bBacktest)
+		AppendFrequencyBacktest(m_vstrNums, usedPath, 48, 6, mainCount, 6);
 	AppendTicketCost(m_strSampleNums, m_vstrNums,
 		LotteryPrices::kVikingLottoBaseCents +
 		(dialog.m_bPlusNumber ? LotteryPrices::kVikingLottoPlusCents : 0));

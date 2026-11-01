@@ -1,6 +1,11 @@
 #include "LottoGuiCore.h"
 
 #include <map>
+#include <algorithm>
+#include <cmath>
+#include <functional>
+#include <numeric>
+#include <random>
 #include <sstream>
 
 namespace
@@ -13,6 +18,185 @@ namespace
 
 namespace LottoGuiCore
 {
+	StructuralResult GenerateStructuralLine(int maximumNumber, int picks,
+		const StructuralOptions& options, std::mt19937& generator, std::vector<int>& line)
+	{
+		line.clear();
+		if (maximumNumber < 1 || maximumNumber > 70 || picks < 1 ||
+			picks > maximumNumber || options.minimumGap < 1 || options.minimumGap > maximumNumber)
+			return StructuralResult::InvalidOptions;
+		if ((picks - 1) * options.minimumGap > maximumNumber - 1)
+			return StructuralResult::NoSolution;
+
+		const auto isPrime = [](int n)
+		{
+			if (n < 2) return false;
+			for (int d = 2; d * d <= n; ++d)
+				if (n % d == 0) return false;
+			return true;
+		};
+		int primePopulation = 0;
+		std::vector<int> candidates(maximumNumber);
+		std::iota(candidates.begin(), candidates.end(), 1);
+		for (int n : candidates)
+			if (isPrime(n)) ++primePopulation;
+		std::shuffle(candidates.begin(), candidates.end(), generator);
+		const int primeTarget = static_cast<int>(std::round(
+			static_cast<double>(picks) * primePopulation / maximumNumber));
+		const int minimumPrimes = (std::max)(0, primeTarget - 1);
+		const int maximumPrimes = (std::min)(picks, primeTarget + 1);
+		const int requiredGroups = (std::min)(picks, (maximumNumber + 9) / 10);
+		const int halfLow = picks / 2;
+		const int halfHigh = (picks + 1) / 2;
+		std::size_t visited = 0;
+		const std::size_t nodeLimit = 200000;
+		bool exhausted = false;
+
+		std::function<bool(const std::vector<int>&, int, int, int, int)> search;
+		search = [&](const std::vector<int>& pool, int groupMask,
+			int primeCount, int evenCount, int smallCount)
+		{
+			if (++visited > nodeLimit)
+			{
+				exhausted = true;
+				return false;
+			}
+			const int needed = picks - static_cast<int>(line.size());
+			if (static_cast<int>(pool.size()) < needed)
+				return false;
+			if (options.primes && (primeCount > maximumPrimes || primeCount + needed < minimumPrimes))
+				return false;
+			if (options.balanced && (evenCount > halfHigh || evenCount + needed < halfLow ||
+				smallCount > halfHigh || smallCount + needed < halfLow))
+				return false;
+			int groupCount = 0;
+			for (int mask = groupMask; mask != 0; mask >>= 1)
+				groupCount += mask & 1;
+			if (options.decades && groupCount + needed < requiredGroups)
+				return false;
+			if (needed == 0)
+				return !options.decades || groupCount >= requiredGroups;
+
+			for (std::size_t i = 0; i < pool.size() && !exhausted; ++i)
+			{
+				const int n = pool[i];
+				int endingCount = 0;
+				for (int selected : line)
+					if (selected % 10 == n % 10) ++endingCount;
+				if (options.endings && endingCount >= 2)
+					continue;
+				line.push_back(n);
+				if (options.avoidRuns)
+				{
+					std::vector<int> sorted(line);
+					std::sort(sorted.begin(), sorted.end());
+					int run = 1;
+					bool tooLong = false;
+					for (std::size_t j = 1; j < sorted.size(); ++j)
+					{
+						run = sorted[j] == sorted[j - 1] + 1 ? run + 1 : 1;
+						if (run > 3) { tooLong = true; break; }
+					}
+					if (tooLong) { line.pop_back(); continue; }
+				}
+				std::vector<int> next;
+				for (std::size_t j = i + 1; j < pool.size(); ++j)
+					if (std::abs(pool[j] - n) >= options.minimumGap)
+						next.push_back(pool[j]);
+				if (search(next, groupMask | (1 << ((n - 1) / 10)),
+					primeCount + (isPrime(n) ? 1 : 0), evenCount + (n % 2 == 0 ? 1 : 0),
+					smallCount + (n <= (maximumNumber + 1) / 2 ? 1 : 0)))
+					return true;
+				line.pop_back();
+			}
+			return false;
+		};
+		if (search(candidates, 0, 0, 0, 0))
+		{
+			std::sort(line.begin(), line.end());
+			return StructuralResult::Success;
+		}
+		line.clear();
+		return exhausted ? StructuralResult::SearchLimit : StructuralResult::NoSolution;
+	}
+
+	bool BacktestFrequency(
+		const std::vector<std::vector<int>>& rows, int maximumNumber,
+		int drawSize, int picks, std::size_t window, std::size_t testDraws,
+		std::uint32_t seed, BacktestResult& result)
+	{
+		result = BacktestResult();
+		if (maximumNumber < 1 || drawSize < 1 || drawSize > maximumNumber ||
+			picks < 1 || picks > maximumNumber || window == 0 || testDraws == 0 ||
+			rows.size() <= window)
+			return false;
+
+		const std::size_t firstTest = (std::max)(window,
+			rows.size() > testDraws ? rows.size() - testDraws : window);
+		for (std::size_t i = firstTest - window; i < rows.size(); ++i)
+		{
+			if (rows[i].size() < static_cast<std::size_t>(drawSize))
+			{
+				result.invalidRow = i + 1;
+				return false;
+			}
+			std::vector<bool> seen(maximumNumber + 1, false);
+			for (int j = 0; j < drawSize; ++j)
+			{
+				const int n = rows[i][j];
+				if (n < 1 || n > maximumNumber || seen[n])
+				{
+					result.invalidRow = i + 1;
+					return false;
+				}
+				seen[n] = true;
+			}
+		}
+
+		std::vector<int> counts(maximumNumber + 1, 0);
+		for (std::size_t i = firstTest - window; i < firstTest; ++i)
+			for (int j = 0; j < drawSize; ++j)
+				++counts[rows[i][j]];
+
+		std::mt19937 frequencyRng(seed);
+		std::mt19937 randomRng(seed ^ 0x9e3779b9U);
+		for (std::size_t i = firstTest; i < rows.size(); ++i)
+		{
+			std::vector<int> available(maximumNumber);
+			std::iota(available.begin(), available.end(), 1);
+			std::vector<double> weights;
+			for (int n : available)
+				weights.push_back(static_cast<double>(counts[n]));
+			std::vector<int> prediction;
+			for (int j = 0; j < picks; ++j)
+			{
+				if (std::accumulate(weights.begin(), weights.end(), 0.0) == 0.0)
+					return false;
+				std::discrete_distribution<std::size_t> distribution(weights.begin(), weights.end());
+				const std::size_t selected = distribution(frequencyRng);
+				prediction.push_back(available[selected]);
+				weights[selected] = 0.0;
+			}
+
+			std::shuffle(available.begin(), available.end(), randomRng);
+			for (int j = 0; j < drawSize; ++j)
+			{
+				const int actual = rows[i][j];
+				if (std::find(prediction.begin(), prediction.end(), actual) != prediction.end())
+					++result.frequencyMatches;
+				if (std::find(available.begin(), available.begin() + picks, actual) != available.begin() + picks)
+					++result.randomMatches;
+			}
+			++result.draws;
+			for (int j = 0; j < drawSize; ++j)
+			{
+				--counts[rows[i - window][j]];
+				++counts[rows[i][j]];
+			}
+		}
+		return true;
+	}
+
 	bool ParseNumberList(const std::wstring& input, std::vector<int>& values)
 	{
 		values.clear();

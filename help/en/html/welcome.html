@@ -52,6 +52,27 @@ the Wheel system, and optional Jokeri repeat-profile predictions.</p>
 <p>Keno also has levels 2–10; the selected level determines how many numbers
 are generated in each row.</p>
 
+<h2>Combined structural strategies</h2>
+<p>In the six number-draw dialogs, select <strong>Structural strategies...</strong>.
+The second dialog combines its selected rules on the same rows, generating one
+additional group of the requested size. Existing strategy selections still
+produce separate groups. The feature does not apply to Jokeri, whose digits
+are positional and can repeat.</p>
+<ul>
+<li>Decade groups: cover as many groups 1–10, 11–20, etc. as the row size allows.</li>
+<li>Endings: at most two numbers with the same final digit.</li>
+<li>Primes: the proportion of primes in the game range, rounded with a tolerance of one.</li>
+<li>Balance: small/large and even/odd counts each differ by at most one.</li>
+<li>Short runs: no runs of four or more consecutive numbers.</li>
+<li>Minimum gap: the smallest allowed difference between any two numbers.</li>
+</ul>
+<p>If the rules are impossible or the search limit is reached, no rows are
+produced. Rows are randomized without frequency weighting. Eurojackpot stars
+and the Viking number are generated separately. Additional rows count towards
+the total shown after generation; no advance estimate is shown. Short runs do
+not detect ticket-grid patterns or measure popularity and do not guarantee
+reduced prize sharing.</p>
+
 <h2>Getting started</h2>
 <ol>
 <li>Launch the LottoGui application.</li>

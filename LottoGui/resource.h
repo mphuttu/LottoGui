@@ -80,14 +80,23 @@
 #define IDC_EUROJACKPOT_PRICE             1048
 #define IDC_VIKINGLOTTO_PRICE             1049
 #define IDC_JOKERI_PRICE                  1050
+#define IDC_SL_BACKTEST                   1051
+#define IDD_STRUCTURAL_DIALOG             320
+#define IDC_SL_STRUCTURAL                 1052
+#define IDC_STRUCT_DECADES                1053
+#define IDC_STRUCT_ENDINGS                1054
+#define IDC_STRUCT_PRIMES                 1055
+#define IDC_STRUCT_BALANCED               1056
+#define IDC_STRUCT_RUNS                   1057
+#define IDC_STRUCT_GAP                    1058
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        320
+#define _APS_NEXT_RESOURCE_VALUE        321
 #define _APS_NEXT_COMMAND_VALUE         32783
-#define _APS_NEXT_CONTROL_VALUE        1038
+#define _APS_NEXT_CONTROL_VALUE        1059
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

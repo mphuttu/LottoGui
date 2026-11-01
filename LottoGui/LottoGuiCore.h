@@ -2,6 +2,9 @@
 
 #include <string>
 #include <vector>
+#include <cstddef>
+#include <cstdint>
+#include <random>
 
 namespace LottoGuiCore
 {
@@ -11,6 +14,41 @@ namespace LottoGuiCore
 		Prize,
 		Jackpot
 	};
+
+	struct BacktestResult
+	{
+		std::size_t draws = 0;
+		long long frequencyMatches = 0;
+		long long randomMatches = 0;
+		std::size_t invalidRow = 0;
+	};
+
+	// Rows are oldest first. Only the first drawSize columns are main numbers.
+	bool BacktestFrequency(
+		const std::vector<std::vector<int>>& rows, int maximumNumber,
+		int drawSize, int picks, std::size_t window, std::size_t testDraws,
+		std::uint32_t seed, BacktestResult& result);
+
+	struct StructuralOptions
+	{
+		bool decades = false;
+		bool endings = false;
+		bool primes = false;
+		bool balanced = false;
+		bool avoidRuns = false;
+		int minimumGap = 1;
+	};
+
+	enum class StructuralResult
+	{
+		Success,
+		InvalidOptions,
+		NoSolution,
+		SearchLimit
+	};
+
+	StructuralResult GenerateStructuralLine(int maximumNumber, int picks,
+		const StructuralOptions& options, std::mt19937& generator, std::vector<int>& line);
 
 	bool ParseNumberList(const std::wstring& input, std::vector<int>& values);
 	bool ParseActualResults(

@@ -17,6 +17,8 @@ CSuomenLottoDlg::CSuomenLottoDlg(CWnd* pParent /*=NULL*/)
 	, m_bMagicSum(FALSE)
 	, m_bMatrix(FALSE)
 	, m_bCoverage(FALSE)
+	, m_bBacktest(FALSE)
+	, m_bStructural(FALSE)
 	, m_strWheelNums(_T(""))
 {
 }
@@ -40,6 +42,8 @@ void CSuomenLottoDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_SL_MAGIC_SUM, m_bMagicSum);
 	DDX_Check(pDX, IDC_SL_MATRIX, m_bMatrix);
 	DDX_Check(pDX, IDC_SL_COVERAGE, m_bCoverage);
+	DDX_Check(pDX, IDC_SL_BACKTEST, m_bBacktest);
+	DDX_Check(pDX, IDC_SL_STRUCTURAL, m_bStructural);
 }
 
 BEGIN_MESSAGE_MAP(CSuomenLottoDlg, CDialogEx)

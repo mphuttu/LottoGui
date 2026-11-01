@@ -47,6 +47,41 @@ strategies alter how suggested lines are generated; they do not increase the
 probability that any one valid line will win. Portfolio Coverage reduces overlap
 between generated rows, which can broaden the set covered by a group of lines.
 
+The six number-draw CSV dialogs offer an optional frequency backtest. For each
+of up to the latest 100 draws it generates one frequency-weighted row from the
+preceding 100 draws, then compares its main-number matches with a uniformly
+random row. A fixed seed makes the comparison reproducible. The test does not
+evaluate selected strategies, bonus numbers, prizes, or ticket costs. CSV rows
+must be oldest first, and the tested main-number rows must be complete, unique
+and in the current game's range. Without dates, missing draws and historical
+rule changes cannot be detected; results do not establish predictive power.
+
+### Combined structural strategies
+
+The six number-draw dialogs also offer **Structural strategies...**. After
+confirming the main dialog, select one or more rules for a separate additional
+group of the requested number of rows. All rules selected in that second dialog
+apply to each row in the group. Existing strategies still generate their own
+separate groups; they are not combined with these rules. Jokeri is excluded
+because its digits are positional and may repeat.
+
+- Decade groups cover as many of 1–10, 11–20, etc. as the row size allows.
+- Endings allow at most two numbers with the same final digit.
+- Prime counts target the proportion of primes in the game's range, rounded to
+  the nearest integer, with a tolerance of one.
+- Balance requires both the small/large and even/odd counts to differ by at
+  most one.
+- Short runs exclude four or more consecutive numbers; this does not detect
+  ticket-grid patterns or measure player popularity.
+- Minimum gap is the minimum numerical difference between any two numbers.
+
+Impossible rules or a search limit are reported without producing an invalid
+row. The generator is randomized but not frequency-weighted, and Eurojackpot
+stars and the Viking number are generated separately. Additional rows count
+towards the displayed total ticket cost. The total is shown after generation,
+not estimated in advance. These heuristics do not change a row's winning odds
+or guarantee less prize sharing.
+
 ## Checking prediction rows
 
 After generating rows, choose **Lotto Options → Check results...** and enter the

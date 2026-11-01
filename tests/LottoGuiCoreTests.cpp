@@ -4,6 +4,137 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <set>
+
+TEST(StructuralStrategies, CombinesConstraintsOnTheSameRows)
+{
+	LottoGuiCore::StructuralOptions options;
+	options.decades = true;
+	options.endings = true;
+	options.primes = true;
+	options.balanced = true;
+	options.avoidRuns = true;
+	options.minimumGap = 2;
+	std::mt19937 generator(135);
+	for (int sample = 0; sample < 20; ++sample)
+	{
+		std::vector<int> row;
+		ASSERT_EQ(LottoGuiCore::StructuralResult::Success,
+			LottoGuiCore::GenerateStructuralLine(40, 7, options, generator, row));
+		ASSERT_EQ(7u, row.size());
+		std::set<int> groups;
+		int endings[10] = {};
+		int primes = 0;
+		int evens = 0;
+		int small = 0;
+		for (std::size_t i = 0; i < row.size(); ++i)
+		{
+			EXPECT_GE(row[i], 1);
+			EXPECT_LE(row[i], 40);
+			if (i > 0) EXPECT_GE(row[i] - row[i - 1], 2);
+			groups.insert((row[i] - 1) / 10);
+			EXPECT_LE(++endings[row[i] % 10], 2);
+			if (std::set<int>{2,3,5,7,11,13,17,19,23,29,31,37}.count(row[i])) ++primes;
+			if (row[i] % 2 == 0) ++evens;
+			if (row[i] <= 20) ++small;
+		}
+		EXPECT_EQ(4u, groups.size());
+		EXPECT_GE(primes, 1);
+		EXPECT_LE(primes, 3);
+		EXPECT_GE(evens, 3);
+		EXPECT_LE(evens, 4);
+		EXPECT_GE(small, 3);
+		EXPECT_LE(small, 4);
+	}
+}
+
+TEST(StructuralStrategies, AdaptsGroupsAndSpacingToGameSize)
+{
+	std::mt19937 generator(7);
+	std::vector<int> row;
+	LottoGuiCore::StructuralOptions options;
+	options.decades = true;
+	ASSERT_EQ(LottoGuiCore::StructuralResult::Success,
+		LottoGuiCore::GenerateStructuralLine(70, 2, options, generator, row));
+	ASSERT_EQ(2u, row.size());
+	EXPECT_NE((row[0] - 1) / 10, (row[1] - 1) / 10);
+
+	options.minimumGap = 2;
+	ASSERT_EQ(LottoGuiCore::StructuralResult::Success,
+		LottoGuiCore::GenerateStructuralLine(24, 12, options, generator, row));
+	ASSERT_EQ(12u, row.size());
+	for (std::size_t i = 1; i < row.size(); ++i)
+		EXPECT_GE(row[i] - row[i - 1], 2);
+	options.minimumGap = 3;
+	EXPECT_EQ(LottoGuiCore::StructuralResult::NoSolution,
+		LottoGuiCore::GenerateStructuralLine(24, 12, options, generator, row));
+	EXPECT_TRUE(row.empty());
+}
+
+TEST(StructuralStrategies, RejectsInvalidOptionsAndLimitsConsecutiveRuns)
+{
+	std::mt19937 generator(15);
+	std::vector<int> row{99};
+	LottoGuiCore::StructuralOptions options;
+	options.minimumGap = 0;
+	EXPECT_EQ(LottoGuiCore::StructuralResult::InvalidOptions,
+		LottoGuiCore::GenerateStructuralLine(40, 7, options, generator, row));
+	EXPECT_TRUE(row.empty());
+	options.minimumGap = 1;
+	options.avoidRuns = true;
+	for (int i = 0; i < 50; ++i)
+	{
+		ASSERT_EQ(LottoGuiCore::StructuralResult::Success,
+			LottoGuiCore::GenerateStructuralLine(24, 12, options, generator, row));
+		int run = 1;
+		for (std::size_t j = 1; j < row.size(); ++j)
+		{
+			run = row[j] == row[j - 1] + 1 ? run + 1 : 1;
+			EXPECT_LE(run, 3);
+		}
+	}
+}
+
+TEST(FrequencyBacktest, UsesOnlyEarlierDrawsAndSlidesTheWindow)
+{
+	const std::vector<std::vector<int>> rows{
+		{ 1, 2 }, { 3, 4 }, { 1, 2 }, { 3, 4 }
+	};
+	LottoGuiCore::BacktestResult result;
+	ASSERT_TRUE(LottoGuiCore::BacktestFrequency(rows, 4, 2, 2, 1, 3, 42, result));
+	EXPECT_EQ(3u, result.draws);
+	EXPECT_EQ(0, result.frequencyMatches);
+	EXPECT_LE(result.randomMatches, 6);
+
+	LottoGuiCore::BacktestResult repeat;
+	ASSERT_TRUE(LottoGuiCore::BacktestFrequency(rows, 4, 2, 2, 1, 3, 42, repeat));
+	EXPECT_EQ(result.frequencyMatches, repeat.frequencyMatches);
+	EXPECT_EQ(result.randomMatches, repeat.randomMatches);
+}
+
+TEST(FrequencyBacktest, UsesOnlyTheRequestedTailAndAllowsExtraColumns)
+{
+	const std::vector<std::vector<int>> rows{
+		{ 99 }, { 1, 2, 8 }, { 1, 2, 9 }, { 1, 2, 10 }
+	};
+	LottoGuiCore::BacktestResult result;
+	ASSERT_TRUE(LottoGuiCore::BacktestFrequency(rows, 4, 2, 2, 1, 2, 5, result));
+	EXPECT_EQ(2u, result.draws);
+	EXPECT_EQ(4, result.frequencyMatches);
+}
+
+TEST(FrequencyBacktest, RejectsInvalidDrawsAndInsufficientHistory)
+{
+	LottoGuiCore::BacktestResult result;
+	EXPECT_FALSE(LottoGuiCore::BacktestFrequency({ { 1, 2 } }, 4, 2, 2, 1, 2, 5, result));
+	EXPECT_FALSE(LottoGuiCore::BacktestFrequency({ { 1, 1 }, { 2, 3 } }, 4, 2, 2, 1, 1, 5, result));
+	EXPECT_EQ(1u, result.invalidRow);
+	EXPECT_FALSE(LottoGuiCore::BacktestFrequency({ { 1, 2 }, { 2, 5 } }, 4, 2, 2, 1, 1, 5, result));
+	EXPECT_EQ(2u, result.invalidRow);
+	EXPECT_FALSE(LottoGuiCore::BacktestFrequency({ { 1, 2 }, { 3 } }, 4, 2, 2, 1, 1, 5, result));
+	EXPECT_EQ(2u, result.invalidRow);
+}
 
 TEST(ActualResultsParsing, AcceptsSupportedSeparatorsAndBonusNumbers)
 {
@@ -63,6 +194,7 @@ TEST(PredictionParsing, SupportsAllApplicationRowPrefixesAndNotes)
 	const std::vector<Example> examples{
 		{ L"Prediction 1: 1 2 3 (Balanced) | Star numbers: 4 5", { 1, 2, 3 }, { 4, 5 } },
 		{ L"Ennuste 1: 2 4 6 | Tähtinumerot: 1 3", { 2, 4, 6 }, { 1, 3 } },
+		{ L"Ennuste 2: 2, 11, 34 | Viking-numero: 5", { 2, 11, 34 }, { 5 } },
 		{ L"Profile prediction 1: 6;7;8", { 6, 7, 8 }, {} },
 		{ L"Profiiliennuste 1: 8 8 1 (eri numeroita: 2)", { 8, 8, 1 }, {} },
 		{ L"Combination 1: 9,10 11", { 9, 10, 11 }, {} },
