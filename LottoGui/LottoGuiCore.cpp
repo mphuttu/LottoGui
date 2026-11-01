@@ -18,6 +18,143 @@ namespace
 
 namespace LottoGuiCore
 {
+	bool IsValidResultCheckContext(const ResultCheckContext& context)
+	{
+		if (context.mainCount <= 0)
+			return false;
+		if (context.game == L"Custom")
+			return true;
+		if (context.game == L"Suomen Lotto")
+			return context.mainCount == 7;
+		if (context.game == L"Milli" || context.game == L"Viking Lotto")
+			return context.mainCount == 6;
+		if (context.game == L"Eurojackpot")
+			return context.mainCount == 5;
+		if (context.game == L"Jokeri")
+			return context.mainCount == 7;
+		if (context.game == L"KTEM")
+			return context.mainCount == 12 && context.ktemStakeCents >= 100 &&
+				context.ktemStakeCents <= 500 && context.ktemStakeCents % 50 == 0;
+		if (context.game == L"Keno")
+			return context.kenoLevel >= 2 && context.kenoLevel <= 10 &&
+				context.mainCount == context.kenoLevel && context.kenoStakeCents >= 50 &&
+				context.kenoStakeCents <= 1000 && context.kenoStakeCents % 50 == 0;
+		return false;
+	}
+
+	std::wstring EncodeResultCheckContext(const ResultCheckContext& context)
+	{
+		if (!IsValidResultCheckContext(context))
+			return std::wstring();
+		std::wostringstream stream;
+		stream << context.game << L'\n' << context.mainCount << L' '
+			<< (context.jokeriDouble ? 1 : 0) << L' ' << context.kenoLevel << L' '
+			<< context.kenoStakeCents << L' ' << (context.kenoKunkku ? 1 : 0) << L' '
+			<< context.ktemStakeCents;
+		return stream.str();
+	}
+
+	bool DecodeResultCheckContext(const std::wstring& text, ResultCheckContext& context)
+	{
+		context = ResultCheckContext();
+		ResultCheckContext parsed;
+		int jokeriDouble = 0;
+		int kenoKunkku = 0;
+		std::wistringstream stream(text);
+		std::wstring extra;
+		if (!std::getline(stream, parsed.game) ||
+			!(stream >> parsed.mainCount >> jokeriDouble >> parsed.kenoLevel >>
+				parsed.kenoStakeCents >> kenoKunkku >> parsed.ktemStakeCents) ||
+			(stream >> extra) || (jokeriDouble != 0 && jokeriDouble != 1) ||
+			(kenoKunkku != 0 && kenoKunkku != 1))
+			return false;
+		parsed.jokeriDouble = jokeriDouble != 0;
+		parsed.kenoKunkku = kenoKunkku != 0;
+		if (!IsValidResultCheckContext(parsed))
+			return false;
+		context = parsed;
+		return true;
+	}
+
+	bool IsPredictionCompatibleWithGame(const ResultCheckContext& context,
+		const std::vector<int>& mainNumbers, const std::vector<int>& bonusNumbers)
+	{
+		if (!IsValidResultCheckContext(context) ||
+			mainNumbers.size() != static_cast<std::size_t>(context.mainCount))
+			return false;
+		if (context.game == L"Custom")
+			return true;
+		if (context.game == L"Jokeri")
+			return IsValidJokeriDraw(mainNumbers, bonusNumbers);
+		int maximum = 40;
+		if (context.game == L"KTEM") maximum = 24;
+		else if (context.game == L"Keno") maximum = 70;
+		else if (context.game == L"Eurojackpot") maximum = 50;
+		else if (context.game == L"Viking Lotto") maximum = 48;
+		std::vector<bool> seen(maximum + 1, false);
+		for (int n : mainNumbers)
+		{
+			if (n < 1 || n > maximum || seen[n]) return false;
+			seen[n] = true;
+		}
+		if (context.game == L"Eurojackpot" || context.game == L"Viking Lotto")
+		{
+			const int bonusMaximum = context.game == L"Eurojackpot" ? 12 : 5;
+			const std::size_t bonusCount = context.game == L"Eurojackpot" ? 2 : 1;
+			if (bonusNumbers.size() != bonusCount) return false;
+			std::vector<bool> seenBonus(bonusMaximum + 1, false);
+			for (int n : bonusNumbers)
+			{
+				if (n < 1 || n > bonusMaximum || seenBonus[n]) return false;
+				seenBonus[n] = true;
+			}
+			return true;
+		}
+		return bonusNumbers.empty();
+	}
+
+	bool IsValidActualDraw(const ResultCheckContext& context,
+		const std::vector<int>& mainNumbers, const std::vector<int>& bonusNumbers)
+	{
+		if (!IsValidResultCheckContext(context)) return false;
+		if (context.game == L"Custom") return !mainNumbers.empty();
+		if (context.game == L"Jokeri") return IsValidJokeriDraw(mainNumbers, bonusNumbers);
+		int maximum = 40;
+		std::size_t drawCount = static_cast<std::size_t>(context.mainCount);
+		if (context.game == L"KTEM") maximum = 24;
+		else if (context.game == L"Keno") { maximum = 70; drawCount = 20; }
+		else if (context.game == L"Eurojackpot") maximum = 50;
+		else if (context.game == L"Viking Lotto") maximum = 48;
+		if (mainNumbers.size() != drawCount) return false;
+		std::vector<bool> seen(maximum + 1, false);
+		for (int n : mainNumbers)
+		{
+			if (n < 1 || n > maximum || seen[n]) return false;
+			seen[n] = true;
+		}
+		if (bonusNumbers.empty())
+			return context.game != L"Suomen Lotto" &&
+				context.game != L"Eurojackpot" && context.game != L"Viking Lotto";
+		if (context.game == L"Suomen Lotto")
+		{
+			if (bonusNumbers.size() != 1) return false;
+			const int n = bonusNumbers[0];
+			return n >= 1 && n <= maximum && !seen[n];
+		}
+		if (context.game != L"Eurojackpot" && context.game != L"Viking Lotto")
+			return false;
+		const int bonusMaximum = context.game == L"Eurojackpot" ? 12 : 5;
+		const std::size_t bonusCount = context.game == L"Eurojackpot" ? 2 : 1;
+		if (bonusNumbers.size() != bonusCount) return false;
+		std::vector<bool> seenBonus(bonusMaximum + 1, false);
+		for (int n : bonusNumbers)
+		{
+			if (n < 1 || n > bonusMaximum || seenBonus[n]) return false;
+			seenBonus[n] = true;
+		}
+		return true;
+	}
+
 	StructuralResult GenerateStructuralLine(int maximumNumber, int picks,
 		const StructuralOptions& options, std::mt19937& generator, std::vector<int>& line)
 	{
@@ -353,6 +490,25 @@ namespace LottoGuiCore
 		}
 	}
 
+	void FindResultMatches(
+		const std::wstring& game,
+		const std::vector<int>& predictedMain,
+		const std::vector<int>& predictedBonus,
+		const std::vector<int>& actualMain,
+		const std::vector<int>& actualBonus,
+		std::vector<int>& mainMatches,
+		std::vector<int>& bonusMatches)
+	{
+		mainMatches.clear();
+		bonusMatches.clear();
+		if (game == L"Jokeri")
+			FindPositionalMatches(predictedMain, actualMain, mainMatches);
+		else
+			FindMatches(predictedMain, actualMain, mainMatches);
+		FindMatches(game == L"Suomen Lotto" ? predictedMain : predictedBonus,
+			actualBonus, bonusMatches);
+	}
+
 	bool IsJokeriPrizeDoubled(
 		bool doubleSelected,
 		const std::vector<int>& predicted,
@@ -378,13 +534,14 @@ namespace LottoGuiCore
 		return true;
 	}
 
-	std::wstring FormatEurojackpotMatches(
+	static std::wstring FormatSeparatedMatches(
 		const std::vector<int>& mainMatches,
-		const std::vector<int>& starMatches,
-		bool finnish)
+		const std::vector<int>& bonusMatches,
+		bool finnish,
+		bool stars)
 	{
 		std::wostringstream output;
-		output << mainMatches.size() << L" + " << starMatches.size()
+		output << mainMatches.size() << L" + " << bonusMatches.size()
 			<< (finnish ? L" oikein (osumat: " : L" correct (matches: ");
 		for (size_t index = 0; index < mainMatches.size(); ++index)
 		{
@@ -393,14 +550,28 @@ namespace LottoGuiCore
 		}
 		if (mainMatches.empty()) output << (finnish ? L"ei osumia" : L"none");
 		output << (finnish ? L" (päänumerot); " : L" (main numbers); ");
-		for (size_t index = 0; index < starMatches.size(); ++index)
+		for (size_t index = 0; index < bonusMatches.size(); ++index)
 		{
 			if (index > 0) output << L", ";
-			output << starMatches[index];
+			output << bonusMatches[index];
 		}
-		if (starMatches.empty()) output << (finnish ? L"ei osumia" : L"none");
-		output << (finnish ? L" (tähtinumerot))" : L" (star numbers))");
+		if (bonusMatches.empty()) output << (finnish ? L"ei osumia" : L"none");
+		output << (stars
+			? (finnish ? L" (tähtinumerot))" : L" (star numbers))")
+			: (finnish ? L" (lisänumero))" : L" (bonus number))"));
 		return output.str();
+	}
+
+	std::wstring FormatEurojackpotMatches(
+		const std::vector<int>& mainMatches, const std::vector<int>& starMatches, bool finnish)
+	{
+		return FormatSeparatedMatches(mainMatches, starMatches, finnish, true);
+	}
+
+	std::wstring FormatFinnishLottoMatches(
+		const std::vector<int>& mainMatches, const std::vector<int>& bonusMatches, bool finnish)
+	{
+		return FormatSeparatedMatches(mainMatches, bonusMatches, finnish, false);
 	}
 
 	LotteryResult ClassifyFinnishOrVikingLottoResult(
@@ -415,7 +586,8 @@ namespace LottoGuiCore
 			{
 				return LotteryResult::Jackpot;
 			}
-			return mainMatches >= 4 ? LotteryResult::Prize : LotteryResult::NoPrize;
+			return (mainMatches >= 4 || (mainMatches == 3 && bonusMatches == 1))
+				? LotteryResult::Prize : LotteryResult::NoPrize;
 		}
 
 		if (StartsWith(gameType, L"Viking Lotto"))

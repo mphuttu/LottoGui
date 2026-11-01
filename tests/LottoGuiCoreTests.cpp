@@ -298,18 +298,45 @@ TEST(ResultMatching, EurojackpotFormatsEmptyAndOverlappingNumberGroups)
 		LottoGuiCore::FormatEurojackpotMatches({}, { 7 }, true));
 }
 
-TEST(LotteryResults, SuomenLottoRequiresFourMatchesAndSevenIsJackpot)
+TEST(LotteryResults, SuomenLottoRecognizesBonusTiersAndSevenIsJackpot)
 {
 	using LottoGuiCore::LotteryResult;
 
 	EXPECT_EQ(LotteryResult::NoPrize,
 		LottoGuiCore::ClassifyFinnishOrVikingLottoResult(L"Suomen Lotto", 3, 0, 7));
 	EXPECT_EQ(LotteryResult::Prize,
+		LottoGuiCore::ClassifyFinnishOrVikingLottoResult(L"Suomen Lotto", 3, 1, 7));
+	EXPECT_EQ(LotteryResult::Prize,
 		LottoGuiCore::ClassifyFinnishOrVikingLottoResult(L"Suomen Lotto", 4, 0, 7));
 	EXPECT_EQ(LotteryResult::Prize,
 		LottoGuiCore::ClassifyFinnishOrVikingLottoResult(L"Suomen Lotto", 6, 0, 7));
+	EXPECT_EQ(LotteryResult::Prize,
+		LottoGuiCore::ClassifyFinnishOrVikingLottoResult(L"Suomen Lotto", 6, 1, 7));
 	EXPECT_EQ(LotteryResult::Jackpot,
 		LottoGuiCore::ClassifyFinnishOrVikingLottoResult(L"Suomen Lotto", 7, 0, 7));
+}
+
+TEST(ResultMatching, SuomenLottoMatchesDrawnBonusAgainstPredictionMainNumbers)
+{
+	const std::vector<int> prediction{ 1, 2, 3, 8, 9, 10, 11 };
+	const std::vector<int> draw{ 1, 2, 3, 4, 5, 6, 7 };
+	std::vector<int> mainMatches;
+	std::vector<int> bonusMatches;
+	LottoGuiCore::FindResultMatches(L"Suomen Lotto", prediction, {}, draw, { 8 },
+		mainMatches, bonusMatches);
+	EXPECT_EQ((std::vector<int>{ 1, 2, 3 }), mainMatches);
+	EXPECT_EQ((std::vector<int>{ 8 }), bonusMatches);
+	EXPECT_EQ(L"3 + 1 oikein (osumat: 1, 2, 3 (päänumerot); 8 (lisänumero))",
+		LottoGuiCore::FormatFinnishLottoMatches(mainMatches, bonusMatches, true));
+	EXPECT_EQ(LottoGuiCore::LotteryResult::Prize,
+		LottoGuiCore::ClassifyFinnishOrVikingLottoResult(L"Suomen Lotto",
+			static_cast<int>(mainMatches.size()), static_cast<int>(bonusMatches.size()), 7));
+	LottoGuiCore::FindResultMatches(L"Suomen Lotto", prediction, {}, draw, { 12 },
+		mainMatches, bonusMatches);
+	EXPECT_TRUE(bonusMatches.empty());
+	EXPECT_EQ(LottoGuiCore::LotteryResult::NoPrize,
+		LottoGuiCore::ClassifyFinnishOrVikingLottoResult(L"Suomen Lotto",
+			static_cast<int>(mainMatches.size()), static_cast<int>(bonusMatches.size()), 7));
 }
 
 TEST(LotteryResults, VikingLottoRequiresThreeMatchesAndVikingNumberForJackpot)
@@ -470,4 +497,121 @@ TEST(LotteryResults, KtemUsesSymmetricFixedMultipliersWithoutOnnenapila)
 	EXPECT_EQ(0, LottoGuiCore::GetKtemPrizeCents(-1, stakeCents));
 	EXPECT_EQ(0, LottoGuiCore::GetKtemPrizeCents(13, stakeCents));
 	EXPECT_EQ(0, LottoGuiCore::GetKtemPrizeCents(12, 0));
+}
+
+TEST(ResultCheckContext, RoundTripsEveryGameAndItsPrizeSettings)
+{
+	const std::vector<std::pair<std::wstring, int>> games{
+		{ L"Custom", 9 }, { L"Suomen Lotto", 7 }, { L"Milli", 6 },
+		{ L"KTEM", 12 }, { L"Keno", 10 }, { L"Eurojackpot", 5 },
+		{ L"Viking Lotto", 6 }, { L"Jokeri", 7 }
+	};
+	for (const auto& game : games)
+	{
+		LottoGuiCore::ResultCheckContext original;
+		original.game = game.first;
+		original.mainCount = game.second;
+		original.jokeriDouble = true;
+		original.kenoLevel = 10;
+		original.kenoStakeCents = 250;
+		original.kenoKunkku = true;
+		original.ktemStakeCents = 150;
+		const std::wstring encoded = LottoGuiCore::EncodeResultCheckContext(original);
+		ASSERT_FALSE(encoded.empty()) << game.first;
+
+		LottoGuiCore::ResultCheckContext restored;
+		ASSERT_TRUE(LottoGuiCore::DecodeResultCheckContext(encoded, restored)) << game.first;
+		EXPECT_EQ(original.game, restored.game);
+		EXPECT_EQ(original.mainCount, restored.mainCount);
+		EXPECT_EQ(original.jokeriDouble, restored.jokeriDouble);
+		EXPECT_EQ(original.kenoLevel, restored.kenoLevel);
+		EXPECT_EQ(original.kenoStakeCents, restored.kenoStakeCents);
+		EXPECT_EQ(original.kenoKunkku, restored.kenoKunkku);
+		EXPECT_EQ(original.ktemStakeCents, restored.ktemStakeCents);
+	}
+}
+
+TEST(ResultCheckContext, RejectsCorruptOrIncompleteContextWithoutRetainingOldGame)
+{
+	const std::vector<std::wstring> invalid{
+		L"", L"Milli\n6 0 0 0 0", L"KTEM\n12 0 0 0 0 0",
+		L"Keno\n10 0 10 0 0 0", L"Jokeri\n7 2 0 0 0 0",
+		L"Milli\n6 0 0 0 0 0 extra", L"Unknown\n6 0 0 0 0 0"
+	};
+	for (const auto& input : invalid)
+	{
+		LottoGuiCore::ResultCheckContext context;
+		context.game = L"Milli";
+		context.mainCount = 6;
+		EXPECT_FALSE(LottoGuiCore::DecodeResultCheckContext(input, context));
+		EXPECT_TRUE(context.game.empty());
+	}
+}
+
+TEST(ResultCheckContext, RestoredKtemSixMatchesDoNotUseMilliJackpot)
+{
+	LottoGuiCore::ResultCheckContext context;
+	ASSERT_TRUE(LottoGuiCore::DecodeResultCheckContext(L"KTEM\n12 0 0 0 0 100", context));
+	const std::vector<int> prediction{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+	const std::vector<int> draw{ 1, 2, 3, 4, 5, 6, 13, 14, 15, 16, 17, 18 };
+	ASSERT_TRUE(LottoGuiCore::IsPredictionCompatibleWithGame(context, prediction, {}));
+	ASSERT_TRUE(LottoGuiCore::IsValidActualDraw(context, draw, {}));
+	std::vector<int> matches;
+	LottoGuiCore::FindMatches(prediction, draw, matches);
+	ASSERT_EQ(6u, matches.size());
+	EXPECT_EQ(0, LottoGuiCore::GetKtemPrizeCents(static_cast<int>(matches.size()), context.ktemStakeCents));
+	EXPECT_EQ(100000000, LottoGuiCore::GetMilliPrizeCents(static_cast<int>(matches.size())));
+	EXPECT_EQ(12500000, LottoGuiCore::GetKtemPrizeCents(0, context.ktemStakeCents));
+	EXPECT_EQ(12500000, LottoGuiCore::GetKtemPrizeCents(12, context.ktemStakeCents));
+}
+
+TEST(ResultCheckContext, ChecksGameSpecificPredictionAndDrawShapes)
+{
+	LottoGuiCore::ResultCheckContext context;
+	context.game = L"KTEM";
+	context.mainCount = 12;
+	context.ktemStakeCents = 100;
+	EXPECT_FALSE(LottoGuiCore::IsPredictionCompatibleWithGame(context, { 1, 2, 3, 4, 5, 6 }, {}));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, { 1, 2 }, {}));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context,
+		{ 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, {}));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context,
+		{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 25 }, {}));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context,
+		{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, { 1 }));
+
+	context.game = L"Keno";
+	context.mainCount = 2;
+	context.kenoLevel = 2;
+	context.kenoStakeCents = 50;
+	EXPECT_TRUE(LottoGuiCore::IsPredictionCompatibleWithGame(context, { 1, 70 }, {}));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, { 1, 70 }, {}));
+	EXPECT_TRUE(LottoGuiCore::IsValidActualDraw(context,
+		{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 }, {}));
+
+	context.game = L"Eurojackpot";
+	context.mainCount = 5;
+	EXPECT_TRUE(LottoGuiCore::IsPredictionCompatibleWithGame(context, { 1, 2, 3, 4, 5 }, { 1, 2 }));
+	EXPECT_FALSE(LottoGuiCore::IsPredictionCompatibleWithGame(context, { 1, 2, 3, 4, 5 }, { 1 }));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, { 1, 2, 3, 4, 5 }, {}));
+	EXPECT_TRUE(LottoGuiCore::IsValidActualDraw(context, { 1, 2, 3, 4, 5 }, { 1, 2 }));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, { 1, 2, 3, 4, 5 }, { 2, 2 }));
+
+	context.game = L"Viking Lotto";
+	context.mainCount = 6;
+	EXPECT_TRUE(LottoGuiCore::IsPredictionCompatibleWithGame(context, { 1, 2, 3, 4, 5, 6 }, { 1 }));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, { 1, 2, 3, 4, 5, 6 }, {}));
+	EXPECT_TRUE(LottoGuiCore::IsValidActualDraw(context, { 1, 2, 3, 4, 5, 6 }, { 1 }));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, { 1, 2, 3, 4, 5, 6 }, { 6 }));
+
+	context.game = L"Suomen Lotto";
+	context.mainCount = 7;
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, { 1, 2, 3, 4, 5, 6, 7 }, {}));
+	EXPECT_TRUE(LottoGuiCore::IsValidActualDraw(context, { 1, 2, 3, 4, 5, 6, 7 }, { 8 }));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, { 1, 2, 3, 4, 5, 6, 7 }, { 7 }));
+
+	context.game = L"Jokeri";
+	context.mainCount = 7;
+	EXPECT_TRUE(LottoGuiCore::IsPredictionCompatibleWithGame(context, { 1, 1, 1, 2, 2, 3, 3 }, {}));
+	EXPECT_TRUE(LottoGuiCore::IsValidActualDraw(context, { 0, 0, 1, 2, 3, 4, 9 }, {}));
 }

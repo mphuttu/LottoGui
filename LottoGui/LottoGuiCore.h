@@ -15,6 +15,25 @@ namespace LottoGuiCore
 		Jackpot
 	};
 
+	struct ResultCheckContext
+	{
+		std::wstring game;
+		int mainCount = 0;
+		bool jokeriDouble = false;
+		int kenoLevel = 0;
+		int kenoStakeCents = 0;
+		bool kenoKunkku = false;
+		int ktemStakeCents = 0;
+	};
+
+	bool IsValidResultCheckContext(const ResultCheckContext& context);
+	std::wstring EncodeResultCheckContext(const ResultCheckContext& context);
+	bool DecodeResultCheckContext(const std::wstring& text, ResultCheckContext& context);
+	bool IsPredictionCompatibleWithGame(const ResultCheckContext& context,
+		const std::vector<int>& mainNumbers, const std::vector<int>& bonusNumbers);
+	bool IsValidActualDraw(const ResultCheckContext& context,
+		const std::vector<int>& mainNumbers, const std::vector<int>& bonusNumbers);
+
 	struct BacktestResult
 	{
 		std::size_t draws = 0;
@@ -67,6 +86,14 @@ namespace LottoGuiCore
 		const std::vector<int>& predicted,
 		const std::vector<int>& actual,
 		std::vector<int>& matches);
+	void FindResultMatches(
+		const std::wstring& game,
+		const std::vector<int>& predictedMain,
+		const std::vector<int>& predictedBonus,
+		const std::vector<int>& actualMain,
+		const std::vector<int>& actualBonus,
+		std::vector<int>& mainMatches,
+		std::vector<int>& bonusMatches);
 	bool IsValidJokeriDraw(const std::vector<int>& mainNumbers, const std::vector<int>& bonusNumbers);
 	bool IsJokeriPrizeDoubled(
 		bool doubleSelected,
@@ -75,6 +102,10 @@ namespace LottoGuiCore
 	std::wstring FormatEurojackpotMatches(
 		const std::vector<int>& mainMatches,
 		const std::vector<int>& starMatches,
+		bool finnish);
+	std::wstring FormatFinnishLottoMatches(
+		const std::vector<int>& mainMatches,
+		const std::vector<int>& bonusMatches,
 		bool finnish);
 	LotteryResult ClassifyFinnishOrVikingLottoResult(
 		const std::wstring& gameType,

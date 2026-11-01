@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "LottoGuiCore.h"
 #include <vector>
 using namespace std;
 
@@ -80,6 +81,9 @@ public:
 	vector<vector<int> > m_vMatchedNumbers;
 	vector<vector<int> > m_vBonusMatchedNumbers;
 	void ClearResultCheck();
+	LottoGuiCore::ResultCheckContext GetResultCheckContext() const;
+	void SetResultCheckContext(const LottoGuiCore::ResultCheckContext& context);
+	void ResetResultCheckContext();
 	// vector<CString> m_vstrNums;
 	CStringArray m_vstrNums;
 	virtual void DeleteContents();

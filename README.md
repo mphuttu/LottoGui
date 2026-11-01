@@ -94,6 +94,18 @@ for that result. For games with variable or unavailable prize tables, the
 program shows a short textual summary instead of a fixed euro value, matching
 the current rules for the selected game.
 
+Saved results retain the game and the settings needed to check winnings,
+including the KTEM or Keno base stake and the Keno or Jokeri add-on. Older
+files do not contain these settings: before checking them, select the original
+game and enter the original base stake in cents where needed (100 = €1).
+Save the file again to retain the confirmed settings. For KTEM enter all
+12 drawn numbers, and for Keno all 20; duplicate or out-of-range numbers are
+rejected. Enter the Lotto bonus number, both Eurojackpot stars, or the Viking
+number when checking those games. Lotto bonus matches are checked against the
+main numbers on the ticket, including the 3+1 and 6+1 prize tiers.
+If Onnenapila was selected, its separate result is not available,
+so any Onnenapila bonus is not included in the KTEM winnings.
+
 Eurojackpot reports the two groups separately. For example, comparing
 `40 42 46 47 48 | 5 9` with `21 26 37 39 42 | 5 7` produces
 `1 + 1 correct (matches: 42 (main numbers); 5 (star numbers))`, or the

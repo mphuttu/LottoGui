@@ -54,6 +54,8 @@ namespace
 		return IsFinnishLanguage() ? finnishText : englishText;
 	}
 
+	wstring ToWideString(const CString& text);
+
 	class StructuralDialog : public CDialogEx
 	{
 	public:
@@ -119,6 +121,97 @@ namespace
 		options = dialog.Options();
 		return true;
 	}
+
+	class LegacyResultContextDialog : public CDialogEx
+	{
+	public:
+		explicit LegacyResultContextDialog(int predictionCount)
+			: CDialogEx(IDD_LEGACY_RESULT_CONTEXT), m_predictionCount(predictionCount),
+			m_gameIndex(-1), m_kunkku(FALSE), m_jokeriDouble(FALSE)
+		{
+		}
+
+		LottoGuiCore::ResultCheckContext context;
+
+	protected:
+		BOOL OnInitDialog() override
+		{
+			CDialogEx::OnInitDialog();
+			CComboBox* games = static_cast<CComboBox*>(GetDlgItem(IDC_LEGACY_GAME));
+			games->AddString(LocalizeText(L"Custom lottery", L"Klassinen lotto"));
+			games->AddString(L"Suomen Lotto");
+			games->AddString(L"Milli");
+			games->AddString(L"KTEM");
+			games->AddString(L"Keno");
+			games->AddString(L"Eurojackpot");
+			games->AddString(L"Viking Lotto");
+			games->AddString(L"Jokeri");
+			games->SetCurSel(-1);
+			return TRUE;
+		}
+
+		void DoDataExchange(CDataExchange* pDX) override
+		{
+			CDialogEx::DoDataExchange(pDX);
+			DDX_CBIndex(pDX, IDC_LEGACY_GAME, m_gameIndex);
+			DDX_Text(pDX, IDC_LEGACY_STAKE, m_stake);
+			DDX_Check(pDX, IDC_LEGACY_KUNKKU, m_kunkku);
+			DDX_Check(pDX, IDC_LEGACY_JOKERI_DOUBLE, m_jokeriDouble);
+		}
+
+		void OnOK() override
+		{
+			if (!UpdateData(TRUE))
+				return;
+			const wchar_t* games[] = {
+				L"Custom", L"Suomen Lotto", L"Milli", L"KTEM",
+				L"Keno", L"Eurojackpot", L"Viking Lotto", L"Jokeri"
+			};
+			if (m_gameIndex < 0 || m_gameIndex >= static_cast<int>(_countof(games)))
+			{
+				AfxMessageBox(LocalizeText(L"Select the game used for these rows.",
+					L"Valitse peli, jolla nämä rivit luotiin."));
+				return;
+			}
+			context = LottoGuiCore::ResultCheckContext();
+			context.game = games[m_gameIndex];
+			context.mainCount = m_predictionCount;
+			context.jokeriDouble = m_jokeriDouble != FALSE;
+			if (context.game == L"KTEM" || context.game == L"Keno")
+			{
+				vector<int> amounts;
+				if (!LottoGuiCore::ParseNumberList(ToWideString(m_stake), amounts) || amounts.size() != 1)
+				{
+					AfxMessageBox(LocalizeText(L"Enter the original base stake per row in cents.",
+						L"Syötä alkuperäinen peruspanos riviä kohti sentteinä."));
+					return;
+				}
+				if (context.game == L"KTEM")
+					context.ktemStakeCents = amounts[0];
+				else
+				{
+					context.kenoLevel = m_predictionCount;
+					context.kenoStakeCents = amounts[0];
+					context.kenoKunkku = m_kunkku != FALSE;
+				}
+			}
+			if (!LottoGuiCore::IsValidResultCheckContext(context))
+			{
+				AfxMessageBox(LocalizeText(
+					L"The selected game, number of picks, or stake is invalid. Check the original ticket.",
+					L"Valittu peli, numeroiden määrä tai panos on virheellinen. Tarkista alkuperäinen pelikuponki."));
+				return;
+			}
+			CDialogEx::OnOK();
+		}
+
+	private:
+		int m_predictionCount;
+		int m_gameIndex;
+		CString m_stake;
+		BOOL m_kunkku;
+		BOOL m_jokeriDouble;
+	};
 
 	wstring GetPredictionPrefix()
 	{
@@ -242,11 +335,6 @@ namespace
 	bool ParsePredictionRow(const CString& line, vector<int>& mainNumbers, vector<int>& bonusNumbers)
 	{
 		return LottoGuiCore::ParsePredictionRow(ToWideString(line), mainNumbers, bonusNumbers);
-	}
-
-	void FindMatches(const vector<int>& predicted, const vector<int>& actual, vector<int>& matches)
-	{
-		LottoGuiCore::FindMatches(predicted, actual, matches);
 	}
 
 	bool HasPredictionRows(const CStringArray& lines)
@@ -384,6 +472,9 @@ namespace
 			}
 			if (result == LottoGuiCore::LotteryResult::Prize)
 			{
+				if (gameType == L"Suomen Lotto" && bonusMatches == 1 &&
+					(correctMatches == 3 || correctMatches == 6))
+					return FormatPrizeTier(correctMatches, bonusMatches);
 				return FormatCorrectCount(correctMatches);
 			}
 			return LocalizeText(L"No win.", L"Ei voittoa.");
@@ -1804,21 +1895,76 @@ BOOL CLottoGuiDoc::OnNewDocument()
 
 void CLottoGuiDoc::Serialize(CArchive& ar)
 {
-	 m_vstrNums.Serialize(ar);
+	const DWORD contextMarker = 0x4c475243;
+	m_vstrNums.Serialize(ar);
 
 	if (ar.IsStoring())
 	{
-		// TODO: add storing code here
 		ar << m_strSampleNums;
 		ar << m_nLines;
-		// ar << m_vstrNums;
+		if (!m_strCurrentGameType.IsEmpty())
+		{
+			const wstring encoded = LottoGuiCore::EncodeResultCheckContext(GetResultCheckContext());
+			if (encoded.empty())
+				AfxThrowArchiveException(CArchiveException::badSchema);
+			ar << contextMarker;
+			ar << CString(encoded.c_str());
+		}
 	}
 	else
 	{
-		// TODO: add loading code here
+		ResetResultCheckContext();
+		ClearResultCheck();
 		ar >> m_strSampleNums;
 		ar >> m_nLines;
+		DWORD marker = 0;
+		const UINT bytesRead = ar.Read(&marker, sizeof(marker));
+		if (bytesRead != 0)
+		{
+			if (bytesRead != sizeof(marker) || marker != contextMarker)
+				AfxThrowArchiveException(CArchiveException::badSchema);
+			CString encoded;
+			ar >> encoded;
+			LottoGuiCore::ResultCheckContext context;
+			if (!LottoGuiCore::DecodeResultCheckContext(ToWideString(encoded), context))
+				AfxThrowArchiveException(CArchiveException::badSchema);
+			SetResultCheckContext(context);
+		}
 	}
+}
+
+LottoGuiCore::ResultCheckContext CLottoGuiDoc::GetResultCheckContext() const
+{
+	LottoGuiCore::ResultCheckContext context;
+	context.game = ToWideString(m_strCurrentGameType);
+	context.mainCount = m_nAmount;
+	context.jokeriDouble = m_bJokeriDouble != FALSE;
+	context.kenoLevel = m_nKenoLevel;
+	context.kenoStakeCents = m_nKenoStakeCents;
+	context.kenoKunkku = m_bKenoKunkkukerroin != FALSE;
+	context.ktemStakeCents = m_nKtemStakeCents;
+	return context;
+}
+
+void CLottoGuiDoc::SetResultCheckContext(const LottoGuiCore::ResultCheckContext& context)
+{
+	m_strCurrentGameType = context.game.c_str();
+	m_nAmount = context.mainCount;
+	m_bJokeriDouble = context.jokeriDouble ? TRUE : FALSE;
+	m_nKenoLevel = context.kenoLevel;
+	m_nKenoStakeCents = context.kenoStakeCents;
+	m_bKenoKunkkukerroin = context.kenoKunkku ? TRUE : FALSE;
+	m_nKtemStakeCents = context.ktemStakeCents;
+}
+
+void CLottoGuiDoc::ResetResultCheckContext()
+{
+	m_strCurrentGameType.Empty();
+	m_bJokeriDouble = FALSE;
+	m_nKenoLevel = 0;
+	m_nKenoStakeCents = 0;
+	m_bKenoKunkkukerroin = FALSE;
+	m_nKtemStakeCents = 0;
 }
 
 #ifdef SHARED_HANDLERS
@@ -2005,6 +2151,49 @@ void CLottoGuiDoc::OnCheckResults()
 		return;
 	}
 
+	LottoGuiCore::ResultCheckContext context = GetResultCheckContext();
+	const bool needsLegacyContext = context.game.empty();
+	if (needsLegacyContext)
+	{
+		vector<int> firstMain;
+		vector<int> firstBonus;
+		for (INT_PTR index = 0; index < m_vstrNums.GetSize(); ++index)
+		{
+			if (ParsePredictionRow(m_vstrNums.GetAt(index), firstMain, firstBonus))
+				break;
+		}
+		LegacyResultContextDialog settings(static_cast<int>(firstMain.size()));
+		if (settings.DoModal() != IDOK)
+			return;
+		context = settings.context;
+	}
+
+	if (!LottoGuiCore::IsValidResultCheckContext(context))
+	{
+		AfxMessageBox(LocalizeText(
+			L"The game's result-checking settings are invalid. Generate the rows again.",
+			L"Pelin osumien tarkistuksen asetukset ovat virheelliset. Luo rivit uudelleen."));
+		return;
+	}
+	for (INT_PTR index = 0; index < m_vstrNums.GetSize(); ++index)
+	{
+		vector<int> mainNumbers;
+		vector<int> bonusNumbers;
+		if (ParsePredictionRow(m_vstrNums.GetAt(index), mainNumbers, bonusNumbers) &&
+			!LottoGuiCore::IsPredictionCompatibleWithGame(context, mainNumbers, bonusNumbers))
+		{
+			AfxMessageBox(LocalizeText(
+				L"A prediction row does not match the selected game. Check the game and ticket settings.",
+				L"Ennusterivi ei vastaa valittua peliä. Tarkista peli ja pelirivin asetukset."));
+			return;
+		}
+	}
+	if (needsLegacyContext)
+	{
+		SetResultCheckContext(context);
+		SetModifiedFlag();
+	}
+
 	CCheckResultsDlg dialog;
 	dialog.m_strActualNumbers = m_strActualResults;
 
@@ -2032,12 +2221,17 @@ void CLottoGuiDoc::OnCheckResults()
 		return;
 	}
 
-	if (m_strCurrentGameType.Find(L"Jokeri") >= 0 &&
-		!LottoGuiCore::IsValidJokeriDraw(actualMainNumbers, actualBonusNumbers))
+	if (!LottoGuiCore::IsValidActualDraw(context, actualMainNumbers, actualBonusNumbers))
 	{
 		AfxMessageBox(LocalizeText(
-			L"Enter exactly seven Jokeri digits from 0 to 9, in draw order, without bonus numbers.",
-			L"Syötä täsmälleen seitsemän Jokeri-numeroa väliltä 0–9 arvontajärjestyksessä, ilman lisänumeroita."));
+			L"The draw does not match the selected game. Enter all main numbers (20 for Keno), "
+			L"within the game's range, without duplicates. Enter the Lotto bonus number, "
+			L"two Eurojackpot stars, or the Viking number after |; "
+			L"Jokeri requires seven digits in order and permits repeated digits.",
+			L"Arvontatulos ei vastaa valittua peliä. Syötä kaikki päänumerot (Kenossa 20) "
+			L"pelin numeroalueelta ilman toistoja. Syötä Loton lisänumero, Eurojackpotin kaksi "
+			L"tähtinumeroa tai Viking Loton Viking-numero |-merkin jälkeen; "
+			L"Jokerissa tarvitaan seitsemän numeroa järjestyksessä ja numerot voivat toistua."));
 		return;
 	}
 
@@ -2067,15 +2261,9 @@ void CLottoGuiDoc::OnCheckResults()
 
 		vector<int> matches;
 		vector<int> bonusMatches;
-		if (m_strCurrentGameType.Find(L"Jokeri") >= 0)
-		{
-			LottoGuiCore::FindPositionalMatches(predictedMainNumbers, actualMainNumbers, matches);
-		}
-		else
-		{
-			FindMatches(predictedMainNumbers, actualMainNumbers, matches);
-		}
-		FindMatches(predictedBonusNumbers, actualBonusNumbers, bonusMatches);
+		LottoGuiCore::FindResultMatches(ToWideString(m_strCurrentGameType),
+			predictedMainNumbers, predictedBonusNumbers, actualMainNumbers, actualBonusNumbers,
+			matches, bonusMatches);
 		const int mainMatches = static_cast<int>(matches.size());
 		const int bonusMatchCount = static_cast<int>(bonusMatches.size());
 		const int correctMatches = mainMatches + bonusMatchCount;
@@ -3190,6 +3378,7 @@ void CLottoGuiDoc::DeleteContents()
 	m_strAllotedNums = L"";
 	m_vstrNums.RemoveAll();
 	ClearResultCheck();
+	ResetResultCheckContext();
 
 	CDocument::DeleteContents();
 }
