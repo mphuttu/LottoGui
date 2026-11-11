@@ -194,7 +194,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Check results"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    LTEXT           "Numbers (optional bonus numbers after |; e.g. 11 17 20 22 35 | 4 8):",IDC_STATIC,10,10,310,20
+    LTEXT           "Numbers (bonus numbers after | when required; e.g. 11 17 20 22 35 | 4 8):",IDC_STATIC,10,10,310,20
     EDITTEXT        IDC_CHECK_RESULTS_NUMBERS,10,36,310,20,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Check",IDOK,179,109,60,14
     PUSHBUTTON      "Cancel",IDCANCEL,249,109,60,14
@@ -825,7 +825,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Tarkista tulokset"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    LTEXT           "Numerot (valinnaiset lisänumerot |-merkin jälkeen; esim. 11 17 20 22 35 | 4 8):",IDC_STATIC,10,10,310,20
+    LTEXT           "Numerot (pelin vaatimat lisänumerot |-merkin jälkeen; esim. 11 17 20 22 35 | 4 8):",IDC_STATIC,10,10,310,20
     EDITTEXT        IDC_CHECK_RESULTS_NUMBERS,10,36,310,20,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Tarkista",IDOK,179,109,60,14
     PUSHBUTTON      "Peruuta",IDCANCEL,249,109,60,14

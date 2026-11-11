@@ -161,6 +161,22 @@ TEST(ActualResultsParsing, AllowsResultsWithoutBonusNumbers)
 	EXPECT_TRUE(bonusNumbers.empty());
 }
 
+TEST(ActualResultsParsing, AcceptsMilliDrawWithSpacesOrSemicolons)
+{
+	LottoGuiCore::ResultCheckContext context;
+	context.game = L"Milli";
+	context.mainCount = 6;
+	for (const std::wstring& input : { L"6 17 29 33 38 39 | 9", L"6;17;29;33;38;39 | 9" })
+	{
+		std::vector<int> mainNumbers;
+		std::vector<int> bonusNumbers;
+		ASSERT_TRUE(LottoGuiCore::ParseActualResults(input, mainNumbers, bonusNumbers));
+		EXPECT_EQ((std::vector<int>{ 6, 17, 29, 33, 38, 39 }), mainNumbers);
+		EXPECT_EQ((std::vector<int>{ 9 }), bonusNumbers);
+		EXPECT_TRUE(LottoGuiCore::IsValidActualDraw(context, mainNumbers, bonusNumbers));
+	}
+}
+
 TEST(ActualResultsParsing, RejectsMalformedListsAndClearsOutputs)
 {
 	const std::vector<std::wstring> invalidInputs{
@@ -337,6 +353,22 @@ TEST(ResultMatching, SuomenLottoMatchesDrawnBonusAgainstPredictionMainNumbers)
 	EXPECT_EQ(LottoGuiCore::LotteryResult::NoPrize,
 		LottoGuiCore::ClassifyFinnishOrVikingLottoResult(L"Suomen Lotto",
 			static_cast<int>(mainMatches.size()), static_cast<int>(bonusMatches.size()), 7));
+}
+
+TEST(ResultMatching, MilliMatchesBonusSeparatelyFromMainNumbers)
+{
+	const std::vector<int> draw{ 6, 17, 29, 33, 38, 39 };
+	std::vector<int> mainMatches;
+	std::vector<int> bonusMatches;
+	LottoGuiCore::FindResultMatches(L"Milli", { 6, 17, 9, 10, 11, 12 }, {}, draw, { 9 },
+		mainMatches, bonusMatches);
+	EXPECT_EQ((std::vector<int>{ 6, 17 }), mainMatches);
+	EXPECT_EQ((std::vector<int>{ 9 }), bonusMatches);
+	EXPECT_EQ(L"2 + 1 oikein (osumat: 6, 17 (päänumerot); 9 (lisänumero))",
+		LottoGuiCore::FormatFinnishLottoMatches(mainMatches, bonusMatches, true));
+	LottoGuiCore::FindResultMatches(L"Milli", { 6, 17, 10, 11, 12, 13 }, {}, draw, { 9 },
+		mainMatches, bonusMatches);
+	EXPECT_TRUE(bonusMatches.empty());
 }
 
 TEST(LotteryResults, VikingLottoRequiresThreeMatchesAndVikingNumberForJackpot)
@@ -609,6 +641,18 @@ TEST(ResultCheckContext, ChecksGameSpecificPredictionAndDrawShapes)
 	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, { 1, 2, 3, 4, 5, 6, 7 }, {}));
 	EXPECT_TRUE(LottoGuiCore::IsValidActualDraw(context, { 1, 2, 3, 4, 5, 6, 7 }, { 8 }));
 	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, { 1, 2, 3, 4, 5, 6, 7 }, { 7 }));
+
+	context.game = L"Milli";
+	context.mainCount = 6;
+	const std::vector<int> milliDraw{ 6, 17, 29, 33, 38, 39 };
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, milliDraw, {}));
+	EXPECT_TRUE(LottoGuiCore::IsValidActualDraw(context, milliDraw, { 9 }));
+	EXPECT_TRUE(LottoGuiCore::IsValidActualDraw(context, milliDraw, { 1 }));
+	EXPECT_TRUE(LottoGuiCore::IsValidActualDraw(context, milliDraw, { 40 }));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, milliDraw, { 0 }));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, milliDraw, { 41 }));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, milliDraw, { 39 }));
+	EXPECT_FALSE(LottoGuiCore::IsValidActualDraw(context, milliDraw, { 9, 10 }));
 
 	context.game = L"Jokeri";
 	context.mainCount = 7;

@@ -100,9 +100,14 @@ files do not contain these settings: before checking them, select the original
 game and enter the original base stake in cents where needed (100 = €1).
 Save the file again to retain the confirmed settings. For KTEM enter all
 12 drawn numbers, and for Keno all 20; duplicate or out-of-range numbers are
-rejected. Enter the Lotto bonus number, both Eurojackpot stars, or the Viking
-number when checking those games. Lotto bonus matches are checked against the
-main numbers on the ticket, including the 3+1 and 6+1 prize tiers.
+rejected. Enter the drawn Lotto or Milli bonus number, both Eurojackpot stars,
+or the Viking number after `|` when checking those games; these numbers are
+required and are not stored in the Lotto, Milli, or Viking CSV files. For
+example, a Milli draw can be entered as `6 17 29 33 38 39 | 9` or
+`6;17;29;33;38;39 | 9`. Lotto and Milli bonus matches are checked against the
+ticket's main numbers and displayed separately. Lotto includes the 3+1 and 6+1
+prize tiers. Milli's displayed prizes cover main-number matches only: check
+any bonus-number prize separately against the official results.
 If Onnenapila was selected, its separate result is not available,
 so any Onnenapila bonus is not included in the KTEM winnings.
 

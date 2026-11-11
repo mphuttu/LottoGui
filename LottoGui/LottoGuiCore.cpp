@@ -134,8 +134,9 @@ namespace LottoGuiCore
 		}
 		if (bonusNumbers.empty())
 			return context.game != L"Suomen Lotto" &&
-				context.game != L"Eurojackpot" && context.game != L"Viking Lotto";
-		if (context.game == L"Suomen Lotto")
+				context.game != L"Milli" && context.game != L"Eurojackpot" &&
+				context.game != L"Viking Lotto";
+		if (context.game == L"Suomen Lotto" || context.game == L"Milli")
 		{
 			if (bonusNumbers.size() != 1) return false;
 			const int n = bonusNumbers[0];
@@ -505,7 +506,7 @@ namespace LottoGuiCore
 			FindPositionalMatches(predictedMain, actualMain, mainMatches);
 		else
 			FindMatches(predictedMain, actualMain, mainMatches);
-		FindMatches(game == L"Suomen Lotto" ? predictedMain : predictedBonus,
+		FindMatches(game == L"Suomen Lotto" || game == L"Milli" ? predictedMain : predictedBonus,
 			actualBonus, bonusMatches);
 	}
 

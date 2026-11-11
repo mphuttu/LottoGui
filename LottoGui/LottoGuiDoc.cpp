@@ -500,17 +500,22 @@ namespace
 		if (gameType.Find(L"Milli") >= 0)
 		{
 			const int prizeCents = LottoGuiCore::GetMilliPrizeCents(correctMatches);
+			CString result;
 			if (prizeCents == 0)
 			{
-				return LocalizeText(L"No win.", L"Ei voittoa.");
+				result = LocalizeText(L"No win from main numbers.", L"Ei voittoa päänumeroilla.");
 			}
-
-			if (correctMatches == 6)
+			else if (correctMatches == 6)
 			{
-				return FormatPrizeWithAmount(
+				result = FormatPrizeWithAmount(
 					LocalizeText(L"Jackpot!", L"Päävoitto!"), prizeCents);
 			}
-			return FormatPrizeWithAmount(FormatCorrectCount(correctMatches), prizeCents);
+			else
+			{
+				result = FormatPrizeWithAmount(FormatCorrectCount(correctMatches), prizeCents);
+			}
+			return result + LocalizeText(L" Check any bonus-number prize separately.",
+				L" Tarkista mahdollinen lisänumerovoitto erikseen.");
 		}
 
 		if (gameType.Find(L"Keno") >= 0)
@@ -2225,11 +2230,11 @@ void CLottoGuiDoc::OnCheckResults()
 	{
 		AfxMessageBox(LocalizeText(
 			L"The draw does not match the selected game. Enter all main numbers (20 for Keno), "
-			L"within the game's range, without duplicates. Enter the Lotto bonus number, "
+			L"within the game's range, without duplicates. Enter the Lotto or Milli bonus number, "
 			L"two Eurojackpot stars, or the Viking number after |; "
 			L"Jokeri requires seven digits in order and permits repeated digits.",
 			L"Arvontatulos ei vastaa valittua peliä. Syötä kaikki päänumerot (Kenossa 20) "
-			L"pelin numeroalueelta ilman toistoja. Syötä Loton lisänumero, Eurojackpotin kaksi "
+			L"pelin numeroalueelta ilman toistoja. Syötä Loton tai Millin lisänumero, Eurojackpotin kaksi "
 			L"tähtinumeroa tai Viking Loton Viking-numero |-merkin jälkeen; "
 			L"Jokerissa tarvitaan seitsemän numeroa järjestyksessä ja numerot voivat toistua."));
 		return;

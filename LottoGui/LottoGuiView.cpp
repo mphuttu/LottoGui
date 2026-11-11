@@ -499,7 +499,8 @@ namespace
 							pDoc->m_vMatchedNumbers[index],
 							pDoc->m_vBonusMatchedNumbers[index], isFinnish).c_str();
 					}
-					else if (pDoc->m_strCurrentGameType == L"Suomen Lotto" &&
+					else if ((pDoc->m_strCurrentGameType == L"Suomen Lotto" ||
+						pDoc->m_strCurrentGameType == L"Milli") &&
 						pDoc->m_vMatchedNumbers.size() > static_cast<size_t>(index) &&
 						pDoc->m_vBonusMatchedNumbers.size() > static_cast<size_t>(index))
 					{
