@@ -10,6 +10,7 @@ CJokeriDlg::CJokeriDlg(CWnd* pParent /*=NULL*/)
 	, m_nPredictionRows(5)
 	, m_bRepeatProfile(FALSE)
 	, m_bDouble(FALSE)
+	, m_bStructural(FALSE)
 {
 }
 
@@ -24,6 +25,7 @@ void CJokeriDlg::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_nPredictionRows, 1, 50);
 	DDX_Check(pDX, IDC_JOKERI_REPEAT_PROFILE, m_bRepeatProfile);
 	DDX_Check(pDX, IDC_JOKERI_DOUBLE, m_bDouble);
+	DDX_Check(pDX, IDC_JOKERI_STRUCTURAL, m_bStructural);
 }
 
 BEGIN_MESSAGE_MAP(CJokeriDlg, CDialogEx)

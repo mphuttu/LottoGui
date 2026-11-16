@@ -60,8 +60,9 @@ numeroiden määrän.</p>
 <p>Kuuden numeropelin valintaikkunassa voi valita <strong>Rakennestrategiat...</strong>.
 Vahvistuksen jälkeen avautuvassa ikkunassa valitut ehdot yhdistetään samoille
 riveille. Ne muodostavat pyydetyn määrän lisärivejä; aiemmat strategiavalinnat
-tuottavat edelleen omat erilliset riviryhmänsä. Jokerin toistuville,
-paikkakohtaisille numeroille toiminto ei sovellu.</p>
+tuottavat edelleen omat erilliset riviryhmänsä. Jokerissa vastaava ikkuna
+avautuu valinnalla <strong>Historialliset strategiat...</strong>; vain Jokeriin
+soveltuvat ehdot ovat valittavissa.</p>
 <ul>
 <li>Kymmenlukuryhmät: mahdollisimman moni ryhmä 1–10, 11–20 jne. rivikoon mukaan.</li>
 <li>Päätenumerot: enintään kaksi samaan numeroon päättyvää.</li>
@@ -69,12 +70,34 @@ paikkakohtaisille numeroille toiminto ei sovellu.</p>
 <li>Tasapaino: pieniä ja suuria sekä parillisia ja parittomia on kumpiakin lähes yhtä paljon.</li>
 <li>Lyhyet sarjat: ei vähintään neljän peräkkäisen numeron sarjoja.</li>
 <li>Minimiväli: pienin sallittu ero kahden numeron välillä.</li>
+<li>Historiallisten rivien poissulku: poistaa aiemmin arvotut päänumerot. Kenossa
+kaikkien pelinumeroiden löytyminen 20 arvotun numeron joukosta lasketaan osumaksi.</li>
+<li>Samankaltaisuuden välttäminen: yhteisiä numeroita saa olla enintään rivikoko miinus kaksi
+(esim. Lotossa 5). Jokerissa verrataan numeroita samoilla paikoilla.</li>
+<li>Historiallinen summa: hyväksyy summat keskiarvon ja yhden keskihajonnan väliltä
+kumpaankin suuntaan. Tulosteessa näkyvät myös mediaani ja kelvollisten arvontojen määrä.</li>
+<li>Historiallinen kymmenlukujakauma: suosii historiassa yleisiä jakaumia;
+ryhmät ovat 1–9, 10–19 jne. Jokerissa tätä ei käytetä.</li>
+<li>Historiallinen rakenne + uutuus: hylkää historialliset osumat ja pisteyttää
+tasapainon (40 %), summan (20 %), kymmenluvut (15 %), alkuluvut (15 %)
+ja erilaisuuden (10 %). Jokerissa kymmenlukupiste on neutraali.</li>
+<li>AntiCrowd: vähentää pisteitä riveiltä, joilla kaikki numerot ovat enintään 31,
+samasta kymmenlukuryhmästä tai muodostavat tasavälisen sarjan (myös 10-sarakkeisen
+ruudukon lävistäjät). Jokerissa arvioidaan vain paikkajärjestyksessä tasaväliset sarjat.</li>
 </ul>
+<p>Historiasta käytetään vain kelvollisia kokonaisia päänumerorivejä; tähdet ja
+lisänumerot eivät osallistu vertailuun. Kenossa summatilasto ja jakauma suhteutetaan
+20 numerosta valitun tason kokoisiin otoksiin. Mediaani on suhteutettujen arvontasummien
+mediaani, ja hajonta huomioi myös saman arvonnan osaotosten vaihtelun. Ehdot koskevat vain tätä lisäriviryhmää,
+eivät muita ennusteita. Pisteyttävät valinnat vertailevat enintään 64 hyväksyttyä
+satunnaista ehdokasta riviä kohti. Erityisesti pienillä Keno-tasoilla tiukat
+historiaehdot voivat estää rivien muodostamisen.</p>
 <p>Ehtojen ollessa mahdottomia tai hakurajan täyttyessä rivejä ei luoda.
 Rivit arvotaan ilman frekvenssipainotusta. Eurojackpotin tähdet ja Viking-numero
 arvotaan erikseen. Lisärivit sisältyvät generoinnin jälkeiseen kokonaishintaan;
-ennakkoarviota ei näytetä. Lyhyet sarjat eivät tunnista lippukuvioita tai
-todellista suosiota eivätkä takaa voiton jakamisen vähentymistä.</p>
+ennakkoarviota ei näytetä. AntiCrowd on vain oletuksiin perustuva arvio, ei
+pelaajatilasto: mikään näistä ehdoista ei paranna osumistodennäköisyyttä tai
+takaa voiton jakamisen vähentymistä.</p>
 
 <h2>Aloittaminen</h2>
 <ol>

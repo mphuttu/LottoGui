@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <random>
+#include <map>
 
 namespace LottoGuiCore
 {
@@ -56,6 +57,12 @@ namespace LottoGuiCore
 		bool balanced = false;
 		bool avoidRuns = false;
 		int minimumGap = 1;
+		bool excludeHistory = false;
+		bool avoidSimilarHistory = false;
+		bool historicalSum = false;
+		bool historicalDecades = false;
+		bool historicalNovelty = false;
+		bool antiCrowd = false;
 	};
 
 	enum class StructuralResult
@@ -67,6 +74,29 @@ namespace LottoGuiCore
 	};
 
 	StructuralResult GenerateStructuralLine(int maximumNumber, int picks,
+		const StructuralOptions& options, std::mt19937& generator, std::vector<int>& line);
+
+	struct HistoricalProfile
+	{
+		int maximumNumber = 0;
+		int picks = 0;
+		int drawSize = 0;
+		bool positional = false;
+		double mean = 0;
+		double median = 0;
+		double deviation = 0;
+		double primeRatio = 0;
+		std::vector<double> decades;
+		std::map<std::vector<int>, std::size_t> decadePatterns;
+		std::vector<std::vector<int>> rows;
+		std::vector<std::uint64_t> lowMasks, highMasks;
+	};
+
+	bool BuildHistoricalProfile(const std::vector<std::vector<int>>& rows,
+		int maximumNumber, int drawSize, int picks, bool positional, HistoricalProfile& profile);
+	bool EvaluateHistoricalLine(const HistoricalProfile& profile, const std::vector<int>& line,
+		const StructuralOptions& options, double& score);
+	StructuralResult GenerateHistoricalLine(const HistoricalProfile& profile,
 		const StructuralOptions& options, std::mt19937& generator, std::vector<int>& line);
 
 	bool ParseNumberList(const std::wstring& input, std::vector<int>& values);

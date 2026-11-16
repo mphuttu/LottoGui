@@ -5,7 +5,118 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 #include <set>
+
+TEST(HistoricalStrategies, ValidatesHistoryAndExcludesExactAndNearMatches)
+{
+	LottoGuiCore::HistoricalProfile profile;
+	ASSERT_TRUE(LottoGuiCore::BuildHistoricalProfile(
+		{{1, 5, 12, 24, 31, 38, 41}, {1, 1, 2, 3, 4, 5, 6}, {1, 2}},
+		41, 7, 7, false, profile));
+	EXPECT_EQ(1u, profile.rows.size());
+	double score = 0;
+	LottoGuiCore::StructuralOptions options;
+	options.excludeHistory = true;
+	EXPECT_FALSE(LottoGuiCore::EvaluateHistoricalLine(profile, {41, 38, 31, 24, 12, 5, 1}, options, score));
+	EXPECT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, {1, 5, 12, 24, 31, 38, 39}, options, score));
+	options.avoidSimilarHistory = true;
+	EXPECT_FALSE(LottoGuiCore::EvaluateHistoricalLine(profile, {1, 5, 12, 24, 31, 38, 39}, options, score));
+	EXPECT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, {1, 5, 12, 24, 31, 37, 39}, options, score));
+}
+
+TEST(HistoricalStrategies, SumZoneAndKenoSubsetStatistics)
+{
+	LottoGuiCore::HistoricalProfile profile;
+	ASSERT_TRUE(LottoGuiCore::BuildHistoricalProfile({{1, 2, 3, 4}, {5, 6, 7, 8}},
+		10, 4, 2, false, profile));
+	EXPECT_DOUBLE_EQ(9.0, profile.mean);
+	EXPECT_DOUBLE_EQ(9.0, profile.median);
+	EXPECT_NEAR(std::sqrt(16.0 + 5.0 / 3.0), profile.deviation, 1e-10);
+	LottoGuiCore::StructuralOptions options;
+	options.historicalSum = true;
+	double score;
+	EXPECT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, {4, 5}, options, score));
+	EXPECT_FALSE(LottoGuiCore::EvaluateHistoricalLine(profile, {1, 2}, options, score));
+	options.historicalSum = false;
+	options.excludeHistory = true;
+	EXPECT_FALSE(LottoGuiCore::EvaluateHistoricalLine(profile, {1, 4}, options, score));
+	EXPECT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, {1, 8}, options, score));
+	ASSERT_TRUE(LottoGuiCore::BuildHistoricalProfile({{1, 64, 65, 70}},
+		70, 4, 2, false, profile));
+	EXPECT_FALSE(LottoGuiCore::EvaluateHistoricalLine(profile, {65, 70}, options, score));
+	EXPECT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, {64, 69}, options, score));
+}
+
+TEST(HistoricalStrategies, JokeriUsesPositionsAndAllowsRepeatedDigits)
+{
+	LottoGuiCore::HistoricalProfile profile;
+	ASSERT_TRUE(LottoGuiCore::BuildHistoricalProfile({{0, 0, 1, 2, 3, 4, 5}},
+		9, 7, 7, true, profile));
+	LottoGuiCore::StructuralOptions options;
+	options.excludeHistory = true;
+	double score;
+	EXPECT_FALSE(LottoGuiCore::EvaluateHistoricalLine(profile, {0, 0, 1, 2, 3, 4, 5}, options, score));
+	EXPECT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, {0, 1, 0, 2, 3, 4, 5}, options, score));
+	options.avoidSimilarHistory = true;
+	EXPECT_FALSE(LottoGuiCore::EvaluateHistoricalLine(profile, {0, 0, 1, 2, 3, 4, 6}, options, score));
+}
+
+TEST(HistoricalStrategies, ScoresDistributionsAndCrowdPatterns)
+{
+	LottoGuiCore::HistoricalProfile profile;
+	ASSERT_TRUE(LottoGuiCore::BuildHistoricalProfile(
+		{{1, 11, 21}, {2, 12, 22}, {3, 13, 23}, {4, 5, 6}}, 40, 3, 3, false, profile));
+	LottoGuiCore::StructuralOptions options;
+	options.historicalDecades = true;
+	double common, uncommon;
+	ASSERT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, {7, 17, 27}, options, common));
+	ASSERT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, {7, 8, 9}, options, uncommon));
+	EXPECT_GT(common, uncommon);
+	options.historicalDecades = false;
+	options.antiCrowd = true;
+	ASSERT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, {1, 11, 21}, options, common));
+	ASSERT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, {3, 18, 37}, options, uncommon));
+	EXPECT_LT(common, uncommon);
+	options.historicalNovelty = true;
+	EXPECT_FALSE(LottoGuiCore::EvaluateHistoricalLine(profile, {1, 11, 21}, options, common));
+}
+
+TEST(HistoricalStrategies, MetaScoreUsesTheSpecifiedWeightsAndZeroDeviation)
+{
+	LottoGuiCore::HistoricalProfile profile;
+	ASSERT_TRUE(LottoGuiCore::BuildHistoricalProfile({{1, 2, 3}}, 40, 3, 3, false, profile));
+	LottoGuiCore::StructuralOptions options;
+	options.historicalNovelty = true;
+	double score;
+	ASSERT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, {4, 10, 20}, options, score));
+	EXPECT_NEAR(0.20, score, 1e-10);
+	options.historicalNovelty = false;
+	options.historicalSum = true;
+	EXPECT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, {1, 2, 3}, options, score));
+	EXPECT_FALSE(LottoGuiCore::EvaluateHistoricalLine(profile, {1, 2, 4}, options, score));
+}
+
+TEST(HistoricalStrategies, GenerationRespectsRulesAndReportsExhaustion)
+{
+	LottoGuiCore::HistoricalProfile profile;
+	ASSERT_TRUE(LottoGuiCore::BuildHistoricalProfile({{1, 2, 3, 4, 5, 6, 7}},
+		40, 7, 7, false, profile));
+	LottoGuiCore::StructuralOptions options;
+	options.historicalNovelty = true;
+	options.avoidSimilarHistory = true;
+	std::mt19937 generator(123);
+	std::vector<int> line;
+	ASSERT_EQ(LottoGuiCore::StructuralResult::Success,
+		LottoGuiCore::GenerateHistoricalLine(profile, options, generator, line));
+	double score;
+	EXPECT_TRUE(LottoGuiCore::EvaluateHistoricalLine(profile, line, options, score));
+	ASSERT_TRUE(LottoGuiCore::BuildHistoricalProfile({{1, 2}}, 2, 2, 2, false, profile));
+	EXPECT_EQ(LottoGuiCore::StructuralResult::SearchLimit,
+		LottoGuiCore::GenerateHistoricalLine(profile, options, generator, line));
+	EXPECT_TRUE(line.empty());
+	EXPECT_FALSE(LottoGuiCore::BuildHistoricalProfile({{1, 1}}, 2, 2, 2, false, profile));
+}
 
 TEST(StructuralStrategies, CombinesConstraintsOnTheSameRows)
 {

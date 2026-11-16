@@ -94,6 +94,13 @@
 #define IDC_LEGACY_STAKE                  1060
 #define IDC_LEGACY_KUNKKU                 1061
 #define IDC_LEGACY_JOKERI_DOUBLE          1062
+#define IDC_STRUCT_EXCLUDE_HISTORY        1063
+#define IDC_STRUCT_AVOID_SIMILAR          1064
+#define IDC_STRUCT_HISTORY_SUM            1065
+#define IDC_STRUCT_HISTORY_DECADES        1066
+#define IDC_STRUCT_HISTORY_NOVELTY        1067
+#define IDC_STRUCT_ANTI_CROWD             1068
+#define IDC_JOKERI_STRUCTURAL             1069
 
 // Next default values for new objects
 // 
@@ -101,7 +108,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        322
 #define _APS_NEXT_COMMAND_VALUE         32783
-#define _APS_NEXT_CONTROL_VALUE        1063
+#define _APS_NEXT_CONTROL_VALUE        1070
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

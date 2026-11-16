@@ -15,6 +15,7 @@ public:
 	int m_nPredictionRows;
 	BOOL m_bRepeatProfile;
 	BOOL m_bDouble;
+	BOOL m_bStructural;
 	afx_msg void OnClickedDouble();
 
 protected:

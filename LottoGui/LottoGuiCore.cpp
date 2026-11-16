@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <functional>
+#include <limits>
 #include <numeric>
 #include <random>
 #include <sstream>
@@ -256,6 +257,212 @@ namespace LottoGuiCore
 		}
 		line.clear();
 		return exhausted ? StructuralResult::SearchLimit : StructuralResult::NoSolution;
+	}
+
+	namespace
+	{
+		bool Prime(int n)
+		{
+			if (n < 2) return false;
+			for (int d = 2; d * d <= n; ++d)
+				if (n % d == 0) return false;
+			return true;
+		}
+
+		int BitCount(std::uint64_t value)
+		{
+			int count = 0;
+			while (value) { value &= value - 1; ++count; }
+			return count;
+		}
+	}
+
+	bool BuildHistoricalProfile(const std::vector<std::vector<int>>& rows,
+		int maximumNumber, int drawSize, int picks, bool positional, HistoricalProfile& profile)
+	{
+		profile = HistoricalProfile();
+		if (maximumNumber < 1 || maximumNumber > 70 || drawSize < 1 ||
+			picks < 1 || picks > drawSize || (!positional && drawSize > maximumNumber) ||
+			(positional && picks != drawSize))
+			return false;
+		profile.maximumNumber = maximumNumber;
+		profile.picks = picks;
+		profile.drawSize = drawSize;
+		profile.positional = positional;
+		profile.decades.assign(positional ? 1 : maximumNumber / 10 + 1, 0.0);
+		std::vector<double> sums;
+		double withinVariance = 0;
+		int primes = 0;
+		for (const auto& source : rows)
+		{
+			if (source.size() < static_cast<std::size_t>(drawSize)) continue;
+			std::vector<int> row(source.begin(), source.begin() + drawSize);
+			std::uint64_t low = 0, high = 0;
+			bool valid = true;
+			int sum = 0, rowPrimes = 0;
+			std::vector<int> groups(profile.decades.size(), 0);
+			for (int n : row)
+			{
+				if (n < (positional ? 0 : 1) || n > maximumNumber) { valid = false; break; }
+				if (!positional)
+				{
+					std::uint64_t& mask = n <= 64 ? low : high;
+					const std::uint64_t bit = std::uint64_t(1) << ((n - 1) % 64);
+					if (mask & bit) { valid = false; break; }
+					mask |= bit;
+				}
+				sum += n;
+				rowPrimes += Prime(n) ? 1 : 0;
+				++groups[positional ? 0 : n / 10];
+			}
+			if (!valid) continue;
+			profile.rows.push_back(row);
+			profile.lowMasks.push_back(low);
+			profile.highMasks.push_back(high);
+			const double scaledSum = static_cast<double>(sum) * picks / drawSize;
+			sums.push_back(scaledSum);
+			primes += rowPrimes;
+			for (std::size_t i = 0; i < groups.size(); ++i)
+				profile.decades[i] += static_cast<double>(groups[i]) * picks / drawSize;
+			++profile.decadePatterns[groups];
+			if (!positional && picks < drawSize && drawSize > 1)
+			{
+				double squared = 0;
+				for (int n : row) squared += (n - static_cast<double>(sum) / drawSize) *
+					(n - static_cast<double>(sum) / drawSize);
+				withinVariance += static_cast<double>(picks) * (drawSize - picks) /
+					(drawSize * (drawSize - 1)) * squared;
+			}
+		}
+		if (sums.empty()) return false;
+		const double count = static_cast<double>(sums.size());
+		profile.mean = std::accumulate(sums.begin(), sums.end(), 0.0) / count;
+		std::sort(sums.begin(), sums.end());
+		profile.median = (sums[(sums.size() - 1) / 2] + sums[sums.size() / 2]) / 2;
+		double variance = withinVariance / count;
+		for (double sum : sums) variance += (sum - profile.mean) * (sum - profile.mean) / count;
+		profile.deviation = std::sqrt(variance);
+		profile.primeRatio = primes / (count * drawSize);
+		for (double& group : profile.decades) group /= count;
+		return true;
+	}
+
+	bool EvaluateHistoricalLine(const HistoricalProfile& profile, const std::vector<int>& line,
+		const StructuralOptions& options, double& score)
+	{
+		score = 0;
+		if (profile.rows.empty() || line.size() != static_cast<std::size_t>(profile.picks))
+			return false;
+		std::uint64_t low = 0, high = 0;
+		int sum = 0, even = 0, small = 0, primes = 0;
+		std::vector<double> groups(profile.decades.size(), 0.0);
+		for (int n : line)
+		{
+			if (n < (profile.positional ? 0 : 1) || n > profile.maximumNumber) return false;
+			if (!profile.positional)
+			{
+				std::uint64_t& mask = n <= 64 ? low : high;
+				const std::uint64_t bit = std::uint64_t(1) << ((n - 1) % 64);
+				if (mask & bit) return false;
+				mask |= bit;
+			}
+			sum += n;
+			even += n % 2 == 0;
+			small += n <= profile.maximumNumber / 2;
+			primes += Prime(n);
+			++groups[profile.positional ? 0 : n / 10];
+		}
+		const bool compareHistory = options.excludeHistory || options.avoidSimilarHistory ||
+			options.historicalNovelty;
+		int mostShared = 0;
+		if (compareHistory)
+			for (std::size_t i = 0; i < profile.rows.size(); ++i)
+			{
+				int shared = 0;
+				if (profile.positional)
+					for (int j = 0; j < profile.picks; ++j)
+						shared += line[j] == profile.rows[i][j];
+				else
+					shared = BitCount(low & profile.lowMasks[i]) + BitCount(high & profile.highMasks[i]);
+				mostShared = (std::max)(mostShared, shared);
+				if ((options.excludeHistory || options.historicalNovelty) && shared == profile.picks)
+					return false;
+				if (options.avoidSimilarHistory && shared > (std::max)(0, profile.picks - 2))
+					return false;
+			}
+		const double difference = std::abs(sum - profile.mean);
+		if (options.historicalSum && difference > profile.deviation + 1e-9) return false;
+		double decadeDistance = 0;
+		if (options.historicalDecades || options.historicalNovelty)
+			for (const auto& pattern : profile.decadePatterns)
+			{
+				double distance = 0;
+				for (std::size_t i = 0; i < groups.size(); ++i)
+					distance += std::abs(groups[i] -
+						static_cast<double>(pattern.first[i]) * profile.picks / profile.drawSize);
+				decadeDistance += distance * pattern.second / profile.rows.size();
+			}
+		const double decadeScore = 1.0 - (std::min)(1.0, decadeDistance / (2 * profile.picks));
+		if (options.historicalDecades) score += decadeScore;
+		if (options.historicalNovelty)
+		{
+			const double balance = 1.0 - (std::abs(2.0 * even - profile.picks) +
+				std::abs(2.0 * small - profile.picks)) / (2 * profile.picks);
+			const double sumScore = profile.deviation > 0
+				? 1.0 / (1.0 + difference / profile.deviation)
+				: (difference < 1e-9 ? 1.0 : 0.0);
+			const double primeScore = 1.0 - std::abs(static_cast<double>(primes) / profile.picks - profile.primeRatio);
+			const double novelty = 1.0 - static_cast<double>(mostShared) / profile.picks;
+			score += 0.40 * balance + 0.20 * sumScore + 0.15 * decadeScore +
+				0.15 * primeScore + 0.10 * novelty;
+		}
+		if (options.antiCrowd)
+		{
+			std::vector<int> sorted(line);
+			if (!profile.positional) std::sort(sorted.begin(), sorted.end());
+			if (!profile.positional && profile.maximumNumber > 31 && sorted.back() <= 31) score -= 1;
+			if (sorted.size() >= 3)
+			{
+				bool progression = true;
+				const int step = sorted[1] - sorted[0];
+				for (std::size_t i = 2; i < sorted.size(); ++i)
+					if (sorted[i] - sorted[i - 1] != step) progression = false;
+				if (progression) score -= 1;
+			}
+			if (!profile.positional && sorted.size() > 1 && sorted.front() / 10 == sorted.back() / 10)
+				score -= 1;
+		}
+		return true;
+	}
+
+	StructuralResult GenerateHistoricalLine(const HistoricalProfile& profile,
+		const StructuralOptions& options, std::mt19937& generator, std::vector<int>& line)
+	{
+		line.clear();
+		if (profile.rows.empty()) return StructuralResult::InvalidOptions;
+		double bestScore = -std::numeric_limits<double>::infinity();
+		int accepted = 0;
+		const bool rank = options.historicalDecades || options.historicalNovelty || options.antiCrowd;
+		for (int attempt = 0; attempt < 1000 && accepted < (rank ? 64 : 1); ++attempt)
+		{
+			std::vector<int> candidate;
+			if (profile.positional)
+			{
+				std::uniform_int_distribution<int> digit(0, profile.maximumNumber);
+				for (int i = 0; i < profile.picks; ++i) candidate.push_back(digit(generator));
+			}
+			else
+			{
+				const StructuralResult result = GenerateStructuralLine(profile.maximumNumber,
+					profile.picks, options, generator, candidate);
+				if (result != StructuralResult::Success) return result;
+			}
+			double score = 0;
+			if (!EvaluateHistoricalLine(profile, candidate, options, score)) continue;
+			++accepted;
+			if (score > bestScore) { bestScore = score; line = candidate; }
+		}
+		return line.empty() ? StructuralResult::SearchLimit : StructuralResult::Success;
 	}
 
 	bool BacktestFrequency(

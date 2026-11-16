@@ -20,7 +20,7 @@ The program is written in C++ with Microsoft Foundation Classes (MFC) and is int
 - Analyze Viking Lotto CSV data from data/VikingData.csv
 - Analyze Jokeri CSV data from data/JokeriData.csv
 - Create frequency-based prediction rows from historical data
-- **Eight optional prediction strategies** for the CSV dialogs (Balanced, Delta, Wheel, Unusual, Consecutive, Magic Sum, Matrix, Portfolio Coverage)
+- Optional prediction strategies, including combined structural and historical rules and AntiCrowd
 - Display statistical analysis for Lotto, Milli, KTEM, Keno, Eurojackpot, Viking Lotto, and Jokeri number columns
 - Custom application icon (`LottoGuiIcon.ico`) used by both the application and the installer
 - Menu commands use distinct Microsoft Fluent System Icons from a language-neutral bitmap separate from the toolbar bitmap; their MIT license is included in the installer and in [LottoGui/res/icons/LICENSE.txt](LottoGui/res/icons/LICENSE.txt)
@@ -62,8 +62,9 @@ The six number-draw dialogs also offer **Structural strategies...**. After
 confirming the main dialog, select one or more rules for a separate additional
 group of the requested number of rows. All rules selected in that second dialog
 apply to each row in the group. Existing strategies still generate their own
-separate groups; they are not combined with these rules. Jokeri is excluded
-because its digits are positional and may repeat.
+separate groups; they are not combined with these rules. Jokeri offers a
+**Historical strategies...** dialog with the applicable historical and
+AntiCrowd rules, comparing digits in their positions and allowing repeats.
 
 - Decade groups cover as many of 1–10, 11–20, etc. as the row size allows.
 - Endings allow at most two numbers with the same final digit.
@@ -74,6 +75,28 @@ because its digits are positional and may repeat.
 - Short runs exclude four or more consecutive numbers; this does not detect
   ticket-grid patterns or measure player popularity.
 - Minimum gap is the minimum numerical difference between any two numbers.
+- Exclude historical rows rejects previously drawn main-number combinations.
+  In Keno, a match means all selected numbers appeared among the 20 drawn.
+- Avoid similar draws allows at most row size minus two shared numbers: for
+  example, at most five of seven in Lotto. Jokeri compares matching positions.
+- Historical sum accepts sums within one population standard deviation of
+  the mean; the output also reports the median and valid draw count.
+- Historical decade distribution scores similarity to observed distributions,
+  using groups 1–9, 10–19, etc. It is not available for Jokeri.
+- Historical structure + novelty rejects historical matches and scores balance
+  (40%), sum (20%), decade distribution (15%), prime ratio (15%) and novelty
+  (10%). Jokeri's decade score is neutral.
+- AntiCrowd penalizes rows entirely at or below 31 when the game permits larger
+  numbers, rows within one decade, and arithmetic progressions, including
+  ten-column grid diagonals. In Jokeri it penalizes positional progressions.
+
+History comparisons use complete valid main-number rows; stars and bonus numbers
+are excluded. Keno's sum statistics and decade distributions are scaled from
+20-number draws to the selected level: the reported median is the median of
+scaled draw sums, and the deviation also accounts for variation between subsets
+of each draw. The scoring rules compare up to 64
+accepted random candidates per row. Strict history rules may prevent generation,
+particularly at low Keno levels. AntiCrowd is a heuristic, not player data.
 
 Impossible rules or a search limit are reported without producing an invalid
 row. The generator is randomized but not frequency-weighted, and Eurojackpot
@@ -237,12 +260,13 @@ The application also includes a separate Jokeri CSV dialog in the Lotto Options 
 - seven Jokeri digit predictions
 - support for repeated digits in the same row
 - optional predictions conditioned on the historical distribution of distinct-digit counts
+- optional historical and AntiCrowd strategies for positional digits
 - zero-aware statistical analysis
 - harmonic mean displayed as N/A when a column contains zero values
 
 ## Optional prediction strategies
 
-All CSV game dialogs (Suomen Lotto, Milli, KTEM, Keno, Eurojackpot, Viking Lotto) include eight optional strategies that can be enabled with check boxes. Frequency analysis is always used as the base; the selected strategies are layered on top.
+The six number-draw CSV dialogs (Suomen Lotto, Milli, KTEM, Keno, Eurojackpot, Viking Lotto) include the following eight optional strategies. Frequency analysis is always used as the base; selected strategies add separate groups. The combined structural and historical rules are described above.
 
 | Strategy | Description |
 |---|---|
@@ -339,6 +363,9 @@ A helper script is included at [Build-LottoGui.ps1](Build-LottoGui.ps1). It buil
 
 The script locates the installed Visual Studio MSBuild tools automatically and then invokes Inno Setup (`ISCC.exe`) for the installer output in `installer\Output`.
 Installer creation is supported only with `Release|x64`; use `-SkipInstaller` when building Debug or Win32.
+After changing help HTML, compile both `help\LottoGui.hhp` and
+`help\en\LottoGui_en.hhp` with HTML Help Workshop before building the installer;
+the installer packages the resulting CHM files.
 
 ### GoogleTest regression tests
 
